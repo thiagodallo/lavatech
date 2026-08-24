@@ -3,9 +3,9 @@
 Sistema web de gestão de agendamentos desenvolvido para a Eco Planet, estética
 automotiva em Criciúma, SC.
 
-- **DISCIPLINA:** PROJETO INTEGRADOR: SISTEMA WEB
-- **CURSO:** ENGENHARIA DE SOFTWARE - 4ª FASE
-- **FACULDADE:** UNISATC
+- **DISCIPLINA:** Projeto Integrador: Sistema Web
+- **CURSO:** Engenharia de Software - 4ª fase
+- **FACULDADE:** UniSATC
 
 ## Problema
 

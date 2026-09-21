@@ -8,7 +8,7 @@
 
 -- Troque a senha abaixo antes de rodar. Nunca deixe a senha
 -- default em texto plano em nenhum repositório.
-CREATE ROLE lavarapido_app WITH LOGIN PASSWORD 'aa';
+CREATE ROLE lavarapido_app WITH LOGIN PASSWORD 'TROQUE_ESTA_SENHA';
 
 -- Permissão de conexão no banco
 GRANT CONNECT ON DATABASE "LAVATECH" TO lavarapido_app; -- ajustar nome_do_banco

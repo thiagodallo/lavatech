@@ -1,7 +1,6 @@
 import app from './app.js'
+import env from './config/env.js'
 
-const porta = process.env.PORT || 3000
-
-app.listen(porta, () => {
-  console.log(`API do LavaTech em http://localhost:${porta}/api`)
+app.listen(env.PORT, () => {
+  console.log(`API do LavaTech em http://localhost:${env.PORT}/api`)
 })

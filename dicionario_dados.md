@@ -1,7 +1,7 @@
 # Dicionário de Dados — Sistema Lavatech
 
 Banco: PostgreSQL | Schema: `public`
-Arquivos relacionados: `V1__init_schema.sql` (estrutura), `00_setup_role_grants.sql` (acesso)
+Arquivos relacionados: `V1__init_schema.sql` (estrutura), `V2__unique_vaga_horario.sql` (índice único de vaga e horário), `V3__checklist_itens_rf10.sql` (itens do checklist), `00_setup_role_grants.sql` (acesso)
 
 ---
 
@@ -149,18 +149,29 @@ Relação 1:1 com `agendamento`.
 
 ## checklist_qualidade
 
-Relação 1:1 com `agendamento`.
+Relação 1:1 com `agendamento`. Guarda os itens do RF10 e o resultado final da conferência.
 
-| Coluna               | Tipo      | Regras                                | Descrição            |
-| -------------------- | --------- | ------------------------------------- | -------------------- |
-| id                   | SERIAL    | PK                                    |                      |
-| agendamento_id       | INT       | FK → agendamento.id, UNIQUE, NOT NULL |                      |
-| funcionario_id       | INT       | FK → funcionario.id, NOT NULL         | Quem fez o checklist |
-| hora_inicio          | TIMESTAMP | aceita NULL                           |                      |
-| hora_fim             | TIMESTAMP | aceita NULL                           |                      |
-| houve_problema       | BOOLEAN   | default `false`                       |                      |
-| descricao_problema   | TEXT      | aceita NULL                           |                      |
-| necessita_retrabalho | BOOLEAN   | default `false`                       |                      |
+| Coluna                 | Tipo        | Regras                                | Descrição                                             |
+| ---------------------- | ----------- | ------------------------------------- | ----------------------------------------------------- |
+| id                     | SERIAL      | PK                                    |                                                       |
+| agendamento_id         | INT         | FK → agendamento.id, UNIQUE, NOT NULL |                                                       |
+| funcionario_id         | INT         | FK → funcionario.id, NOT NULL         | Quem fez o checklist                                  |
+| hora_inicio            | TIMESTAMP   | aceita NULL                           |                                                       |
+| hora_fim               | TIMESTAMP   | aceita NULL                           |                                                       |
+| houve_problema         | BOOLEAN     | default `false`                       |                                                       |
+| descricao_problema     | TEXT        | aceita NULL                           |                                                       |
+| necessita_retrabalho   | BOOLEAN     | default `false`                       |                                                       |
+| externa_sem_espuma     | BOOLEAN     | NOT NULL                              | Lavagem externa sem resíduo de espuma                 |
+| rodas_e_pneus_ok       | BOOLEAN     | NOT NULL                              | Rodas limpas e pneu com pretinho                      |
+| vidros_sem_manchas     | BOOLEAN     | NOT NULL                              | Vidros sem manchas ou riscos                          |
+| interior_aspirado      | BOOLEAN     | NOT NULL                              | Interior aspirado                                     |
+| painel_e_portas_limpos | BOOLEAN     | NOT NULL                              | Painel, console e interior das portas limpos          |
+| aromatizante_aplicado  | BOOLEAN     | NOT NULL                              | Aromatizante aplicado                                 |
+| sem_objetos_esquecidos | BOOLEAN     | NOT NULL                              | Nenhum objeto pessoal do cliente esquecido no veículo |
+| sem_danos_novos        | BOOLEAN     | NOT NULL                              | Nenhum dano ou arranhão novo na conferência           |
+| resultado              | VARCHAR(25) | NOT NULL, CHECK                       | `aprovado` \| `aprovado_com_ressalva` \| `reprovado`  |
+
+**Regra de negócio:** os oito itens (de `externa_sem_espuma` a `sem_danos_novos`) e o `resultado` não têm valor default, a aplicação precisa enviar todos. Em cada item, `true` significa que o item está conforme. Colunas adicionadas na `V3__checklist_itens_rf10.sql`.
 
 ---
 

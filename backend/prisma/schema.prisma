@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
@@ -30,6 +31,7 @@ model agendamento {
   historico_status    historico_status[]
   pagamento           pagamento?
 
+  @@unique([vaga_id, data_hora_agendada], map: "uq_agendamento_vaga_horario", where: raw("((status)::text <> ALL ((ARRAY['cancelado'::character varying, 'no_show'::character varying])::text[]))"))
   @@index([cliente_id], map: "idx_agendamento_cliente_id")
   @@index([data_hora_agendada], map: "idx_agendamento_data_hora_agendada")
   @@index([funcionario_id], map: "idx_agendamento_funcionario_id")
@@ -40,16 +42,25 @@ model agendamento {
 }
 
 model checklist_qualidade {
-  id                   Int         @id @default(autoincrement())
-  agendamento_id       Int         @unique
-  funcionario_id       Int
-  hora_inicio          DateTime?   @db.Timestamp(6)
-  hora_fim             DateTime?   @db.Timestamp(6)
-  houve_problema       Boolean     @default(false)
-  descricao_problema   String?
-  necessita_retrabalho Boolean     @default(false)
-  agendamento          agendamento @relation(fields: [agendamento_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  funcionario          funcionario @relation(fields: [funcionario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                     Int         @id @default(autoincrement())
+  agendamento_id         Int         @unique
+  funcionario_id         Int
+  hora_inicio            DateTime?   @db.Timestamp(6)
+  hora_fim               DateTime?   @db.Timestamp(6)
+  houve_problema         Boolean     @default(false)
+  descricao_problema     String?
+  necessita_retrabalho   Boolean     @default(false)
+  externa_sem_espuma     Boolean
+  rodas_e_pneus_ok       Boolean
+  vidros_sem_manchas     Boolean
+  interior_aspirado      Boolean
+  painel_e_portas_limpos Boolean
+  aromatizante_aplicado  Boolean
+  sem_objetos_esquecidos Boolean
+  sem_danos_novos        Boolean
+  resultado              String      @db.VarChar(25)
+  agendamento            agendamento @relation(fields: [agendamento_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  funcionario            funcionario @relation(fields: [funcionario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([funcionario_id], map: "idx_checklist_funcionario_id")
 }
@@ -157,4 +168,12 @@ model veiculo {
   cliente     cliente       @relation(fields: [cliente_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([cliente_id], map: "idx_veiculo_cliente_id")
+}
+
+model sessao {
+  sid    String   @id @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire], map: "idx_sessao_expire")
 }

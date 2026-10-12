@@ -18,8 +18,10 @@ A Eco Planet controla os agendamentos manualmente, por WhatsApp e caderno físic
 - Context API (restrita à sessão do funcionário logado)
 - Node.js e Express (back-end)
 - Prisma (ORM)
-- Migrations em SQL versionadas em `db/migration`
 - Zod (validação)
+- express-session e connect-pg-simple (sessão guardada no banco)
+- bcrypt (conferência da senha)
+- Migrations em SQL versionadas em `db/migration`
 - PostgreSQL (banco de dados)
 
 ## Funcionalidades
@@ -38,29 +40,37 @@ A Eco Planet controla os agendamentos manualmente, por WhatsApp e caderno físic
 
 **Dashboard:** três seções. Operacional traz agendamentos do dia, ocupação das vagas, tempo médio por tipo de serviço, horários de pico e cancelamentos. Financeiro traz faturamento por período, ticket médio e valores a receber. Administrativo traz o ranking de serviços, clientes novos e recorrentes e os itens de estoque com nível baixo.
 
-**Acesso:** perfil único de administrador. O sistema não tem acesso para o cliente final.
+**Acesso:** perfil único de administrador, com login por e-mail e senha e sessão guardada no banco. O sistema não tem acesso para o cliente final.
 
 ## Modelo de dados
 
-O banco tem onze entidades: `funcionario`, `cliente`, `veiculo`, `servico`, `produto`, `movimentacao_estoque`, `vaga_lavagem`, `agendamento`, `pagamento`, `checklist_qualidade` e `historico_status`. A entidade central é `agendamento`, que liga cliente, veículo, vaga e funcionário, e a partir dela saem o pagamento, o checklist e o histórico de status. `funcionario` tem um registro especial, `Sistema (Chatbot)`, com id `-1`, usado por padrão em `agendamento.funcionario_id` e `historico_status.alterado_por`. Ele permite no futuro agendamentos criados ou alterados por um chatbot de WhatsApp sem atendente no meio, e nunca autentica.
+O banco tem onze entidades: `funcionario`, `cliente`, `veiculo`, `servico`, `produto`, `movimentacao_estoque`, `vaga_lavagem`, `agendamento`, `pagamento`, `checklist_qualidade` e `historico_status`, além da tabela `sessao`, usada só pelo login. A entidade central é `agendamento`, que liga cliente, veículo, vaga e funcionário, e a partir dela saem o pagamento, o checklist e o histórico de status. `funcionario` tem um registro especial, `Sistema (Chatbot)`, com id `-1`, usado por padrão em `agendamento.funcionario_id` e `historico_status.alterado_por`. Ele permite no futuro agendamentos criados ou alterados por um chatbot de WhatsApp sem atendente no meio, e nunca autentica.
 
 Os detalhes de cada tabela estão em [`dicionario_dados.md`](dicionario_dados.md).
+
+## Como rodar
+
+Pré-requisitos: Node.js 22.12 ou mais novo e PostgreSQL.
+
+1. Crie o banco e a role de acesso rodando `00_setup_role_grants.sql`.
+2. Aplique as migrations de `db/migration` em ordem, de V1 a V4.
+3. Siga o passo a passo do [`backend/README.md`](backend/README.md) para configurar o `.env` e subir a API.
+
+Com a API no ar, `http://localhost:3000/api/health` responde `{"api":"ok","banco":"ok"}` se a conexão com o banco estiver funcionando.
 
 ## O que tem aqui
 
 | Arquivo | Para que serve |
 |---|---|
-| `prisma/schema.prisma` | Schema do Prisma, gerado a partir do banco com `prisma db pull` |
+| `backend/` | API em Node.js e Express, em camadas (rotas, services e repositories). Detalhes em [`backend/README.md`](backend/README.md) |
+| `backend/prisma/schema.prisma` | Schema do Prisma, gerado a partir do banco com `prisma db pull` |
+| `frontend/` | Interface web em React e Vite (em andamento) |
 | `db/migration/V1__init_schema.sql` | Criação das tabelas, constraints e dados iniciais |
 | `db/migration/V2__unique_vaga_horario.sql` | Índice único parcial que impede dois agendamentos ativos na mesma vaga e horário |
+| `db/migration/V3__checklist_itens_rf10.sql` | Colunas dos itens do checklist de qualidade e do resultado final |
+| `db/migration/V4__sessao.sql` | Tabela de sessão usada no login |
 | `00_setup_role_grants.sql` | Criação da role de acesso e permissões no PostgreSQL |
 | `dicionario_dados.md` | Dicionário de dados de todas as tabelas |
-| `frontend/` | Interface web em React e Vite (setup previsto para a Sprint 2) |
-| `backend/` | API em Node.js e Express (setup previsto para a Sprint 2) |
-
-## Status
-
-O projeto está em fase de prototipação. As oito telas do MVP (Login, Agenda, Novo agendamento, Dashboard, Estoque, Qualidade, Clientes e Catálogo) já foram prototipadas e o banco de dados está criado no PostgreSQL, com o schema do Prisma e as migrations V1 e V2 versionadas. Ainda serão prototipadas as telas de funcionários, pagamento e movimentação de estoque, o checklist de qualidade e os formulários de cadastro. No banco, falta a migration V3 para guardar os itens do checklist e o resultado final. A codificação da aplicação acontece de 29/09 a 17/11/2026, com a apresentação final em 01/12/2026.
 
 ## Equipe
 

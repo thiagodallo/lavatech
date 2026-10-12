@@ -1,7 +1,7 @@
 # Dicionário de Dados — Sistema Lavatech
 
 Banco: PostgreSQL | Schema: `public`
-Arquivos relacionados: `V1__init_schema.sql` (estrutura), `V2__unique_vaga_horario.sql` (índice único de vaga e horário), `V3__checklist_itens_rf10.sql` (itens do checklist), `00_setup_role_grants.sql` (acesso)
+Arquivos relacionados: `V1__init_schema.sql` (estrutura), `V2__unique_vaga_horario.sql` (índice único de vaga e horário), `V3__checklist_itens_rf10.sql` (itens do checklist), `V4__sessao.sql` (sessões de login), `00_setup_role_grants.sql` (acesso)
 
 ---
 
@@ -187,6 +187,20 @@ Log append-only de mudanças de status do agendamento.
 | status_novo     | VARCHAR(20) | NOT NULL                                    |                                                 |
 | alterado_por    | INT         | FK → funcionario.id, NOT NULL, default `-1` | `-1` = alteração automática do chatbot          |
 | alterado_em     | TIMESTAMP   | default `now()`                             |                                                 |
+
+---
+
+## sessao
+
+Sessões de login dos funcionários (RF12). Quem lê e grava nesta tabela é a biblioteca `connect-pg-simple` do back-end, não as rotas da aplicação.
+
+| Coluna | Tipo         | Regras   | Descrição                                                       |
+| ------ | ------------ | -------- | --------------------------------------------------------------- |
+| sid    | VARCHAR      | PK       | Identificador da sessão, o mesmo que vai no cookie do navegador |
+| sess   | JSON         | NOT NULL | Dados da sessão: o cookie e o id do funcionário logado          |
+| expire | TIMESTAMP(6) | NOT NULL | Quando a sessão vence                                           |
+
+**Nota:** os nomes `sid`, `sess` e `expire` são exigidos pela biblioteca, por isso fogem do padrão em português. O índice `idx_sessao_expire` serve para a limpeza das sessões vencidas, que a própria biblioteca faz de tempos em tempos. Apagar uma linha desta tabela desloga o funcionário.
 
 ---
 

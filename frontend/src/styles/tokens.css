@@ -1,0 +1,32 @@
+:root {
+  --cor-superficie: #eef1f0;
+  --cor-cartao: #ffffff;
+  --cor-texto: #14212b;
+  --cor-texto-suave: #5c6b72;
+  --cor-marca: #0e6ba8;
+  --cor-marca-escura: #0a4e7c;
+  --cor-alerta: #ff7a1a;
+  --cor-alerta-escura: #b85400;
+  --cor-linha: #dce2e0;
+  --cor-menu: #0f2430;
+
+  --status-agendado-fundo: #e7eaec;
+  --status-agendado-texto: #4b5b63;
+  --status-aguardando-fundo: #e1edf6;
+  --status-aguardando-texto: #215a82;
+  --status-em-andamento-fundo: #ffe4c7;
+  --status-em-andamento-texto: #9a4b00;
+  --status-concluido-fundo: #dcf0e1;
+  --status-concluido-texto: #146c3a;
+  --status-cancelado-fundo: #f8dcda;
+  --status-cancelado-texto: #9c2e24;
+  --status-no-show-fundo: #f1e4dc;
+  --status-no-show-texto: #7a4a2e;
+
+  --fonte-titulo: 'Archivo', sans-serif;
+  --fonte-texto: 'Inter', sans-serif;
+  --fonte-mono: 'IBM Plex Mono', monospace;
+
+  --raio-pequeno: 8px;
+  --raio-medio: 12px;
+}

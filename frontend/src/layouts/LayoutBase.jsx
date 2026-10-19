@@ -2,6 +2,7 @@ import { Droplets, LogOut } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router'
 
 import { itensDoMenu } from '../navegacao.js'
+import './LayoutBase.css'
 
 export default function LayoutBase() {
   return (

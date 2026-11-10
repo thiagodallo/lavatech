@@ -1,14 +1,29 @@
 import { Droplets } from 'lucide-react'
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
 
+import { useSessao } from '../contexts/SessaoContext.jsx'
 import './Login.css'
 
 export default function Login() {
+  const { entrar } = useSessao()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [mensagemDeErro, setMensagemDeErro] = useState('')
+  const [enviando, setEnviando] = useState(false)
 
-  function enviarFormulario(evento) {
+  async function enviarFormulario(evento) {
     evento.preventDefault()
+    setMensagemDeErro('')
+    setEnviando(true)
+    try {
+      await entrar(email, senha)
+      navigate('/agenda', { replace: true })
+    } catch (erro) {
+      setMensagemDeErro(erro.message)
+      setEnviando(false)
+    }
   }
 
   return (
@@ -47,8 +62,14 @@ export default function Login() {
           onChange={(evento) => setSenha(evento.target.value)}
         />
 
-        <button type="submit" className="login-entrar">
-          Entrar
+        {mensagemDeErro && (
+          <p className="login-erro" role="alert">
+            {mensagemDeErro}
+          </p>
+        )}
+
+        <button type="submit" className="login-entrar" disabled={enviando}>
+          {enviando ? 'Entrando' : 'Entrar'}
         </button>
       </form>
     </main>

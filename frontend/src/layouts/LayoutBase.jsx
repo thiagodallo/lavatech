@@ -1,5 +1,5 @@
 import { Droplets, LogOut } from 'lucide-react'
-import { NavLink, Outlet, useNavigate } from 'react-router'
+import { NavLink, Outlet } from 'react-router'
 
 import { useSessao } from '../contexts/SessaoContext.jsx'
 import { itensDoMenu } from '../navegacao.js'
@@ -7,13 +7,6 @@ import './LayoutBase.css'
 
 export default function LayoutBase() {
   const { funcionario, sair } = useSessao()
-  const navigate = useNavigate()
-
-  async function encerrarSessao() {
-    await sair()
-    navigate('/login')
-  }
-
   return (
     <div className="layout">
       <aside className="menu-lateral">
@@ -33,7 +26,7 @@ export default function LayoutBase() {
           ))}
         </nav>
 
-        <button type="button" className="menu-item menu-sair" onClick={encerrarSessao}>
+        <button type="button" className="menu-item menu-sair" onClick={sair}>
           <LogOut size={16} aria-hidden="true" />
           Sair
         </button>

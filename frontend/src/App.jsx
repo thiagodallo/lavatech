@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 
+import RotaProtegida from './components/RotaProtegida.jsx'
 import { SessaoProvider } from './contexts/SessaoContext.jsx'
 import LayoutBase from './layouts/LayoutBase.jsx'
 import Agenda from './pages/Agenda.jsx'
@@ -17,14 +18,16 @@ export default function App() {
       <SessaoProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route element={<LayoutBase />}>
-            <Route path="/agenda" element={<Agenda />} />
-            <Route path="/agenda/novo" element={<NovoAgendamento />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/clientes" element={<Clientes />} />
-            <Route path="/catalogo" element={<Catalogo />} />
-            <Route path="/estoque" element={<Estoque />} />
-            <Route path="/qualidade" element={<Qualidade />} />
+          <Route element={<RotaProtegida />}>
+            <Route element={<LayoutBase />}>
+              <Route path="/agenda" element={<Agenda />} />
+              <Route path="/agenda/novo" element={<NovoAgendamento />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/clientes" element={<Clientes />} />
+              <Route path="/catalogo" element={<Catalogo />} />
+              <Route path="/estoque" element={<Estoque />} />
+              <Route path="/qualidade" element={<Qualidade />} />
+            </Route>
           </Route>
           <Route path="*" element={<Navigate to="/agenda" replace />} />
         </Routes>

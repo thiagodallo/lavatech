@@ -1,13 +1,12 @@
 import { Droplets } from 'lucide-react'
 import { useState } from 'react'
-import { useNavigate } from 'react-router'
+import { Navigate } from 'react-router'
 
 import { useSessao } from '../contexts/SessaoContext.jsx'
 import './Login.css'
 
 export default function Login() {
-  const { entrar } = useSessao()
-  const navigate = useNavigate()
+  const { funcionario, entrar } = useSessao()
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [mensagemDeErro, setMensagemDeErro] = useState('')
@@ -19,11 +18,14 @@ export default function Login() {
     setEnviando(true)
     try {
       await entrar(email, senha)
-      navigate('/agenda', { replace: true })
     } catch (erro) {
       setMensagemDeErro(erro.message)
       setEnviando(false)
     }
+  }
+
+  if (funcionario) {
+    return <Navigate to="/agenda" replace />
   }
 
   return (

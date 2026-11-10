@@ -55,6 +55,15 @@
   font: inherit;
 }
 
+.login-erro {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-radius: var(--raio-pequeno);
+  background: var(--status-cancelado-fundo);
+  color: var(--status-cancelado-texto);
+  font-size: 13px;
+}
+
 .login-entrar {
   margin-top: 8px;
   padding: 12px;
@@ -66,8 +75,13 @@
   transition: background-color 150ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.login-entrar:hover {
+.login-entrar:hover:not(:disabled) {
   background: var(--cor-marca-escura);
+}
+
+.login-entrar:disabled {
+  opacity: 0.7;
+  cursor: progress;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -21,3 +21,26 @@ export function listarComVeiculos(busca) {
     orderBy: { nome: 'asc' },
   })
 }
+
+export function buscarPorId(id) {
+  return prisma.cliente.findUnique({ where: { id } })
+}
+
+export function buscarPorTelefone(telefone) {
+  return prisma.cliente.findUnique({ where: { telefone } })
+}
+
+export function criar({ nome, telefone, email }) {
+  return prisma.cliente.create({
+    data: { nome, telefone, email: email ?? null },
+    include: COM_VEICULOS,
+  })
+}
+
+export function atualizar(id, { nome, telefone, email }) {
+  return prisma.cliente.update({
+    where: { id },
+    data: { nome, telefone, email: email ?? null },
+    include: COM_VEICULOS,
+  })
+}

@@ -1,8 +1,10 @@
 import ErroDeAplicacao from '../errors/ErroDeAplicacao.js'
 import * as clientes from '../repositories/cliente.repository.js'
+import * as veiculos from '../repositories/veiculo.repository.js'
 
 const CLIENTE_NAO_ENCONTRADO = 'Cliente não encontrado'
 const TELEFONE_JA_CADASTRADO = 'Telefone já cadastrado'
+const PLACA_JA_CADASTRADA = 'Placa já cadastrada'
 
 function formatarCliente({ veiculo, ...cliente }) {
   return { ...cliente, veiculos: veiculo }
@@ -37,4 +39,17 @@ export async function editarCliente(id, dados) {
   await exigirCliente(id)
   await exigirTelefoneLivre(dados.telefone, id)
   return formatarCliente(await clientes.atualizar(id, dados))
+}
+
+export async function listarVeiculosDoCliente(clienteId) {
+  await exigirCliente(clienteId)
+  return veiculos.listarPorCliente(clienteId)
+}
+
+export async function cadastrarVeiculo(clienteId, dados) {
+  await exigirCliente(clienteId)
+  if (await veiculos.buscarPorPlaca(dados.placa)) {
+    throw new ErroDeAplicacao(409, PLACA_JA_CADASTRADA)
+  }
+  return veiculos.criar(clienteId, dados)
 }

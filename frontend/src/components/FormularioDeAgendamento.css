@@ -1,0 +1,21 @@
+.formulario-agendamento {
+  max-width: 560px;
+  padding: 20px;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+}
+
+.formulario-aviso {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--raio-pequeno);
+  background: var(--status-em-andamento-fundo);
+  color: var(--status-em-andamento-texto);
+  font-size: 13px;
+}
+
+.formulario-aviso a {
+  color: inherit;
+  font-weight: 600;
+}

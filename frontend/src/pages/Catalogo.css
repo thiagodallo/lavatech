@@ -41,10 +41,18 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  width: 100%;
   padding: 16px;
   border: 1px solid var(--cor-linha);
   border-radius: var(--raio-medio);
   background: var(--cor-cartao);
+  color: inherit;
+  text-align: left;
+}
+
+.servico:hover,
+.servico[aria-current='true'] {
+  border-color: var(--cor-marca);
 }
 
 .servico-inativo {

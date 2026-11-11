@@ -1,0 +1,20 @@
+.seletor-de-dia {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.seletor-seta {
+  width: 38px;
+  padding: 0;
+}
+
+.seletor-de-dia [aria-pressed='true'] {
+  background: var(--cor-superficie);
+}
+
+.seletor-data {
+  height: 38px;
+  font-family: var(--fonte-mono);
+  font-size: 13px;
+}

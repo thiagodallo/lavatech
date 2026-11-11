@@ -7,3 +7,14 @@ export function dataDeHoje() {
 export function horaDoTexto(texto) {
   return texto.slice(11, 16)
 }
+
+const padraoDeData = /^\d{4}-\d{2}-\d{2}$/
+
+export function ehDataValida(texto) {
+  return padraoDeData.test(texto ?? '')
+}
+
+export function somarDias(data, dias) {
+  const [ano, mes, dia] = data.split('-').map(Number)
+  return new Date(Date.UTC(ano, mes - 1, dia + dias)).toISOString().slice(0, 10)
+}

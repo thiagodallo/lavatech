@@ -1,0 +1,39 @@
+.pilula {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pilula-agendado {
+  background: var(--status-agendado-fundo);
+  color: var(--status-agendado-texto);
+}
+
+.pilula-aguardando {
+  background: var(--status-aguardando-fundo);
+  color: var(--status-aguardando-texto);
+}
+
+.pilula-em-andamento {
+  background: var(--status-em-andamento-fundo);
+  color: var(--status-em-andamento-texto);
+}
+
+.pilula-concluido {
+  background: var(--status-concluido-fundo);
+  color: var(--status-concluido-texto);
+}
+
+.pilula-cancelado {
+  background: var(--status-cancelado-fundo);
+  color: var(--status-cancelado-texto);
+}
+
+.pilula-no-show {
+  background: var(--status-no-show-fundo);
+  color: var(--status-no-show-texto);
+}

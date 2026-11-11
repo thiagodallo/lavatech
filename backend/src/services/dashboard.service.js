@@ -6,6 +6,7 @@ import { FORMAS_DE_PAGAMENTO } from '../schemas/pagamento.schema.js'
 
 const MS_POR_DIA = 24 * 60 * 60 * 1000
 const TAMANHO_DO_RANKING = 5
+const HORAS_DO_DIA = 24
 
 function contagemPorStatus(grupos) {
   const contagem = Object.fromEntries(STATUS_DO_AGENDAMENTO.map((status) => [status, 0]))
@@ -136,5 +137,34 @@ export async function resumirPeriodo({ de, ate }) {
     servicos_mais_vendidos: servicos.map(formatarServicoVendido),
     clientes,
     cancelamentos: formatarCancelamentos(cancelamentos),
+  }
+}
+
+function formatarTempoMedio(linha) {
+  return {
+    servico_id: linha.servico_id,
+    nome: linha.nome,
+    atendimentos: linha.atendimentos,
+    tempo_medio_minutos: arredondar(linha.tempo_medio_minutos, 1),
+    duracao_prevista_minutos: linha.duracao_prevista_minutos,
+  }
+}
+
+function montarHorariosDePico(linhas) {
+  return Array.from({ length: HORAS_DO_DIA }, (_, hora) => ({
+    hora,
+    agendamentos: linhas.find((linha) => linha.hora === hora)?.agendamentos ?? 0,
+  }))
+}
+
+export async function resumirOperacao({ de, ate }) {
+  const [tempos, horarios] = await Promise.all([
+    dashboard.listarTempoMedioPorServico(de, ate),
+    dashboard.listarAgendamentosPorHora(de, ate),
+  ])
+  return {
+    periodo: { de, ate, dias: diasDoPeriodo(de, ate) },
+    tempo_medio_por_servico: tempos.map(formatarTempoMedio),
+    horarios_de_pico: montarHorariosDePico(horarios),
   }
 }

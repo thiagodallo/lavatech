@@ -72,3 +72,12 @@ export function contarPorResultado(checklists) {
     ]),
   )
 }
+
+export function itensTodosConformes() {
+  return Object.fromEntries(itensDoChecklist.map((item) => [item.campo, true]))
+}
+
+export function resultadoSugerido(itens) {
+  const todosConformes = itensDoChecklist.every((item) => itens[item.campo])
+  return todosConformes ? 'aprovado' : 'aprovado_com_ressalva'
+}

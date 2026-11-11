@@ -117,7 +117,7 @@ Tabela central do sistema.
 | id                 | SERIAL      | PK                                          |                                                                                         |
 | cliente_id         | INT         | FK → cliente.id, NOT NULL                   |                                                                                         |
 | veiculo_id         | INT         | FK → veiculo.id, NOT NULL                   |                                                                                         |
-| servico_id         | INT         | FK → servico.id, NOT NULL                   |                                                                                         |
+| servico_id         | INT         | FK → servico.id, aceita NULL                | Em desuso desde a V5: o serviço agora fica em `agendamento_servico`                     |
 | funcionario_id     | INT         | FK → funcionario.id, NOT NULL, default `-1` | `-1` = criado pelo chatbot, sem atendente humano                                        |
 | vaga_id            | INT         | FK → vaga_lavagem.id, NOT NULL              |                                                                                         |
 | data_hora_agendada | TIMESTAMP   | NOT NULL                                    | Horário marcado                                                                         |
@@ -129,6 +129,26 @@ Tabela central do sistema.
 | atualizado_em      | TIMESTAMP   | aceita NULL                                 | Backend deve atualizar manualmente a cada mudança (sem trigger automático definido)     |
 
 **Regra de negócio:** toda transição de `status` deve gerar uma linha correspondente em `historico_status` — não é imposto pelo banco (sem trigger), é responsabilidade da aplicação.
+
+---
+
+## agendamento_servico
+
+Itens de serviço de um agendamento (N:N entre `agendamento` e `servico`). Um agendamento pode ter vários serviços. Criada na `V5__agendamento_servico.sql`.
+
+| Coluna          | Tipo          | Regras                        | Descrição                                                    |
+| --------------- | ------------- | ----------------------------- | ------------------------------------------------------------ |
+| id              | SERIAL        | PK                            |                                                              |
+| agendamento_id  | INT           | FK → agendamento.id, NOT NULL |                                                              |
+| servico_id      | INT           | FK → servico.id, NOT NULL     |                                                              |
+| preco           | DECIMAL(10,2) | NOT NULL                      | Preço do serviço no momento do agendamento (cópia, não vínculo)   |
+| duracao_minutos | INT           | NOT NULL                      | Duração do serviço no momento do agendamento (cópia, não vínculo) |
+
+**Restrições:** `UNIQUE (agendamento_id, servico_id)` impede o mesmo serviço duas vezes no mesmo agendamento e já serve de índice para buscar os itens de um agendamento. O índice `idx_agendamento_servico_servico_id` serve para os relatórios por serviço.
+
+**Regra de negócio:** `preco` e `duracao_minutos` são copiados de `servico` quando o item é criado. Mudar o preço ou a duração no catálogo depois não altera agendamentos já feitos. O total de um agendamento é a soma dos seus itens. Na V5, cada agendamento existente ganhou um item com os valores atuais do serviço.
+
+**Nota sobre `agendamento.servico_id`:** a coluna continua existindo, mas ficou nullable e em desuso desde a V5. O sistema novo não a lê nem a preenche. Ela será removida numa migration futura (V6), depois que todo o código deixar de usá-la.
 
 ---
 

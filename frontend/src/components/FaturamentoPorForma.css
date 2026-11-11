@@ -1,0 +1,28 @@
+.faturamento-por-forma {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.forma-linha {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.forma-valores {
+  display: flex;
+  gap: 12px;
+  font-family: var(--fonte-mono);
+  font-size: 13px;
+}
+
+.forma-percentual {
+  min-width: 48px;
+  color: var(--cor-texto-suave);
+  text-align: right;
+}

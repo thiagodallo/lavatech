@@ -110,3 +110,11 @@ export function mudarStatus({ id, statusAnterior, statusNovo, funcionarioId, ago
     return transacao.agendamento.findUnique({ where: { id }, include: COM_DETALHES })
   })
 }
+
+export function listarHistorico(agendamentoId) {
+  return prisma.historico_status.findMany({
+    where: { agendamento_id: agendamentoId },
+    include: { funcionario: { select: { id: true, nome: true } } },
+    orderBy: [{ alterado_em: 'asc' }, { id: 'asc' }],
+  })
+}

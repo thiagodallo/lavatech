@@ -185,3 +185,14 @@ export async function mudarStatusDoAgendamento(id, statusNovo, funcionarioId) {
   }
   return formatarAgendamento(atualizado)
 }
+
+export async function listarHistoricoDoAgendamento(id) {
+  await exigirAgendamento(id)
+  const linhas = await agendamentos.listarHistorico(id)
+  return linhas.map(({ funcionario, alterado_em, status_anterior, status_novo }) => ({
+    status_anterior,
+    status_novo,
+    alterado_em: formatarHorario(alterado_em),
+    alterado_por: funcionario,
+  }))
+}

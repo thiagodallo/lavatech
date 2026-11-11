@@ -108,7 +108,7 @@ Toda rota registrada depois do `exigirSessao` em `routes/index.js` responde 401 
 
 Todas as rotas ficam sob `/api`, recebem e devolvem JSON. Os nomes dos campos seguem as colunas do banco, em `snake_case`. Com exceção de `/health` e `/auth/login`, todas vão exigir sessão.
 
-Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos` e `/produtos`. As outras estão aqui para o front-end já saber o que esperar.
+Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/produtos` e `/funcionarios`. As outras estão aqui para o front-end já saber o que esperar.
 
 | Método | Rota | Requisito | Para que serve |
 |---|---|---|---|
@@ -241,3 +241,43 @@ O `quantidade_atual` não é aceito: se vier no corpo, é ignorado. O produto na
 ### Erros
 
 Além do 400 de corpo inválido, com os `campos`, e do 401 sem sessão, o `PUT` responde 404 com `Serviço não encontrado` ou `Produto não encontrado` quando o `id` não existe.
+
+## Funcionários (RF01)
+
+No MVP existe um perfil só, o de administrador (decisão do RF12): todo funcionário cadastrado entra como `admin`, e o `papel` não é aceito no corpo. O usuário `Sistema (Chatbot)`, de id `-1`, nunca aparece nas listas nem pode ser editado.
+
+`GET /api/funcionarios` lista os funcionários por ordem de nome, inclusive os desativados. O hash da senha nunca é devolvido.
+
+```json
+[
+  { "id": 1, "nome": "Administrador", "email": "admin@lavatech.local", "papel": "admin", "ativo": true, "criado_em": "2026-11-04T19:38:16.251Z" }
+]
+```
+
+`POST /api/funcionarios` cadastra e responde 201 com o funcionário no formato acima.
+
+```json
+{ "nome": "Bruno Souza", "email": "bruno@lavatech.local", "senha": "uma-senha-longa" }
+```
+
+- `nome`: de 2 a 150 caracteres.
+- `email`: e-mail válido, até 150 caracteres. É salvo em minúsculas, e o login também ignora maiúsculas.
+- `senha`: de 8 caracteres até 72 bytes (limite do bcrypt). Só vale no corpo e nunca é devolvida.
+
+`PUT /api/funcionarios/:id` edita e responde 200. O corpo troca todos os campos, e a `senha` é opcional: se vier, redefine a senha, e se não vier, a senha atual continua.
+
+```json
+{ "nome": "Bruno Souza", "email": "bruno@lavatech.local", "ativo": true, "senha": "nova-senha-longa" }
+```
+
+- `ativo`: obrigatório na edição. Não existe rota de exclusão: o funcionário sai do sistema sendo desativado (`"ativo": false`), e o histórico continua apontando para ele.
+- Desativar um funcionário ou redefinir a senha dele encerra as sessões abertas dele na hora. Quando o próprio usuário logado redefine a sua senha, a sessão dele continua.
+
+Erros próprios destas rotas, além do 400 de corpo inválido e do 401 sem sessão:
+
+| Status | Quando |
+|---|---|
+| 404 | `Funcionário não encontrado`, no `PUT` com um `id` que não existe |
+| 409 | `E-mail já cadastrado`, ou `Você não pode desativar a própria conta` |
+
+Ainda não existe uma rota de troca de senha que peça a senha atual: a redefinição é feita pelo `PUT`, por qualquer funcionário logado, inclusive para a própria conta.

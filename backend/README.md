@@ -108,7 +108,7 @@ Toda rota registrada depois do `exigirSessao` em `routes/index.js` responde 401 
 
 Todas as rotas ficam sob `/api`, recebem e devolvem JSON. Os nomes dos campos seguem as colunas do banco, em `snake_case`. Com exceção de `/health` e `/auth/login`, todas vão exigir sessão.
 
-Estão implementadas `/health` e as três rotas de `/auth`. As outras estão aqui para o front-end já saber o que esperar.
+Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`. As outras estão aqui para o front-end já saber o que esperar.
 
 | Método | Rota | Requisito | Para que serve |
 |---|---|---|---|
@@ -139,3 +139,52 @@ Estão implementadas `/health` e as três rotas de `/auth`. As outras estão aqu
 | GET | `/dashboard/administrativo` | RF11 | Indicadores administrativos |
 
 O formato do corpo de cada rota entra neste arquivo junto com o PR que a implementa.
+
+## Clientes e veículos (RF02)
+
+`GET /api/clientes?busca=texto` lista os clientes por ordem de nome, cada um com os seus veículos. Sem `busca`, devolve todos. Com `busca`, devolve quem tem o texto no nome (sem diferenciar maiúsculas), no telefone ou na placa de algum veículo (com ou sem hífen). O telefone é procurado no formato em que fica salvo, `(48) 99988-7766`, então vale digitar um pedaço como `99988`.
+
+```json
+[
+  {
+    "id": 1,
+    "nome": "Marcos Andrade",
+    "telefone": "(48) 90000-0001",
+    "email": null,
+    "criado_em": "2026-11-04T19:38:16.403Z",
+    "veiculos": [
+      { "id": 1, "cliente_id": 1, "placa": "RSD3G21", "marca": "Fiat", "modelo": "Argo", "cor": null }
+    ]
+  }
+]
+```
+
+`POST /api/clientes` e `PUT /api/clientes/:id` recebem o mesmo corpo. O `PUT` troca todos os campos, então o `email` que não vier fica nulo.
+
+```json
+{ "nome": "Ana Paula", "telefone": "48 99988-7766", "email": "ana@exemplo.com" }
+```
+
+- `nome`: de 2 a 150 caracteres.
+- `telefone`: 10 ou 11 dígitos com DDD, com ou sem máscara. É salvo e devolvido como `(48) 99988-7766`.
+- `email`: opcional, em formato de e-mail.
+
+O `POST` responde 201 e o `PUT` responde 200, os dois com o cliente no formato acima.
+
+`GET /api/clientes/:id/veiculos` lista os veículos do cliente. `POST /api/clientes/:id/veiculos` cadastra um e responde 201 com o veículo criado.
+
+```json
+{ "placa": "abc-1d23", "marca": "Fiat", "modelo": "Uno", "cor": "Prata" }
+```
+
+- `placa`: obrigatória, no formato antigo (`ABC1234`) ou Mercosul (`ABC1D23`), com ou sem hífen. É salva em maiúsculas e sem hífen.
+- `marca` e `modelo` (até 50 caracteres) e `cor` (até 30): opcionais.
+
+Erros próprios destas rotas, além do 400 de corpo inválido e do 401 sem sessão:
+
+| Status | Quando |
+|---|---|
+| 404 | `Cliente não encontrado`, no `PUT` e nas rotas de veículos com um `id` que não existe |
+| 409 | `Telefone já cadastrado` ou `Placa já cadastrada` |
+
+Não existe rota para excluir cliente nem para editar um veículo.

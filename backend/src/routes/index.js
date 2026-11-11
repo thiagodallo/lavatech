@@ -3,6 +3,7 @@ import { Router } from 'express'
 import exigirSessao from '../middlewares/exigirSessao.js'
 import authRoutes from './auth.routes.js'
 import clienteRoutes from './cliente.routes.js'
+import funcionarioRoutes from './funcionario.routes.js'
 import healthRoutes from './health.routes.js'
 import produtoRoutes from './produto.routes.js'
 import servicoRoutes from './servico.routes.js'
@@ -15,5 +16,6 @@ rotas.use(exigirSessao)
 rotas.use('/clientes', clienteRoutes)
 rotas.use('/servicos', servicoRoutes)
 rotas.use('/produtos', produtoRoutes)
+rotas.use('/funcionarios', funcionarioRoutes)
 
 export default rotas

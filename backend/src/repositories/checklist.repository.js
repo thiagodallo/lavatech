@@ -6,3 +6,25 @@ export function buscarPorAgendamento(agendamentoId) {
     include: { funcionario: { select: { id: true, nome: true } } },
   })
 }
+
+const COM_DETALHES = {
+  funcionario: { select: { id: true, nome: true } },
+  agendamento: {
+    select: {
+      id: true,
+      data_hora_agendada: true,
+      cliente: { select: { id: true, nome: true } },
+      veiculo: { select: { id: true, modelo: true, placa: true } },
+      servico: { select: { id: true, nome: true } },
+    },
+  },
+}
+
+export function listar({ intervalo, resultado, limite }) {
+  return prisma.checklist_qualidade.findMany({
+    where: { hora_fim: intervalo, resultado },
+    include: COM_DETALHES,
+    orderBy: [{ hora_fim: 'desc' }, { id: 'desc' }],
+    take: limite,
+  })
+}

@@ -59,3 +59,16 @@ export function rotuloCurtoDoItem(campo) {
 export function rotuloDoResultado(valor) {
   return resultadoPorValor[valor]?.rotulo ?? valor
 }
+
+export function ehResultadoValido(valor) {
+  return Object.hasOwn(resultadoPorValor, valor ?? '')
+}
+
+export function contarPorResultado(checklists) {
+  return Object.fromEntries(
+    resultadosDoChecklist.map((resultado) => [
+      resultado.valor,
+      checklists.filter((checklist) => checklist.resultado === resultado.valor).length,
+    ]),
+  )
+}

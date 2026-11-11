@@ -47,7 +47,10 @@ export function listarNaVaga(vagaId, de, ate) {
       status: { notIn: STATUS_QUE_LIBERAM_A_VAGA },
       data_hora_agendada: { gte: de, lt: ate },
     },
-    select: { data_hora_agendada: true, servico: { select: { duracao_minutos: true } } },
+    select: {
+      data_hora_agendada: true,
+      agendamento_servico: { select: { duracao_minutos: true } },
+    },
   })
 }
 
@@ -69,7 +72,7 @@ export function criar({ dados, itens, horario, status, funcionarioId, agora }) {
       data: {
         cliente_id: dados.cliente_id,
         veiculo_id: dados.veiculo_id,
-        servico_id: dados.servico_id,
+        servico_id: itens[0].servico_id,
         vaga_id: dados.vaga_id,
         funcionario_id: funcionarioId,
         data_hora_agendada: horario,

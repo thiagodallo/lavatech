@@ -24,10 +24,19 @@ const horarioComFuso = z.iso
   })
   .transform((texto) => new Date(texto))
 
+export const MAXIMO_DE_SERVICOS = 10
+
+const listaDeServicos = z
+  .array(referencia('Cada serviço deve ser um número inteiro positivo'), 'Informe a lista de serviços')
+  .min(1, 'Informe pelo menos um serviço')
+  .max(MAXIMO_DE_SERVICOS, `Informe no máximo ${MAXIMO_DE_SERVICOS} serviços`)
+  .refine((ids) => new Set(ids).size === ids.length, 'Não repita o mesmo serviço')
+
 export const formatoDoAgendamento = z.object({
   cliente_id: referencia('Informe o cliente'),
   veiculo_id: referencia('Informe o veículo'),
-  servico_id: referencia('Informe o serviço'),
+  servico_ids: listaDeServicos,
+  servico_id: z.never('Use servico_ids, uma lista com os serviços do agendamento').optional(),
   vaga_id: referencia('Informe a vaga'),
   data_hora_agendada: horarioComFuso,
   observacoes: z.string().trim().max(500, 'Observações muito longas').nullish(),

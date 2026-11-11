@@ -7,6 +7,10 @@ export function listar({ ativo } = {}) {
   })
 }
 
+export function listarPorIds(ids) {
+  return prisma.servico.findMany({ where: { id: { in: ids } } })
+}
+
 export function criar({ nome, descricao, preco, duracao_minutos, ativo }) {
   return prisma.servico.create({
     data: { nome, descricao: descricao || null, preco, duracao_minutos, ativo },

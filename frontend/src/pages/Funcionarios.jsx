@@ -1,6 +1,9 @@
+import { Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { listarFuncionarios } from '../api/funcionarios.js'
+import FormularioFuncionario from '../components/FormularioFuncionario.jsx'
+import PainelLateral from '../components/PainelLateral.jsx'
 import { useSessao } from '../contexts/SessaoContext.jsx'
 import './Funcionarios.css'
 
@@ -10,6 +13,7 @@ export default function Funcionarios() {
   const [carregando, setCarregando] = useState(true)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [tentativa, setTentativa] = useState(0)
+  const [painel, setPainel] = useState(null)
 
   useEffect(() => {
     let atual = true
@@ -32,6 +36,11 @@ export default function Funcionarios() {
       atual = false
     }
   }, [tentativa])
+
+  function aoSalvarFuncionario(funcionario) {
+    setPainel({ funcionario })
+    setTentativa((anterior) => anterior + 1)
+  }
 
   function corpoDaLista() {
     if (mensagemDeErro) {
@@ -60,16 +69,20 @@ export default function Funcionarios() {
     return (
       <ul className="funcionarios-itens">
         {funcionarios.map((funcionario) => (
-          <li
-            key={funcionario.id}
-            className={funcionario.ativo ? 'funcionario-linha' : 'funcionario-linha funcionario-inativo'}
-          >
-            <span className="funcionario-nome">
-              {funcionario.nome}
-              {funcionario.id === logado?.id && <span className="funcionario-selo">Você</span>}
-              {!funcionario.ativo && <span className="funcionario-selo">Inativo</span>}
-            </span>
-            <span className="funcionario-email">{funcionario.email}</span>
+          <li key={funcionario.id} className="funcionario-item">
+            <button
+              type="button"
+              className={funcionario.ativo ? 'funcionario-linha' : 'funcionario-linha funcionario-inativo'}
+              aria-current={painel?.funcionario?.id === funcionario.id ? 'true' : undefined}
+              onClick={() => setPainel({ funcionario })}
+            >
+              <span className="funcionario-nome">
+                {funcionario.nome}
+                {funcionario.id === logado?.id && <span className="funcionario-selo">Você</span>}
+                {!funcionario.ativo && <span className="funcionario-selo">Inativo</span>}
+              </span>
+              <span className="funcionario-email">{funcionario.email}</span>
+            </button>
           </li>
         ))}
       </ul>
@@ -80,9 +93,29 @@ export default function Funcionarios() {
     <section>
       <header className="funcionarios-cabecalho">
         <h1 className="titulo-tela">Funcionários</h1>
+        <button type="button" className="botao-primario" onClick={() => setPainel({ funcionario: null })}>
+          <Plus size={16} aria-hidden="true" />
+          Novo funcionário
+        </button>
       </header>
 
-      <div className="funcionarios-lista">{corpoDaLista()}</div>
+      <div className={painel ? 'area-com-painel painel-aberto' : 'area-com-painel'}>
+        <div className="funcionarios-lista">{corpoDaLista()}</div>
+
+        {painel && (
+          <PainelLateral
+            titulo={painel.funcionario ? 'Editar funcionário' : 'Novo funcionário'}
+            aoFechar={() => setPainel(null)}
+          >
+            <FormularioFuncionario
+              key={painel.funcionario?.id ?? 'novo'}
+              funcionario={painel.funcionario}
+              contaPropria={painel.funcionario?.id === logado?.id}
+              aoSalvar={aoSalvarFuncionario}
+            />
+          </PainelLateral>
+        )}
+      </div>
     </section>
   )
 }

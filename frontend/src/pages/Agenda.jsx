@@ -6,6 +6,7 @@ import { listarAgendamentosDoDia, mudarStatusDoAgendamento } from '../api/agenda
 import AlertaDeProximoAtendimento from '../components/AlertaDeProximoAtendimento.jsx'
 import CartaoDeAgendamento from '../components/CartaoDeAgendamento.jsx'
 import DetalhesDoAgendamento from '../components/DetalhesDoAgendamento.jsx'
+import ModalDeChecklist from '../components/ModalDeChecklist.jsx'
 import PainelLateral from '../components/PainelLateral.jsx'
 import SeletorDeDia from '../components/SeletorDeDia.jsx'
 import { dataDeHoje, ehDataValida } from '../formatacao/horario.js'
@@ -25,6 +26,7 @@ export default function Agenda() {
   const [errosPorId, setErrosPorId] = useState({})
   const [versaoDosAlertas, setVersaoDosAlertas] = useState(0)
   const [idSelecionado, setIdSelecionado] = useState(null)
+  const [agendamentoEmConclusao, setAgendamentoEmConclusao] = useState(null)
   const agendamentosDoDia = diaCarregado === data ? agendamentos : []
   const selecionado = agendamentosDoDia.find((agendamento) => agendamento.id === idSelecionado)
 
@@ -65,6 +67,27 @@ export default function Agenda() {
       setIdEmAcao(null)
       setVersaoDosAlertas((anterior) => anterior + 1)
     }
+  }
+
+  function escolherAcao(agendamento, novoStatus) {
+    if (novoStatus === 'concluido') {
+      setAgendamentoEmConclusao(agendamento)
+      return
+    }
+    mudarStatus(agendamento, novoStatus)
+  }
+
+  async function concluirAtendimento(checklist) {
+    const atualizado = await mudarStatusDoAgendamento(agendamentoEmConclusao.id, 'concluido', checklist)
+    setAgendamentos((lista) => lista.map((item) => (item.id === atualizado.id ? atualizado : item)))
+    setAgendamentoEmConclusao(null)
+    setTentativa((anterior) => anterior + 1)
+    setVersaoDosAlertas((anterior) => anterior + 1)
+  }
+
+  function fecharConclusao(recarregar) {
+    setAgendamentoEmConclusao(null)
+    if (recarregar) setTentativa((anterior) => anterior + 1)
   }
 
   function definirErroDoAgendamento(id, mensagem) {
@@ -109,7 +132,7 @@ export default function Agenda() {
             ocupado={idEmAcao === agendamento.id}
             mensagemDeErro={errosPorId[agendamento.id]}
             aoAbrir={() => setIdSelecionado(agendamento.id)}
-            aoMudarStatus={(novoStatus) => mudarStatus(agendamento, novoStatus)}
+            aoMudarStatus={(novoStatus) => escolherAcao(agendamento, novoStatus)}
           />
         ))}
       </ul>
@@ -140,6 +163,14 @@ export default function Agenda() {
           </PainelLateral>
         )}
       </div>
+
+      {agendamentoEmConclusao && (
+        <ModalDeChecklist
+          agendamento={agendamentoEmConclusao}
+          aoConcluir={concluirAtendimento}
+          aoFechar={fecharConclusao}
+        />
+      )}
     </section>
   )
 }

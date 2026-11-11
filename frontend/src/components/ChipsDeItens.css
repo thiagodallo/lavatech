@@ -1,0 +1,17 @@
+.chips-de-itens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip-de-item {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--status-cancelado-fundo);
+  color: var(--status-cancelado-texto);
+  font-size: 12px;
+  font-weight: 500;
+}

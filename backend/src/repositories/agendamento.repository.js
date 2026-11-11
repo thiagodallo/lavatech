@@ -4,6 +4,15 @@ const COM_DETALHES = {
   cliente: { select: { id: true, nome: true } },
   veiculo: { select: { id: true, modelo: true, placa: true } },
   servico: { select: { id: true, nome: true, duracao_minutos: true, preco: true } },
+  agendamento_servico: {
+    select: {
+      servico_id: true,
+      preco: true,
+      duracao_minutos: true,
+      servico: { select: { nome: true } },
+    },
+    orderBy: { id: 'asc' },
+  },
   vaga_lavagem: { select: { id: true, identificacao: true } },
 }
 
@@ -54,7 +63,7 @@ function registrarHistorico(transacao, dados) {
   })
 }
 
-export function criar({ dados, horario, status, funcionarioId, agora }) {
+export function criar({ dados, itens, horario, status, funcionarioId, agora }) {
   return prisma.$transaction(async (transacao) => {
     const agendamento = await transacao.agendamento.create({
       data: {
@@ -67,6 +76,7 @@ export function criar({ dados, horario, status, funcionarioId, agora }) {
         status,
         observacoes: dados.observacoes || null,
         criado_em: agora,
+        agendamento_servico: { create: itens },
       },
       include: COM_DETALHES,
     })

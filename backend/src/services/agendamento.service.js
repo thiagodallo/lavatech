@@ -133,6 +133,14 @@ async function exigirVagaLivre(vagaId, inicio, duracaoEmMinutos) {
   }
 }
 
+function montarItem(servico) {
+  return {
+    servico_id: servico.id,
+    preco: servico.preco,
+    duracao_minutos: servico.duracao_minutos,
+  }
+}
+
 async function gravarAgendamento(dados) {
   try {
     return await agendamentos.criar(dados)
@@ -150,6 +158,7 @@ export async function cadastrarAgendamento(dados, funcionarioId) {
   await exigirVagaLivre(dados.vaga_id, horario, servico.duracao_minutos)
   const criado = await gravarAgendamento({
     dados,
+    itens: [montarItem(servico)],
     horario,
     status: STATUS_INICIAL,
     funcionarioId,

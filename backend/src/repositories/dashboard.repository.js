@@ -21,7 +21,10 @@ export function buscarProximoAtendimento(agora) {
       status: true,
       cliente: { select: { id: true, nome: true } },
       veiculo: { select: { id: true, modelo: true, placa: true } },
-      servico: { select: { id: true, nome: true } },
+      agendamento_servico: {
+        select: { servico_id: true, servico: { select: { nome: true } } },
+        orderBy: { id: 'asc' },
+      },
       vaga_lavagem: { select: { id: true, identificacao: true } },
     },
   })

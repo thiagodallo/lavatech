@@ -13,6 +13,7 @@ import {
   cadastrarAgendamento,
   listarAgendaDoDia,
   listarAlertas,
+  listarHistoricoDoAgendamento,
   mudarStatusDoAgendamento,
 } from '../services/agendamento.service.js'
 
@@ -40,6 +41,11 @@ agendamentoRoutes.post('/', validarCorpo(formatoDoAgendamento), async (req, res)
 agendamentoRoutes.patch('/:id/status', validarCorpo(formatoDaMudancaDeStatus), async (req, res) => {
   const id = identificador.parse(req.params.id)
   res.json(await mudarStatusDoAgendamento(id, req.body.status, req.session.funcionarioId))
+})
+
+agendamentoRoutes.get('/:id/historico', async (req, res) => {
+  const id = identificador.parse(req.params.id)
+  res.json(await listarHistoricoDoAgendamento(id))
 })
 
 export default agendamentoRoutes

@@ -1,4 +1,4 @@
-import { Calendar, ClipboardCheck, Droplets, LayoutDashboard, Package, Users } from 'lucide-react'
+import { Calendar, ClipboardCheck, Droplets, LayoutDashboard, Package, UserCog, Users } from 'lucide-react'
 
 export const itensDoMenu = [
   { caminho: '/agenda', rotulo: 'Agenda', Icone: Calendar },
@@ -7,4 +7,5 @@ export const itensDoMenu = [
   { caminho: '/catalogo', rotulo: 'Serviços', Icone: Droplets },
   { caminho: '/estoque', rotulo: 'Estoque', Icone: Package },
   { caminho: '/qualidade', rotulo: 'Qualidade', Icone: ClipboardCheck },
+  { caminho: '/funcionarios', rotulo: 'Funcionários', Icone: UserCog },
 ]

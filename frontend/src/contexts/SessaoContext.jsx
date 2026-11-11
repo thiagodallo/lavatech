@@ -32,8 +32,12 @@ export function SessaoProvider({ children }) {
     setFuncionario(null)
   }
 
+  function atualizarFuncionario(dados) {
+    setFuncionario((atual) => ({ ...atual, ...dados }))
+  }
+
   return (
-    <SessaoContext value={{ funcionario, carregando, entrar, sair }}>
+    <SessaoContext value={{ funcionario, carregando, entrar, sair, atualizarFuncionario }}>
       {children}
     </SessaoContext>
   )

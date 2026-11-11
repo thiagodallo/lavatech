@@ -1,0 +1,90 @@
+.funcionarios-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.funcionarios-cabecalho .titulo-tela {
+  margin: 0;
+}
+
+.funcionarios-lista {
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+  overflow: hidden;
+}
+
+.funcionarios-estado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
+  padding: 16px;
+}
+
+.funcionarios-estado p {
+  margin: 0;
+}
+
+.funcionarios-itens {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.funcionario-item + .funcionario-item {
+  border-top: 1px solid var(--cor-linha);
+}
+
+.funcionario-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+}
+
+.funcionario-linha:hover,
+.funcionario-linha[aria-current='true'] {
+  background: var(--cor-superficie);
+}
+
+.funcionario-inativo {
+  opacity: 0.6;
+}
+
+.funcionario-nome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-weight: 500;
+}
+
+.funcionario-selo {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--status-agendado-fundo);
+  color: var(--status-agendado-texto);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.funcionario-email {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-mono);
+  font-size: 12px;
+}

@@ -10,6 +10,7 @@ import * as clientes from '../repositories/cliente.repository.js'
 import * as servicos from '../repositories/servico.repository.js'
 import * as vagas from '../repositories/vaga.repository.js'
 import * as veiculos from '../repositories/veiculo.repository.js'
+import { ITENS_DO_CHECKLIST } from '../schemas/checklist.schema.js'
 
 const AGENDAMENTO_NAO_ENCONTRADO = 'Agendamento não encontrado'
 const CLIENTE_NAO_ENCONTRADO = 'Cliente não encontrado'
@@ -20,6 +21,7 @@ const VAGA_NAO_ENCONTRADA = 'Vaga não encontrada'
 const VAGA_INATIVA = 'Vaga inativa'
 const VAGA_OCUPADA = 'Vaga ocupada nesse horário'
 const STATUS_INICIAL = 'agendado'
+const RESULTADO_APROVADO = 'aprovado'
 const MAIOR_DURACAO_EM_MINUTOS = 720
 const REGISTRO_DUPLICADO = 'P2002'
 const TRANSICAO_NEGADA = 'Transição de status não permitida'
@@ -156,17 +158,36 @@ export async function cadastrarAgendamento(dados, funcionarioId) {
   return formatarAgendamento(criado)
 }
 
-export async function mudarStatusDoAgendamento(id, statusNovo, funcionarioId) {
-  const { status: statusAnterior } = await exigirAgendamento(id)
+function montarChecklist(checklist, agendamento, agora) {
+  if (!checklist) {
+    return undefined
+  }
+  const itens = Object.fromEntries(ITENS_DO_CHECKLIST.map((item) => [item, checklist[item]]))
+  return {
+    ...itens,
+    resultado: checklist.resultado,
+    descricao_problema: checklist.descricao_problema || null,
+    houve_problema: checklist.resultado !== RESULTADO_APROVADO,
+    necessita_retrabalho: checklist.necessita_retrabalho ?? false,
+    hora_inicio: agendamento.data_hora_inicio,
+    hora_fim: agora,
+  }
+}
+
+export async function mudarStatusDoAgendamento(id, statusNovo, funcionarioId, checklist) {
+  const agendamento = await exigirAgendamento(id)
+  const statusAnterior = agendamento.status
   if (!TRANSICOES_PERMITIDAS[statusAnterior].includes(statusNovo)) {
     throw new ErroDeAplicacao(409, `${TRANSICAO_NEGADA}: de ${statusAnterior} para ${statusNovo}`)
   }
+  const agora = relogioDoBanco(new Date())
   const atualizado = await agendamentos.mudarStatus({
     id,
     statusAnterior,
     statusNovo,
     funcionarioId,
-    agora: relogioDoBanco(new Date()),
+    agora,
+    checklist: montarChecklist(checklist, agendamento, agora),
   })
   if (!atualizado) {
     throw new ErroDeAplicacao(409, STATUS_JA_ALTERADO)

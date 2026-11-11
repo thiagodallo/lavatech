@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { formatoDoChecklist } from './checklist.schema.js'
+
 export const STATUS_DO_AGENDAMENTO = [
   'agendado',
   'aguardando',
@@ -31,9 +33,30 @@ export const formatoDoAgendamento = z.object({
   observacoes: z.string().trim().max(500, 'Observações muito longas').nullish(),
 })
 
-export const formatoDaMudancaDeStatus = z.object({
-  status: statusValido,
-})
+function conferirChecklistDoStatus(corpo, contexto) {
+  const conclui = corpo.status === 'concluido'
+  if (conclui && !corpo.checklist) {
+    contexto.addIssue({
+      code: 'custom',
+      path: ['checklist'],
+      message: 'Informe o checklist de qualidade para concluir o atendimento',
+    })
+  }
+  if (!conclui && corpo.checklist) {
+    contexto.addIssue({
+      code: 'custom',
+      path: ['checklist'],
+      message: 'O checklist só é aceito ao concluir o atendimento',
+    })
+  }
+}
+
+export const formatoDaMudancaDeStatus = z
+  .object({
+    status: statusValido,
+    checklist: formatoDoChecklist.optional(),
+  })
+  .superRefine(conferirChecklistDoStatus)
 
 export const formatoDaAgenda = z.object({
   data: z.iso.date('Data inválida, use AAAA-MM-DD').optional(),

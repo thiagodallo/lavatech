@@ -42,3 +42,43 @@ export async function contarVagasEmUso() {
       (SELECT COUNT(*)::int FROM vaga_lavagem WHERE ativo) AS total`
   return { em_uso, total }
 }
+
+export async function somarFaturamento(de, ate) {
+  const [resumo] = await prisma.$queryRaw`
+    SELECT COALESCE(SUM(valor), 0) AS faturamento, COUNT(*)::int AS pagamentos
+    FROM pagamento
+    WHERE status = 'pago'
+      AND pago_em >= ${de}::date AND pago_em < ${ate}::date + 1`
+  return resumo
+}
+
+export function listarFaturamentoPorForma(de, ate) {
+  return prisma.$queryRaw`
+    SELECT forma_pagamento, SUM(valor) AS faturamento, COUNT(*)::int AS pagamentos
+    FROM pagamento
+    WHERE status = 'pago'
+      AND pago_em >= ${de}::date AND pago_em < ${ate}::date + 1
+    GROUP BY forma_pagamento`
+}
+
+export function listarFaturamentoPorDia(de, ate) {
+  return prisma.$queryRaw`
+    SELECT to_char(pago_em, 'YYYY-MM-DD') AS dia, SUM(valor) AS faturamento, COUNT(*)::int AS pagamentos
+    FROM pagamento
+    WHERE status = 'pago'
+      AND pago_em >= ${de}::date AND pago_em < ${ate}::date + 1
+    GROUP BY 1`
+}
+
+export function listarServicosMaisVendidos(de, ate, limite) {
+  return prisma.$queryRaw`
+    SELECT s.id AS servico_id, s.nome, COUNT(*)::int AS quantidade, COALESCE(SUM(p.valor), 0) AS receita
+    FROM agendamento a
+    JOIN servico s ON s.id = a.servico_id
+    LEFT JOIN pagamento p ON p.agendamento_id = a.id AND p.status = 'pago'
+    WHERE a.status = 'concluido'
+      AND a.data_hora_agendada >= ${de}::date AND a.data_hora_agendada < ${ate}::date + 1
+    GROUP BY s.id, s.nome
+    ORDER BY quantidade DESC, receita DESC, s.nome
+    LIMIT ${limite}`
+}

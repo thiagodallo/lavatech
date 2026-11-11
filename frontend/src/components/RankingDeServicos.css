@@ -1,0 +1,42 @@
+.ranking-de-servicos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: posicao;
+}
+
+.ranking-de-servicos li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--cor-linha);
+  counter-increment: posicao;
+}
+
+.ranking-de-servicos li:last-child {
+  border-bottom: 0;
+}
+
+.ranking-nome::before {
+  content: counter(posicao);
+  display: inline-block;
+  width: 20px;
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-mono);
+  font-size: 12px;
+}
+
+.ranking-quantidade {
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-mono);
+  font-size: 13px;
+}
+
+.ranking-receita {
+  min-width: 88px;
+  font-family: var(--fonte-mono);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+}

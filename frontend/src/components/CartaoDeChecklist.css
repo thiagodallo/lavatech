@@ -6,11 +6,21 @@
 
 .cartao-checklist-corpo {
   display: flex;
+  border: 0;
+  border-radius: var(--raio-medio);
+  background: none;
+  color: inherit;
+  text-align: left;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 8px 16px;
   width: 100%;
   padding: 14px 16px;
+}
+
+.cartao-checklist-corpo:hover,
+.cartao-checklist-corpo[aria-current='true'] {
+  background: var(--cor-superficie);
 }
 
 .cartao-checklist-hora {

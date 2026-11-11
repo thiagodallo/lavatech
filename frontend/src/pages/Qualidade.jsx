@@ -3,7 +3,9 @@ import { useSearchParams } from 'react-router'
 
 import { listarChecklists } from '../api/checklists.js'
 import CartaoDeChecklist from '../components/CartaoDeChecklist.jsx'
+import DetalhesDoChecklist from '../components/DetalhesDoChecklist.jsx'
 import FiltroDeResultado from '../components/FiltroDeResultado.jsx'
+import PainelLateral from '../components/PainelLateral.jsx'
 import ResumoDeResultados from '../components/ResumoDeResultados.jsx'
 import SeletorDeDia from '../components/SeletorDeDia.jsx'
 import { contarPorResultado, ehResultadoValido } from '../dominio/checklistDeQualidade.js'
@@ -20,12 +22,16 @@ export default function Qualidade() {
   const [carregando, setCarregando] = useState(true)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [tentativa, setTentativa] = useState(0)
+  const [idSelecionado, setIdSelecionado] = useState(null)
   const resultadoDaUrl = parametros.get('resultado')
   const resultado = ehResultadoValido(resultadoDaUrl) ? resultadoDaUrl : ''
   const checklistsDoDia = diaCarregado === data ? checklists : []
   const checklistsFiltrados = resultado
     ? checklistsDoDia.filter((checklist) => checklist.resultado === resultado)
     : checklistsDoDia
+  const selecionado = checklistsFiltrados.find(
+    (checklist) => checklist.agendamento.id === idSelecionado,
+  )
 
   useEffect(() => {
     let atual = true
@@ -89,7 +95,12 @@ export default function Qualidade() {
     return (
       <ul className="qualidade-itens">
         {checklistsFiltrados.map((checklist) => (
-          <CartaoDeChecklist key={checklist.id} checklist={checklist} />
+          <CartaoDeChecklist
+            key={checklist.id}
+            checklist={checklist}
+            selecionado={selecionado?.id === checklist.id}
+            aoAbrir={() => setIdSelecionado(checklist.agendamento.id)}
+          />
         ))}
       </ul>
     )
@@ -107,7 +118,18 @@ export default function Qualidade() {
 
       <ResumoDeResultados contagens={contarPorResultado(checklistsDoDia)} />
 
-      <div className="qualidade-lista">{corpoDaLista()}</div>
+      <div className={selecionado ? 'area-com-painel painel-aberto' : 'area-com-painel'}>
+        <div className="qualidade-lista">{corpoDaLista()}</div>
+
+        {selecionado && (
+          <PainelLateral
+            titulo={selecionado.agendamento.cliente.nome}
+            aoFechar={() => setIdSelecionado(null)}
+          >
+            <DetalhesDoChecklist agendamentoId={selecionado.agendamento.id} />
+          </PainelLateral>
+        )}
+      </div>
     </section>
   )
 }

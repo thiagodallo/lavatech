@@ -11,3 +11,7 @@ export function cadastrarServico(dados) {
 export function editarServico(id, dados) {
   return requisitar(`/servicos/${id}`, { metodo: 'PUT', corpo: dados })
 }
+
+export function listarServicosAtivos() {
+  return requisitar('/servicos?ativo=true')
+}

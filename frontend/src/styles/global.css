@@ -92,3 +92,8 @@ button {
     transition: none;
   }
 }
+
+a.botao-primario,
+a.botao-secundario {
+  text-decoration: none;
+}

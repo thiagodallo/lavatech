@@ -37,17 +37,27 @@
   list-style: none;
 }
 
+.funcionario-item + .funcionario-item {
+  border-top: 1px solid var(--cor-linha);
+}
+
 .funcionario-linha {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 4px 12px;
+  width: 100%;
   padding: 12px 16px;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
 }
 
-.funcionario-linha + .funcionario-linha {
-  border-top: 1px solid var(--cor-linha);
+.funcionario-linha:hover,
+.funcionario-linha[aria-current='true'] {
+  background: var(--cor-superficie);
 }
 
 .funcionario-inativo {
@@ -72,6 +82,8 @@
 }
 
 .funcionario-email {
+  min-width: 0;
+  overflow-wrap: anywhere;
   color: var(--cor-texto-suave);
   font-family: var(--fonte-mono);
   font-size: 12px;

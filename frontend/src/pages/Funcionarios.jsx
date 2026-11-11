@@ -8,7 +8,7 @@ import { useSessao } from '../contexts/SessaoContext.jsx'
 import './Funcionarios.css'
 
 export default function Funcionarios() {
-  const { funcionario: logado } = useSessao()
+  const { funcionario: logado, atualizarFuncionario } = useSessao()
   const [funcionarios, setFuncionarios] = useState([])
   const [carregando, setCarregando] = useState(true)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
@@ -38,6 +38,7 @@ export default function Funcionarios() {
   }, [tentativa])
 
   function aoSalvarFuncionario(funcionario) {
+    if (funcionario.id === logado?.id) atualizarFuncionario(funcionario)
     setPainel({ funcionario })
     setTentativa((anterior) => anterior + 1)
   }

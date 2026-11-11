@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import SecaoFinanceira from '../components/SecaoFinanceira.jsx'
 import SecaoOperacional from '../components/SecaoOperacional.jsx'
 import SeletorDePeriodo from '../components/SeletorDePeriodo.jsx'
 import { dataDeHoje, somarDias } from '../formatacao/horario.js'
@@ -16,6 +17,7 @@ export default function Dashboard() {
         <SeletorDePeriodo periodo={periodo} hoje={hoje} aoMudar={setPeriodo} />
       </header>
       <SecaoOperacional hoje={hoje} />
+      <SecaoFinanceira periodo={periodo} />
     </section>
   )
 }

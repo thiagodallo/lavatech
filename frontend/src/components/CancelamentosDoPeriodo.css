@@ -1,0 +1,5 @@
+.cancelamentos-do-periodo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+}

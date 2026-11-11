@@ -1,0 +1,11 @@
+.numeros-do-financeiro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px 40px;
+}
+
+.numero-destaque {
+  display: flex;
+  flex-direction: column;
+}

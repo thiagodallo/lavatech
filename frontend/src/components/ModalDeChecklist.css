@@ -65,6 +65,13 @@
   border-top: 1px solid var(--cor-linha);
 }
 
+.modal-checklist-erros {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  list-style: none;
+}
+
 @keyframes modal-checklist-entrada {
   from {
     opacity: 0;

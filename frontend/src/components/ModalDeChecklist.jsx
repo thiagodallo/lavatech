@@ -19,7 +19,8 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
   const [descricao, setDescricao] = useState('')
   const [precisaRetrabalho, setPrecisaRetrabalho] = useState(false)
   const [tentouEnviar, setTentouEnviar] = useState(false)
-  const [mensagemDeErro, setMensagemDeErro] = useState('')
+  const [mensagensDaApi, setMensagensDaApi] = useState([])
+  const [houveConflito, setHouveConflito] = useState(false)
   const [enviando, setEnviando] = useState(false)
   const dialogo = useRef(null)
   const origem = useRef(document.activeElement)
@@ -54,7 +55,7 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
 
   async function enviarChecklist(evento) {
     evento.preventDefault()
-    setMensagemDeErro('')
+    setMensagensDaApi([])
     setTentouEnviar(true)
 
     if (Object.keys(erros).length > 0) {
@@ -66,7 +67,8 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
     try {
       await aoConcluir(montarChecklist())
     } catch (erro) {
-      setMensagemDeErro(erro.message)
+      setHouveConflito(erro.status === 409)
+      setMensagensDaApi(erro.campos?.checklist ?? [erro.message])
     } finally {
       setEnviando(false)
     }
@@ -78,7 +80,7 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
       className="modal-checklist"
       aria-labelledby="modal-checklist-titulo"
       onCancel={impedirFechamentoEnviando}
-      onClose={() => aoFechar()}
+      onClose={() => aoFechar(houveConflito)}
     >
       <form className="modal-checklist-formulario" onSubmit={enviarChecklist} noValidate>
         <header className="modal-checklist-cabecalho">
@@ -131,13 +133,15 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
         </div>
 
         <footer className="modal-checklist-rodape">
-          {mensagemDeErro && (
-            <p className="formulario-erro" role="alert">
-              {mensagemDeErro}
-            </p>
+          {mensagensDaApi.length > 0 && (
+            <ul className="formulario-erro modal-checklist-erros" role="alert">
+              {mensagensDaApi.map((mensagem) => (
+                <li key={mensagem}>{mensagem}</li>
+              ))}
+            </ul>
           )}
           <div className="formulario-acoes">
-            <button type="submit" className="botao-primario" disabled={enviando}>
+            <button type="submit" className="botao-primario" disabled={enviando || houveConflito}>
               {enviando ? 'Concluindo' : 'Concluir atendimento'}
             </button>
             <button

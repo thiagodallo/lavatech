@@ -25,3 +25,11 @@ export function criar({ nome, email, senhaHash, papel }) {
     select: CAMPOS_PUBLICOS,
   })
 }
+
+export function atualizar(id, { nome, email, ativo, senhaHash }) {
+  return prisma.funcionario.update({
+    where: { id },
+    data: { nome, email, ativo, ...(senhaHash && { senha_hash: senhaHash }) },
+    select: CAMPOS_PUBLICOS,
+  })
+}

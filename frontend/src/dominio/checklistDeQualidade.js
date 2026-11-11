@@ -81,3 +81,15 @@ export function resultadoSugerido(itens) {
   const todosConformes = itensDoChecklist.every((item) => itens[item.campo])
   return todosConformes ? 'aprovado' : 'aprovado_com_ressalva'
 }
+
+export function validarChecklist({ itens, resultado, descricao }) {
+  const erros = {}
+  const todosConformes = itensDoChecklist.every((item) => itens[item.campo])
+  if (resultado === 'aprovado' && !todosConformes) {
+    erros.resultado = 'Resultado aprovado exige todos os itens conformes'
+  }
+  if (resultado !== 'aprovado' && !descricao.trim()) {
+    erros.descricao_problema = 'Descreva o problema quando o resultado não for aprovado'
+  }
+  return erros
+}

@@ -4,16 +4,30 @@ import {
   itensDoChecklist,
   itensTodosConformes,
   resultadoSugerido,
+  validarChecklist,
 } from '../dominio/checklistDeQualidade.js'
+import CampoDeAreaDeTexto from './CampoDeAreaDeTexto.jsx'
 import ItemDoChecklist from './ItemDoChecklist.jsx'
+import SeletorDeResultado from './SeletorDeResultado.jsx'
 import './ModalDeChecklist.css'
+
+const MAIOR_DESCRICAO = 1000
 
 export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) {
   const [itens, setItens] = useState(itensTodosConformes)
+  const [resultadoEscolhido, setResultadoEscolhido] = useState(null)
+  const [descricao, setDescricao] = useState('')
+  const [precisaRetrabalho, setPrecisaRetrabalho] = useState(false)
+  const [tentouEnviar, setTentouEnviar] = useState(false)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [enviando, setEnviando] = useState(false)
   const dialogo = useRef(null)
   const origem = useRef(document.activeElement)
+
+  const resultado = resultadoEscolhido ?? resultadoSugerido(itens)
+  const reprovado = resultado === 'reprovado'
+  const comProblema = resultado !== 'aprovado'
+  const erros = validarChecklist({ itens, resultado, descricao })
 
   useEffect(() => {
     const elemento = dialogo.current
@@ -32,12 +46,25 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
     if (enviando) evento.preventDefault()
   }
 
+  function montarChecklist() {
+    const checklist = { ...itens, resultado, necessita_retrabalho: reprovado && precisaRetrabalho }
+    if (comProblema) checklist.descricao_problema = descricao.trim()
+    return checklist
+  }
+
   async function enviarChecklist(evento) {
     evento.preventDefault()
     setMensagemDeErro('')
+    setTentouEnviar(true)
+
+    if (Object.keys(erros).length > 0) {
+      if (erros.descricao_problema) document.getElementById('checklist-descricao').focus()
+      return
+    }
+
     setEnviando(true)
     try {
-      await aoConcluir({ ...itens, resultado: resultadoSugerido(itens) })
+      await aoConcluir(montarChecklist())
     } catch (erro) {
       setMensagemDeErro(erro.message)
     } finally {
@@ -53,7 +80,7 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
       onCancel={impedirFechamentoEnviando}
       onClose={() => aoFechar()}
     >
-      <form className="modal-checklist-formulario" onSubmit={enviarChecklist}>
+      <form className="modal-checklist-formulario" onSubmit={enviarChecklist} noValidate>
         <header className="modal-checklist-cabecalho">
           <h2 className="modal-checklist-titulo" id="modal-checklist-titulo">
             Checklist de qualidade
@@ -73,6 +100,34 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
               aoEscolher={(conforme) => escolherItem(item.campo, conforme)}
             />
           ))}
+
+          <SeletorDeResultado
+            valor={resultado}
+            erro={erros.resultado}
+            aoEscolher={setResultadoEscolhido}
+          />
+
+          {comProblema && (
+            <CampoDeAreaDeTexto
+              id="checklist-descricao"
+              rotulo="Descrição do problema"
+              maxLength={MAIOR_DESCRICAO}
+              value={descricao}
+              erro={tentouEnviar ? erros.descricao_problema : undefined}
+              onChange={(evento) => setDescricao(evento.target.value)}
+            />
+          )}
+
+          {reprovado && (
+            <label className="campo-caixa">
+              <input
+                type="checkbox"
+                checked={precisaRetrabalho}
+                onChange={(evento) => setPrecisaRetrabalho(evento.target.checked)}
+              />
+              Necessita retrabalho
+            </label>
+          )}
         </div>
 
         <footer className="modal-checklist-rodape">

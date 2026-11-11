@@ -7,3 +7,7 @@ export function listarAtivas() {
     orderBy: { id: 'asc' },
   })
 }
+
+export function buscarPorId(id) {
+  return prisma.vaga_lavagem.findUnique({ where: { id } })
+}

@@ -85,6 +85,11 @@ export default function Agenda() {
     setVersaoDosAlertas((anterior) => anterior + 1)
   }
 
+  function fecharConclusao(recarregar) {
+    setAgendamentoEmConclusao(null)
+    if (recarregar) setTentativa((anterior) => anterior + 1)
+  }
+
   function definirErroDoAgendamento(id, mensagem) {
     setErrosPorId((erros) => ({ ...erros, [id]: mensagem }))
   }
@@ -163,7 +168,7 @@ export default function Agenda() {
         <ModalDeChecklist
           agendamento={agendamentoEmConclusao}
           aoConcluir={concluirAtendimento}
-          aoFechar={() => setAgendamentoEmConclusao(null)}
+          aoFechar={fecharConclusao}
         />
       )}
     </section>

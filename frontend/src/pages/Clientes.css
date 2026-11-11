@@ -1,0 +1,103 @@
+.clientes-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.clientes-cabecalho .titulo-tela {
+  margin: 0;
+}
+
+.clientes-busca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-cartao);
+  color: var(--cor-texto-suave);
+}
+
+.clientes-busca:focus-within {
+  outline: 2px solid var(--cor-alerta);
+  outline-offset: 2px;
+}
+
+.clientes-busca input {
+  width: 220px;
+  border: 0;
+  outline: none;
+  background: none;
+  color: var(--cor-texto);
+  font: inherit;
+}
+
+.clientes-lista {
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+  overflow: hidden;
+}
+
+.clientes-estado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
+  padding: 16px;
+}
+
+.clientes-estado p {
+  margin: 0;
+}
+
+.clientes-itens {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cliente-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 12px 16px;
+}
+
+.cliente-linha + .cliente-linha {
+  border-top: 1px solid var(--cor-linha);
+}
+
+.cliente-nome {
+  flex: 1 1 160px;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.cliente-placas {
+  display: flex;
+  gap: 6px;
+}
+
+.placa {
+  padding: 2px 6px;
+  border: 1px solid var(--cor-linha);
+  border-radius: 6px;
+  background: var(--cor-superficie);
+  font-family: var(--fonte-mono);
+  font-size: 11px;
+}
+
+.cliente-telefone {
+  min-width: 116px;
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-mono);
+  font-size: 12px;
+}

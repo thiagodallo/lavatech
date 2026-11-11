@@ -36,3 +36,50 @@ button {
   margin: 0;
   color: var(--cor-texto-suave);
 }
+
+.botao-primario,
+.botao-secundario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: var(--raio-pequeno);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.botao-primario {
+  border: 0;
+  background: var(--cor-marca);
+  color: #ffffff;
+}
+
+.botao-primario:hover:not(:disabled) {
+  background: var(--cor-marca-escura);
+}
+
+.botao-secundario {
+  border: 1px solid var(--cor-linha);
+  background: var(--cor-cartao);
+  color: var(--cor-texto);
+}
+
+.botao-secundario:hover:not(:disabled) {
+  background: var(--cor-superficie);
+}
+
+.botao-primario:disabled,
+.botao-secundario:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .botao-primario,
+  .botao-secundario {
+    transition: none;
+  }
+}

@@ -38,3 +38,8 @@ export async function registrarMovimentacao(dados, funcionarioId) {
     saldo_atual: Number(registrada.saldoAtual),
   }
 }
+
+export async function listarMovimentacoes({ produto_id, limite }) {
+  const encontradas = await movimentacoes.listar({ produtoId: produto_id, limite })
+  return encontradas.map(formatarMovimentacao)
+}

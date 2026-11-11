@@ -31,3 +31,7 @@ export function dataDoTexto(texto) {
 export function montarHorarioParaEnviar(data, hora) {
   return `${data}T${hora}:00-03:00`
 }
+
+export function primeiroDiaDoMes(data) {
+  return `${data.slice(0, 8)}01`
+}

@@ -16,6 +16,10 @@ function contagemPorStatus(grupos) {
   return contagem
 }
 
+function formatarServicosDoProximo(itens) {
+  return itens.map((item) => ({ id: item.servico_id, nome: item.servico.nome }))
+}
+
 function formatarProximoAtendimento(proximo) {
   if (!proximo) {
     return null
@@ -26,7 +30,7 @@ function formatarProximoAtendimento(proximo) {
     status: proximo.status,
     cliente: proximo.cliente,
     veiculo: proximo.veiculo,
-    servico: proximo.servico,
+    servicos: formatarServicosDoProximo(proximo.agendamento_servico),
     vaga: proximo.vaga_lavagem,
   }
 }

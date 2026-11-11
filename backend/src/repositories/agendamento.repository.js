@@ -3,7 +3,15 @@ import prisma from '../database/prisma.js'
 const COM_DETALHES = {
   cliente: { select: { id: true, nome: true } },
   veiculo: { select: { id: true, modelo: true, placa: true } },
-  servico: { select: { id: true, nome: true, duracao_minutos: true, preco: true } },
+  agendamento_servico: {
+    select: {
+      servico_id: true,
+      preco: true,
+      duracao_minutos: true,
+      servico: { select: { nome: true } },
+    },
+    orderBy: { id: 'asc' },
+  },
   vaga_lavagem: { select: { id: true, identificacao: true } },
 }
 
@@ -38,7 +46,10 @@ export function listarNaVaga(vagaId, de, ate) {
       status: { notIn: STATUS_QUE_LIBERAM_A_VAGA },
       data_hora_agendada: { gte: de, lt: ate },
     },
-    select: { data_hora_agendada: true, servico: { select: { duracao_minutos: true } } },
+    select: {
+      data_hora_agendada: true,
+      agendamento_servico: { select: { duracao_minutos: true } },
+    },
   })
 }
 
@@ -54,19 +65,19 @@ function registrarHistorico(transacao, dados) {
   })
 }
 
-export function criar({ dados, horario, status, funcionarioId, agora }) {
+export function criar({ dados, itens, horario, status, funcionarioId, agora }) {
   return prisma.$transaction(async (transacao) => {
     const agendamento = await transacao.agendamento.create({
       data: {
         cliente_id: dados.cliente_id,
         veiculo_id: dados.veiculo_id,
-        servico_id: dados.servico_id,
         vaga_id: dados.vaga_id,
         funcionario_id: funcionarioId,
         data_hora_agendada: horario,
         status,
         observacoes: dados.observacoes || null,
         criado_em: agora,
+        agendamento_servico: { create: itens },
       },
       include: COM_DETALHES,
     })

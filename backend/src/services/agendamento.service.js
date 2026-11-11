@@ -10,7 +10,9 @@ import * as clientes from '../repositories/cliente.repository.js'
 import * as servicos from '../repositories/servico.repository.js'
 import * as vagas from '../repositories/vaga.repository.js'
 import * as veiculos from '../repositories/veiculo.repository.js'
+import { MAXIMO_DE_SERVICOS } from '../schemas/agendamento.schema.js'
 import { ITENS_DO_CHECKLIST } from '../schemas/checklist.schema.js'
+import { DURACAO_MAXIMA_EM_MINUTOS } from '../schemas/servico.schema.js'
 
 const AGENDAMENTO_NAO_ENCONTRADO = 'Agendamento não encontrado'
 const CLIENTE_NAO_ENCONTRADO = 'Cliente não encontrado'
@@ -22,7 +24,7 @@ const VAGA_INATIVA = 'Vaga inativa'
 const VAGA_OCUPADA = 'Vaga ocupada nesse horário'
 const STATUS_INICIAL = 'agendado'
 const RESULTADO_APROVADO = 'aprovado'
-const MAIOR_DURACAO_EM_MINUTOS = 720
+const MAIOR_DURACAO_EM_MINUTOS = MAXIMO_DE_SERVICOS * DURACAO_MAXIMA_EM_MINUTOS
 const REGISTRO_DUPLICADO = 'P2002'
 const TRANSICAO_NEGADA = 'Transição de status não permitida'
 const STATUS_JA_ALTERADO = 'O status do agendamento acabou de ser alterado, atualize a agenda'
@@ -45,9 +47,28 @@ function somarMinutos(horario, minutos) {
   return new Date(horario.getTime() + minutos * MS_POR_MINUTO)
 }
 
+function somarDuracoes(itens) {
+  return itens.reduce((soma, item) => soma + item.duracao_minutos, 0)
+}
+
+function formatarServico(item) {
+  return {
+    id: item.servico_id,
+    nome: item.servico.nome,
+    duracao_minutos: item.duracao_minutos,
+    preco: Number(item.preco),
+  }
+}
+
+function somarPrecos(itens) {
+  const totalEmCentavos = itens.reduce((soma, item) => soma + Math.round(Number(item.preco) * 100), 0)
+  return totalEmCentavos / 100
+}
+
 function formatarAgendamento(agendamento) {
-  const { servico } = agendamento
-  const fimPrevisto = somarMinutos(agendamento.data_hora_agendada, servico.duracao_minutos)
+  const itens = agendamento.agendamento_servico
+  const duracaoTotal = somarDuracoes(itens)
+  const fimPrevisto = somarMinutos(agendamento.data_hora_agendada, duracaoTotal)
   return {
     id: agendamento.id,
     data_hora_agendada: formatarHorario(agendamento.data_hora_agendada),
@@ -58,7 +79,9 @@ function formatarAgendamento(agendamento) {
     observacoes: agendamento.observacoes,
     cliente: agendamento.cliente,
     veiculo: agendamento.veiculo,
-    servico: { ...servico, preco: Number(servico.preco) },
+    servicos: itens.map(formatarServico),
+    duracao_total_minutos: duracaoTotal,
+    preco_total: somarPrecos(itens),
     vaga: agendamento.vaga_lavagem,
   }
 }
@@ -96,7 +119,21 @@ export async function buscarAgendamento(id) {
   return formatarAgendamento(await exigirAgendamento(id))
 }
 
-async function exigirReferenciasValidas({ cliente_id, veiculo_id, servico_id, vaga_id }) {
+async function exigirServicosValidos(ids) {
+  const encontrados = await servicos.listarPorIds(ids)
+  const porId = new Map(encontrados.map((servico) => [servico.id, servico]))
+  const ausente = ids.find((id) => !porId.has(id))
+  if (ausente !== undefined) {
+    throw new ErroDeAplicacao(404, `${SERVICO_NAO_ENCONTRADO}: ${ausente}`)
+  }
+  const inativo = ids.find((id) => !porId.get(id).ativo)
+  if (inativo !== undefined) {
+    throw new ErroDeAplicacao(400, `${SERVICO_INATIVO}: ${inativo}`)
+  }
+  return ids.map((id) => porId.get(id))
+}
+
+async function exigirReferenciasValidas({ cliente_id, veiculo_id, servico_ids, vaga_id }) {
   if (!(await clientes.buscarPorId(cliente_id))) {
     throw new ErroDeAplicacao(404, CLIENTE_NAO_ENCONTRADO)
   }
@@ -104,13 +141,7 @@ async function exigirReferenciasValidas({ cliente_id, veiculo_id, servico_id, va
   if (!veiculosDoCliente.some((veiculo) => veiculo.id === veiculo_id)) {
     throw new ErroDeAplicacao(400, VEICULO_FORA_DO_CLIENTE)
   }
-  const servico = await servicos.buscarPorId(servico_id)
-  if (!servico) {
-    throw new ErroDeAplicacao(404, SERVICO_NAO_ENCONTRADO)
-  }
-  if (!servico.ativo) {
-    throw new ErroDeAplicacao(400, SERVICO_INATIVO)
-  }
+  const servicosValidos = await exigirServicosValidos(servico_ids)
   const vaga = await vagas.buscarPorId(vaga_id)
   if (!vaga) {
     throw new ErroDeAplicacao(404, VAGA_NAO_ENCONTRADA)
@@ -118,7 +149,7 @@ async function exigirReferenciasValidas({ cliente_id, veiculo_id, servico_id, va
   if (!vaga.ativo) {
     throw new ErroDeAplicacao(400, VAGA_INATIVA)
   }
-  return servico
+  return servicosValidos
 }
 
 async function exigirVagaLivre(vagaId, inicio, duracaoEmMinutos) {
@@ -126,10 +157,19 @@ async function exigirVagaLivre(vagaId, inicio, duracaoEmMinutos) {
   const desde = somarMinutos(inicio, -MAIOR_DURACAO_EM_MINUTOS)
   const candidatos = await agendamentos.listarNaVaga(vagaId, desde, fim)
   const sobrepoe = candidatos.some(
-    (existente) => somarMinutos(existente.data_hora_agendada, existente.servico.duracao_minutos) > inicio,
+    (existente) =>
+      somarMinutos(existente.data_hora_agendada, somarDuracoes(existente.agendamento_servico)) > inicio,
   )
   if (sobrepoe) {
     throw new ErroDeAplicacao(409, VAGA_OCUPADA)
+  }
+}
+
+function montarItem(servico) {
+  return {
+    servico_id: servico.id,
+    preco: servico.preco,
+    duracao_minutos: servico.duracao_minutos,
   }
 }
 
@@ -145,11 +185,13 @@ async function gravarAgendamento(dados) {
 }
 
 export async function cadastrarAgendamento(dados, funcionarioId) {
-  const servico = await exigirReferenciasValidas(dados)
+  const servicosValidos = await exigirReferenciasValidas(dados)
+  const itens = servicosValidos.map(montarItem)
   const horario = relogioDoBanco(dados.data_hora_agendada)
-  await exigirVagaLivre(dados.vaga_id, horario, servico.duracao_minutos)
+  await exigirVagaLivre(dados.vaga_id, horario, somarDuracoes(itens))
   const criado = await gravarAgendamento({
     dados,
+    itens,
     horario,
     status: STATUS_INICIAL,
     funcionarioId,

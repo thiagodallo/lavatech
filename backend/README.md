@@ -289,7 +289,7 @@ Ainda não existe uma rota de troca de senha que peça a senha atual: a redefini
 
 ## Agendamento (RF04, RF05, RF07, RF08)
 
-Todas as rotas desta seção exigem sessão. Um agendamento tem um serviço só, e o funcionário gravado nele é o que está logado.
+Todas as rotas desta seção exigem sessão. Um agendamento tem de 1 a 10 serviços, e o funcionário gravado nele é o que está logado.
 
 ### Fuso horário
 
@@ -316,19 +316,24 @@ Todas as rotas abaixo devolvem o agendamento neste formato (a lista é um array 
 {
   "id": 3,
   "data_hora_agendada": "2026-11-10T10:00:00-03:00",
-  "data_hora_fim_prevista": "2026-11-10T11:00:00-03:00",
+  "data_hora_fim_prevista": "2026-11-10T11:30:00-03:00",
   "data_hora_inicio": null,
   "data_hora_fim": null,
   "status": "agendado",
   "observacoes": "Cliente pediu cera",
   "cliente": { "id": 1, "nome": "Marcos Andrade" },
   "veiculo": { "id": 1, "modelo": "Argo", "placa": "RSD3G21" },
-  "servico": { "id": 2, "nome": "Lavagem Completa", "duracao_minutos": 60, "preco": 60 },
+  "servicos": [
+    { "id": 2, "nome": "Lavagem Completa", "duracao_minutos": 60, "preco": 60 },
+    { "id": 7, "nome": "Cera", "duracao_minutos": 30, "preco": 25.5 }
+  ],
+  "duracao_total_minutos": 90,
+  "preco_total": 85.5,
   "vaga": { "id": 1, "identificacao": "Vaga 1" }
 }
 ```
 
-`data_hora_fim_prevista` é o horário agendado mais a duração do serviço. `data_hora_inicio` é preenchido quando o status vira `em_andamento` e `data_hora_fim` quando vira `concluido`.
+`servicos` lista os serviços na ordem em que foram enviados. `duracao_minutos` e `preco` de cada serviço são os valores de quando o agendamento foi criado: mudar o catálogo depois não altera agendamentos já feitos. O `nome` é o do catálogo. `duracao_total_minutos` e `preco_total` são as somas dos itens, e `preco_total` tem duas casas. `data_hora_fim_prevista` é o horário agendado mais a duração total. `data_hora_inicio` é preenchido quando o status vira `em_andamento` e `data_hora_fim` quando vira `concluido`.
 
 ### Agenda do dia (RF04)
 
@@ -345,21 +350,22 @@ Todas as rotas abaixo devolvem o agendamento neste formato (a lista é um array 
 `POST /api/agendamentos` responde 201 com o agendamento. O status inicial é `agendado`.
 
 ```json
-{ "cliente_id": 1, "veiculo_id": 1, "servico_id": 2, "vaga_id": 1, "data_hora_agendada": "2026-11-10T10:00:00-03:00", "observacoes": "Cliente pediu cera" }
+{ "cliente_id": 1, "veiculo_id": 1, "servico_ids": [2, 7], "vaga_id": 1, "data_hora_agendada": "2026-11-10T10:00:00-03:00", "observacoes": "Cliente pediu cera" }
 ```
 
+- `servico_ids`: lista com de 1 a 10 números inteiros, sem repetir. O campo antigo `servico_id` não é mais aceito e responde 400. Todos os serviços precisam existir e estar ativos.
 - `observacoes`: opcional, até 500 caracteres.
 - Não há bloqueio de data passada, para permitir lançar atendimento retroativo.
 - Remarcar não existe: cancele e crie outro.
 
-O agendamento e a primeira linha do histórico (`status_anterior` nulo, `status_novo` `agendado`) são gravados na mesma transação.
+O agendamento, um item por serviço (com o preço e a duração copiados do catálogo naquele momento) e a primeira linha do histórico (`status_anterior` nulo, `status_novo` `agendado`) são gravados na mesma transação. Se qualquer passo falhar, nada é salvo. A coluna antiga `agendamento.servico_id` fica nula e não é mais lida.
 
-Conflito de horário: cada agendamento ocupa a vaga de `data_hora_agendada` até o fim previsto. Se o intervalo cruzar com o de outro agendamento da mesma vaga, responde 409 `Vaga ocupada nesse horário`. Agendamentos `cancelado` e `no_show` não ocupam a vaga. Dois pedidos simultâneos para o mesmo horário exato também terminam em um 201 e um 409, porque o índice único do banco recusa o segundo.
+Conflito de horário: cada agendamento ocupa a vaga de `data_hora_agendada` até o fim previsto, que usa a duração total de todos os serviços. Para achar os agendamentos que podem cruzar, a API olha os que começaram até 7200 minutos antes (10 serviços de até 720 minutos cada, o maior possível pelas regras do catálogo). Se o intervalo cruzar com o de outro agendamento da mesma vaga, responde 409 `Vaga ocupada nesse horário`. Agendamentos `cancelado` e `no_show` não ocupam a vaga. Dois pedidos simultâneos para o mesmo horário exato também terminam em um 201 e um 409, porque o índice único do banco recusa o segundo.
 
 | Status | Quando |
 |---|---|
-| 400 | `O veículo não pertence a esse cliente`, `Serviço inativo` ou `Vaga inativa` |
-| 404 | `Cliente não encontrado`, `Serviço não encontrado` ou `Vaga não encontrada` |
+| 400 | `O veículo não pertence a esse cliente`, `Serviço inativo: 5` (com o id do serviço) ou `Vaga inativa` |
+| 404 | `Cliente não encontrado`, `Serviço não encontrado: 99` (com o id do serviço) ou `Vaga não encontrada` |
 | 409 | `Vaga ocupada nesse horário` |
 
 ### Mudança de status (RF07)
@@ -526,7 +532,7 @@ O status `concluido` (com `data_hora_fim` e `atualizado_em`), a linha do histór
 
 Responde 404 `Checklist não encontrado` se o atendimento ainda não foi concluído e 404 `Agendamento não encontrado` se o id não existe.
 
-`GET /api/checklists?data=2026-11-10&resultado=reprovado` alimenta a tela de qualidade. Os dois filtros são opcionais: `data` (AAAA-MM-DD) filtra pelo dia de `hora_fim` no relógio de São Paulo, e `resultado` pelo resultado. A lista vem dos mais recentes para os mais antigos e traz no máximo 100 itens:
+`GET /api/checklists?data=2026-11-10&resultado=reprovado` alimenta a tela de qualidade. Os dois filtros são opcionais: `data` (AAAA-MM-DD) filtra pelo dia de `hora_fim` no relógio de São Paulo, e `resultado` pelo resultado. A lista vem dos mais recentes para os mais antigos e traz no máximo 100 itens. O `agendamento` traz `servicos`, a lista de `{ id, nome }` de todos os serviços do atendimento:
 
 ```json
 [
@@ -543,7 +549,7 @@ Responde 404 `Checklist não encontrado` se o atendimento ainda não foi conclu�
       "data_hora_agendada": "2026-11-10T09:00:00-03:00",
       "cliente": { "id": 1, "nome": "Marcos Andrade" },
       "veiculo": { "id": 1, "modelo": "Argo", "placa": "RSD3G21" },
-      "servico": { "id": 1, "nome": "Lavagem Simples" }
+      "servicos": [{ "id": 1, "nome": "Lavagem Simples" }]
     }
   }
 ]
@@ -570,7 +576,7 @@ Todas as rotas desta seção exigem sessão e só leem dados: nada é gravado. O
     "status": "agendado",
     "cliente": { "id": 1, "nome": "Marcos Andrade" },
     "veiculo": { "id": 1, "modelo": "Argo", "placa": "RSD3G21" },
-    "servico": { "id": 1, "nome": "Lavagem Simples" },
+    "servicos": [{ "id": 1, "nome": "Lavagem Simples" }],
     "vaga": { "id": 1, "identificacao": "Vaga 1" }
   },
   "estoque_abaixo_do_minimo": [
@@ -580,7 +586,7 @@ Todas as rotas desta seção exigem sessão e só leem dados: nada é gravado. O
 }
 ```
 
-`por_status` conta os agendamentos do dia (pelo horário agendado) e `total` é a soma. O `proximo_atendimento` é o primeiro agendamento `agendado` ou `aguardando` a partir de agora, mesmo que seja de outro dia, ou `null`. O estoque baixo usa a mesma regra da tela de Estoque: `quantidade_atual` menor que `quantidade_minima`. `ocupacao_vagas` é a foto de agora: vagas ativas com um agendamento `em_andamento` sobre o total de vagas ativas.
+`por_status` conta os agendamentos do dia (pelo horário agendado) e `total` é a soma. O `proximo_atendimento` é o primeiro agendamento `agendado` ou `aguardando` a partir de agora, mesmo que seja de outro dia, ou `null`, e traz `servicos` com todos os serviços dele. O estoque baixo usa a mesma regra da tela de Estoque: `quantidade_atual` menor que `quantidade_minima`. `ocupacao_vagas` é a foto de agora: vagas ativas com um agendamento `em_andamento` sobre o total de vagas ativas.
 
 ### Período
 
@@ -613,7 +619,7 @@ Todas as rotas desta seção exigem sessão e só leem dados: nada é gravado. O
 
 - **Faturamento**: soma dos pagamentos com status `pago`, pela data de `pago_em`. Pagamento `estornado` e `pendente` não entram. `ticket_medio` é o faturamento dividido pela quantidade de pagamentos pagos, ou 0 se não houve nenhum.
 - **Por forma de pagamento**: sempre as quatro formas, com zero quando não houve. **Por dia**: um item para cada dia do período, com zero nos dias sem pagamento. Um pagamento feito depois da meia-noite conta no dia seguinte ao do atendimento.
-- **Serviços mais vendidos**: agendamentos `concluido` com horário agendado dentro do período, agrupados por serviço, os 5 primeiros por quantidade (empate vai para a maior receita). A `receita` soma os pagamentos pagos desses agendamentos.
+- **Serviços mais vendidos**: agendamentos `concluido` com horário agendado dentro do período, agrupados por serviço, os 5 primeiros por quantidade (empate vai para a maior receita). Um agendamento com vários serviços conta uma vez em cada um deles, e a `quantidade` é o número de agendamentos em que o serviço aparece. A `receita` soma o preço do serviço gravado no agendamento (valor de tabela), não o que foi pago. Por isso ela pode diferir do `faturamento`, que continua somando só os pagamentos `pago`.
 - **Clientes**: considera quem tem agendamento não cancelado no período. É novo quem tem o primeiro agendamento não cancelado dentro do período, e recorrente quem já tinha algum antes do início. Agendamento `no_show` conta, o `cancelado` não.
 - **Cancelamentos**: contagens e percentual (uma casa decimal) sobre todos os agendamentos do período, de qualquer status.
 
@@ -631,7 +637,7 @@ Todas as rotas desta seção exigem sessão e só leem dados: nada é gravado. O
 }
 ```
 
-`tempo_medio_minutos` é a média de `data_hora_fim` menos `data_hora_inicio` dos agendamentos `concluido` do período que têm os dois horários, com uma casa decimal, por ordem de nome do serviço. Serviços sem nenhum atendimento medido não aparecem. `horarios_de_pico` traz sempre as 24 horas cheias (0 a 23), contando os agendamentos não cancelados pela hora do horário agendado.
+`tempo_medio_minutos` é a média de `data_hora_fim` menos `data_hora_inicio` dos agendamentos `concluido` do período que têm os dois horários, com uma casa decimal. Num atendimento com vários serviços, o tempo real é repartido entre eles na proporção da duração gravada de cada um (30 e 60 minutos num atendimento de 90 minutos reais ficam com 30 e 60). `atendimentos` conta os atendimentos em que o serviço aparece e `duracao_prevista_minutos` continua sendo a do catálogo hoje. A lista vem por ordem de nome do serviço. Serviços sem nenhum atendimento medido não aparecem. `horarios_de_pico` traz sempre as 24 horas cheias (0 a 23), contando os agendamentos não cancelados pela hora do horário agendado.
 
 Erros comuns das três rotas: 400 com `campos` para data fora do formato `AAAA-MM-DD`, `ate` antes de `de` ou período com mais de 366 dias, e 401 sem sessão.
 

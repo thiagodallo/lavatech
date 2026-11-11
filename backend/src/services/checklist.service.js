@@ -36,8 +36,12 @@ export async function buscarChecklistDoAgendamento(agendamentoId) {
   return formatarChecklist(checklist)
 }
 
+function formatarServicosDoChecklist(itens) {
+  return itens.map((item) => ({ id: item.servico_id, nome: item.servico.nome }))
+}
+
 function formatarChecklistDaLista(checklist) {
-  const { agendamento } = checklist
+  const { agendamento_servico: itens, ...agendamento } = checklist.agendamento
   return {
     id: checklist.id,
     resultado: checklist.resultado,
@@ -49,6 +53,7 @@ function formatarChecklistDaLista(checklist) {
     agendamento: {
       ...agendamento,
       data_hora_agendada: formatarHorario(agendamento.data_hora_agendada),
+      servicos: formatarServicosDoChecklist(itens),
     },
   }
 }

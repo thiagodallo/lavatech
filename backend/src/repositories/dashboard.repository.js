@@ -21,7 +21,10 @@ export function buscarProximoAtendimento(agora) {
       status: true,
       cliente: { select: { id: true, nome: true } },
       veiculo: { select: { id: true, modelo: true, placa: true } },
-      servico: { select: { id: true, nome: true } },
+      agendamento_servico: {
+        select: { servico_id: true, servico: { select: { nome: true } } },
+        orderBy: { id: 'asc' },
+      },
       vaga_lavagem: { select: { id: true, identificacao: true } },
     },
   })
@@ -72,10 +75,10 @@ export function listarFaturamentoPorDia(de, ate) {
 
 export function listarServicosMaisVendidos(de, ate, limite) {
   return prisma.$queryRaw`
-    SELECT s.id AS servico_id, s.nome, COUNT(*)::int AS quantidade, COALESCE(SUM(p.valor), 0) AS receita
+    SELECT s.id AS servico_id, s.nome, COUNT(*)::int AS quantidade, SUM(i.preco) AS receita
     FROM agendamento a
-    JOIN servico s ON s.id = a.servico_id
-    LEFT JOIN pagamento p ON p.agendamento_id = a.id AND p.status = 'pago'
+    JOIN agendamento_servico i ON i.agendamento_id = a.id
+    JOIN servico s ON s.id = i.servico_id
     WHERE a.status = 'concluido'
       AND a.data_hora_agendada >= ${de}::date AND a.data_hora_agendada < ${ate}::date + 1
     GROUP BY s.id, s.nome
@@ -116,13 +119,21 @@ export function listarTempoMedioPorServico(de, ate) {
       s.nome,
       s.duracao_minutos AS duracao_prevista_minutos,
       COUNT(*)::int AS atendimentos,
-      AVG(EXTRACT(EPOCH FROM (a.data_hora_fim - a.data_hora_inicio)) / 60) AS tempo_medio_minutos
-    FROM agendamento a
-    JOIN servico s ON s.id = a.servico_id
-    WHERE a.status = 'concluido'
-      AND a.data_hora_inicio IS NOT NULL
-      AND a.data_hora_fim IS NOT NULL
-      AND a.data_hora_agendada >= ${de}::date AND a.data_hora_agendada < ${ate}::date + 1
+      AVG(parte.minutos_reais * parte.duracao_minutos / parte.minutos_previstos) AS tempo_medio_minutos
+    FROM (
+      SELECT
+        i.servico_id,
+        i.duracao_minutos,
+        EXTRACT(EPOCH FROM (a.data_hora_fim - a.data_hora_inicio)) / 60 AS minutos_reais,
+        SUM(i.duracao_minutos) OVER (PARTITION BY a.id) AS minutos_previstos
+      FROM agendamento a
+      JOIN agendamento_servico i ON i.agendamento_id = a.id
+      WHERE a.status = 'concluido'
+        AND a.data_hora_inicio IS NOT NULL
+        AND a.data_hora_fim IS NOT NULL
+        AND a.data_hora_agendada >= ${de}::date AND a.data_hora_agendada < ${ate}::date + 1
+    ) AS parte
+    JOIN servico s ON s.id = parte.servico_id
     GROUP BY s.id, s.nome, s.duracao_minutos
     ORDER BY s.nome, s.id`
 }

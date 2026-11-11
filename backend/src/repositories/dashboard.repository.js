@@ -82,3 +82,29 @@ export function listarServicosMaisVendidos(de, ate, limite) {
     ORDER BY quantidade DESC, receita DESC, s.nome
     LIMIT ${limite}`
 }
+
+export async function contarClientesNovosERecorrentes(de, ate) {
+  const [contagem] = await prisma.$queryRaw`
+    SELECT
+      COUNT(*) FILTER (WHERE primeiro_agendamento >= ${de}::date)::int AS novos,
+      COUNT(*) FILTER (WHERE primeiro_agendamento < ${de}::date)::int AS recorrentes
+    FROM (
+      SELECT cliente_id, MIN(data_hora_agendada) AS primeiro_agendamento
+      FROM agendamento
+      WHERE status <> 'cancelado'
+      GROUP BY cliente_id
+      HAVING BOOL_OR(data_hora_agendada >= ${de}::date AND data_hora_agendada < ${ate}::date + 1)
+    ) AS clientes_do_periodo`
+  return contagem
+}
+
+export async function contarCancelamentos(de, ate) {
+  const [contagem] = await prisma.$queryRaw`
+    SELECT
+      COUNT(*)::int AS total,
+      COUNT(*) FILTER (WHERE status = 'cancelado')::int AS cancelados,
+      COUNT(*) FILTER (WHERE status = 'no_show')::int AS no_shows
+    FROM agendamento
+    WHERE data_hora_agendada >= ${de}::date AND data_hora_agendada < ${ate}::date + 1`
+  return contagem
+}

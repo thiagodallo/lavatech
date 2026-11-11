@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { listarClientes } from '../api/clientes.js'
 import FormularioCliente from '../components/FormularioCliente.jsx'
+import VeiculosDoCliente from '../components/VeiculosDoCliente.jsx'
 import './Clientes.css'
 
 const ESPERA_DA_BUSCA_EM_MS = 300
@@ -40,6 +41,11 @@ export default function Clientes() {
 
   function aoSalvarCliente(cliente) {
     setPainel({ cliente })
+    setTentativa((anterior) => anterior + 1)
+  }
+
+  function aoCadastrarVeiculo(veiculo) {
+    setPainel(({ cliente }) => ({ cliente: { ...cliente, veiculos: [...cliente.veiculos, veiculo] } }))
     setTentativa((anterior) => anterior + 1)
   }
 
@@ -136,10 +142,18 @@ export default function Clientes() {
               </button>
             </header>
             <FormularioCliente
-              key={painel.cliente?.id ?? 'novo'}
+              key={`formulario-${painel.cliente?.id ?? 'novo'}`}
               cliente={painel.cliente}
               aoSalvar={aoSalvarCliente}
             />
+            {painel.cliente && (
+              <VeiculosDoCliente
+                key={`veiculos-${painel.cliente.id}`}
+                clienteId={painel.cliente.id}
+                veiculos={painel.cliente.veiculos}
+                aoCadastrar={aoCadastrarVeiculo}
+              />
+            )}
           </aside>
         )}
       </div>

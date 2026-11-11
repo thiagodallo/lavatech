@@ -12,3 +12,7 @@ export function cadastrarCliente(dados) {
 export function editarCliente(id, dados) {
   return requisitar(`/clientes/${id}`, { metodo: 'PUT', corpo: dados })
 }
+
+export function cadastrarVeiculo(clienteId, dados) {
+  return requisitar(`/clientes/${clienteId}/veiculos`, { metodo: 'POST', corpo: dados })
+}

@@ -37,6 +37,15 @@ button {
   color: var(--cor-texto-suave);
 }
 
+.placa {
+  padding: 2px 6px;
+  border: 1px solid var(--cor-linha);
+  border-radius: 6px;
+  background: var(--cor-superficie);
+  font-family: var(--fonte-mono);
+  font-size: 11px;
+}
+
 .botao-primario,
 .botao-secundario {
   display: inline-flex;

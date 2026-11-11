@@ -16,6 +16,16 @@ const VAGA_OCUPADA = 'Vaga ocupada nesse horário'
 const STATUS_INICIAL = 'agendado'
 const MAIOR_DURACAO_EM_MINUTOS = 720
 const REGISTRO_DUPLICADO = 'P2002'
+const TRANSICAO_NEGADA = 'Transição de status não permitida'
+const STATUS_JA_ALTERADO = 'O status do agendamento acabou de ser alterado, atualize a agenda'
+const TRANSICOES_PERMITIDAS = {
+  agendado: ['aguardando', 'em_andamento', 'cancelado', 'no_show'],
+  aguardando: ['em_andamento', 'cancelado', 'no_show'],
+  em_andamento: ['concluido', 'cancelado'],
+  concluido: [],
+  cancelado: [],
+  no_show: [],
+}
 const MS_POR_MINUTO = 60 * 1000
 const MS_POR_DIA = 24 * 60 * MS_POR_MINUTO
 const DESLOCAMENTO_DO_FUSO_MS = 3 * 60 * MS_POR_MINUTO
@@ -156,4 +166,22 @@ export async function cadastrarAgendamento(dados, funcionarioId) {
     agora: relogioDoBanco(new Date()),
   })
   return formatarAgendamento(criado)
+}
+
+export async function mudarStatusDoAgendamento(id, statusNovo, funcionarioId) {
+  const { status: statusAnterior } = await exigirAgendamento(id)
+  if (!TRANSICOES_PERMITIDAS[statusAnterior].includes(statusNovo)) {
+    throw new ErroDeAplicacao(409, `${TRANSICAO_NEGADA}: de ${statusAnterior} para ${statusNovo}`)
+  }
+  const atualizado = await agendamentos.mudarStatus({
+    id,
+    statusAnterior,
+    statusNovo,
+    funcionarioId,
+    agora: relogioDoBanco(new Date()),
+  })
+  if (!atualizado) {
+    throw new ErroDeAplicacao(409, STATUS_JA_ALTERADO)
+  }
+  return formatarAgendamento(atualizado)
 }

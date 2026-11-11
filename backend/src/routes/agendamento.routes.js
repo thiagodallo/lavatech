@@ -3,6 +3,7 @@ import { Router } from 'express'
 import validarCorpo from '../middlewares/validarCorpo.js'
 import {
   formatoDaAgenda,
+  formatoDaMudancaDeStatus,
   formatoDoAgendamento,
   formatoDosAlertas,
 } from '../schemas/agendamento.schema.js'
@@ -12,6 +13,7 @@ import {
   cadastrarAgendamento,
   listarAgendaDoDia,
   listarAlertas,
+  mudarStatusDoAgendamento,
 } from '../services/agendamento.service.js'
 
 const agendamentoRoutes = Router()
@@ -33,6 +35,11 @@ agendamentoRoutes.get('/:id', async (req, res) => {
 
 agendamentoRoutes.post('/', validarCorpo(formatoDoAgendamento), async (req, res) => {
   res.status(201).json(await cadastrarAgendamento(req.body, req.session.funcionarioId))
+})
+
+agendamentoRoutes.patch('/:id/status', validarCorpo(formatoDaMudancaDeStatus), async (req, res) => {
+  const id = identificador.parse(req.params.id)
+  res.json(await mudarStatusDoAgendamento(id, req.body.status, req.session.funcionarioId))
 })
 
 export default agendamentoRoutes

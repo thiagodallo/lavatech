@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
 
-import { buscarPagamentoDoAgendamento } from '../api/pagamentos.js'
+import { buscarPagamentoDoAgendamento, estornarPagamento } from '../api/pagamentos.js'
 import { aceitaPagamento } from '../dominio/statusDoAgendamento.js'
 import { rotuloDaForma } from '../dominio/formasDePagamento.js'
 import { dataEHoraDoTexto } from '../formatacao/horario.js'
 import { formatarMoeda } from '../formatacao/moeda.js'
+import BotoesDeStatus from './BotoesDeStatus.jsx'
 import FormularioDePagamento from './FormularioDePagamento.jsx'
 import './BlocoDePagamento.css'
 
+const acaoDeEstorno = { status: 'estornado', rotulo: 'Estornar', confirmacao: 'Confirmar estorno' }
 const rotulosDaSituacao = { pago: 'Pago', estornado: 'Estornado' }
 
 export default function BlocoDePagamento({ agendamento }) {
@@ -15,6 +17,8 @@ export default function BlocoDePagamento({ agendamento }) {
   const [carregando, setCarregando] = useState(true)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [tentativa, setTentativa] = useState(0)
+  const [estornando, setEstornando] = useState(false)
+  const [mensagemDoEstorno, setMensagemDoEstorno] = useState('')
 
   useEffect(() => {
     let atual = true
@@ -40,6 +44,18 @@ export default function BlocoDePagamento({ agendamento }) {
   function tentarDeNovo() {
     setCarregando(true)
     setTentativa((anterior) => anterior + 1)
+  }
+
+  async function estornar() {
+    setEstornando(true)
+    setMensagemDoEstorno('')
+    try {
+      setPagamento(await estornarPagamento(pagamento.id))
+    } catch (erro) {
+      setMensagemDoEstorno(erro.message)
+    } finally {
+      setEstornando(false)
+    }
   }
 
   function corpoDoPagamento() {
@@ -71,28 +87,38 @@ export default function BlocoDePagamento({ agendamento }) {
     }
 
     return (
-      <dl className="detalhes-dados">
-        <div className="detalhes-dado">
-          <dt>Situação</dt>
-          <dd>
-            <span className={`pagamento-situacao pagamento-${pagamento.status}`}>
-              {rotulosDaSituacao[pagamento.status] ?? pagamento.status}
-            </span>
-          </dd>
-        </div>
-        <div className="detalhes-dado">
-          <dt>Valor</dt>
-          <dd>{formatarMoeda(pagamento.valor)}</dd>
-        </div>
-        <div className="detalhes-dado">
-          <dt>Forma</dt>
-          <dd>{rotuloDaForma(pagamento.forma_pagamento)}</dd>
-        </div>
-        <div className="detalhes-dado">
-          <dt>Data</dt>
-          <dd>{dataEHoraDoTexto(pagamento.pago_em)}</dd>
-        </div>
-      </dl>
+      <div className="pagamento-dados">
+        <dl className="detalhes-dados">
+          <div className="detalhes-dado">
+            <dt>Situação</dt>
+            <dd>
+              <span className={`pagamento-situacao pagamento-${pagamento.status}`}>
+                {rotulosDaSituacao[pagamento.status] ?? pagamento.status}
+              </span>
+            </dd>
+          </div>
+          <div className="detalhes-dado">
+            <dt>Valor</dt>
+            <dd>{formatarMoeda(pagamento.valor)}</dd>
+          </div>
+          <div className="detalhes-dado">
+            <dt>Forma</dt>
+            <dd>{rotuloDaForma(pagamento.forma_pagamento)}</dd>
+          </div>
+          <div className="detalhes-dado">
+            <dt>Data</dt>
+            <dd>{dataEHoraDoTexto(pagamento.pago_em)}</dd>
+          </div>
+        </dl>
+        {mensagemDoEstorno && (
+          <p className="formulario-erro" role="alert">
+            {mensagemDoEstorno}
+          </p>
+        )}
+        {pagamento.status === 'pago' && (
+          <BotoesDeStatus acoes={[acaoDeEstorno]} desabilitado={estornando} aoEscolher={estornar} />
+        )}
+      </div>
     )
   }
 

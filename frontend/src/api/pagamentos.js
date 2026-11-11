@@ -12,3 +12,7 @@ export async function buscarPagamentoDoAgendamento(agendamentoId) {
 export function registrarPagamento(agendamentoId, dados) {
   return requisitar(`/agendamentos/${agendamentoId}/pagamento`, { metodo: 'POST', corpo: dados })
 }
+
+export function estornarPagamento(id) {
+  return requisitar(`/pagamentos/${id}/estorno`, { metodo: 'PATCH' })
+}

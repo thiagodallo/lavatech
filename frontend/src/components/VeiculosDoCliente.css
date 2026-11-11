@@ -1,0 +1,41 @@
+.veiculos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--cor-linha);
+}
+
+.veiculos-titulo {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.veiculos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.veiculo-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+
+.veiculo-descricao {
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+}
+
+.veiculos-campos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}

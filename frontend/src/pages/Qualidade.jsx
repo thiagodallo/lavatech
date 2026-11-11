@@ -1,134 +1,86 @@
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router'
+import { useState } from 'react'
 
 import { listarChecklists } from '../api/checklists.js'
 import CartaoDeChecklist from '../components/CartaoDeChecklist.jsx'
-import DetalhesDoChecklist from '../components/DetalhesDoChecklist.jsx'
 import FiltroDeResultado from '../components/FiltroDeResultado.jsx'
-import PainelLateral from '../components/PainelLateral.jsx'
+import PainelDoChecklist from '../components/PainelDoChecklist.jsx'
 import ResumoDeResultados from '../components/ResumoDeResultados.jsx'
 import SeletorDeDia from '../components/SeletorDeDia.jsx'
-import { contarPorResultado, ehResultadoValido } from '../dominio/checklistDeQualidade.js'
-import { dataDeHoje, ehDataValida } from '../formatacao/horario.js'
+import { contarPorResultado } from '../dominio/checklistDeQualidade.js'
+import usarDadosDaApi from '../hooks/usarDadosDaApi.js'
+import usarFiltrosDaQualidade from '../hooks/usarFiltrosDaQualidade.js'
 import './Qualidade.css'
 
-export default function Qualidade() {
-  const [parametros, definirParametros] = useSearchParams()
-  const hoje = dataDeHoje()
-  const dataDaUrl = parametros.get('data')
-  const data = ehDataValida(dataDaUrl) ? dataDaUrl : hoje
-  const [checklists, setChecklists] = useState([])
-  const [diaCarregado, setDiaCarregado] = useState(null)
-  const [carregando, setCarregando] = useState(true)
-  const [mensagemDeErro, setMensagemDeErro] = useState('')
-  const [tentativa, setTentativa] = useState(0)
-  const [idSelecionado, setIdSelecionado] = useState(null)
-  const resultadoDaUrl = parametros.get('resultado')
-  const resultado = ehResultadoValido(resultadoDaUrl) ? resultadoDaUrl : ''
-  const checklistsDoDia = diaCarregado === data ? checklists : []
-  const checklistsFiltrados = resultado
-    ? checklistsDoDia.filter((checklist) => checklist.resultado === resultado)
-    : checklistsDoDia
-  const selecionado = checklistsFiltrados.find(
-    (checklist) => checklist.agendamento.id === idSelecionado,
+function MensagemDaLista({ children, ...propriedades }) {
+  return (
+    <p className="qualidade-estado texto-apoio" {...propriedades}>
+      {children}
+    </p>
   )
+}
 
-  useEffect(() => {
-    let atual = true
-
-    async function carregarChecklists() {
-      setCarregando(true)
-      setMensagemDeErro('')
-      try {
-        const encontrados = await listarChecklists(data)
-        if (!atual) return
-        setChecklists(encontrados)
-        setDiaCarregado(data)
-      } catch (erro) {
-        if (atual) setMensagemDeErro(erro.message)
-      } finally {
-        if (atual) setCarregando(false)
-      }
-    }
-
-    carregarChecklists()
-    return () => {
-      atual = false
-    }
-  }, [data, tentativa])
-
-  function atualizarParametros(novaData, novoResultado) {
-    const novosParametros = {}
-    if (novaData !== hoje) novosParametros.data = novaData
-    if (novoResultado) novosParametros.resultado = novoResultado
-    definirParametros(novosParametros)
-  }
-
-  function corpoDaLista() {
-    if (mensagemDeErro) {
-      return (
-        <div className="qualidade-estado" role="alert">
-          <p>{mensagemDeErro}</p>
-          <button type="button" className="botao-secundario" onClick={() => setTentativa(tentativa + 1)}>
-            Tentar de novo
-          </button>
-        </div>
-      )
-    }
-
-    if (carregando && checklistsDoDia.length === 0) {
-      return (
-        <p className="qualidade-estado texto-apoio" role="status">
-          Carregando
-        </p>
-      )
-    }
-
-    if (checklistsDoDia.length === 0) {
-      return <p className="qualidade-estado texto-apoio">Nenhum checklist neste dia</p>
-    }
-
-    if (checklistsFiltrados.length === 0) {
-      return <p className="qualidade-estado texto-apoio">Nenhum checklist com este resultado</p>
-    }
-
+function CorpoDaLista({ rota, doDia, filtrados, idSelecionado, aoAbrir }) {
+  if (rota.mensagemDeErro) {
     return (
-      <ul className="qualidade-itens">
-        {checklistsFiltrados.map((checklist) => (
-          <CartaoDeChecklist
-            key={checklist.id}
-            checklist={checklist}
-            selecionado={selecionado?.id === checklist.id}
-            aoAbrir={() => setIdSelecionado(checklist.agendamento.id)}
-          />
-        ))}
-      </ul>
+      <div className="qualidade-estado" role="alert">
+        <p>{rota.mensagemDeErro}</p>
+        <button type="button" className="botao-secundario" onClick={rota.tentarDeNovo}>
+          Tentar de novo
+        </button>
+      </div>
     )
   }
 
+  if (rota.carregando && doDia.length === 0) return <MensagemDaLista role="status">Carregando</MensagemDaLista>
+  if (doDia.length === 0) return <MensagemDaLista>Nenhum checklist neste dia</MensagemDaLista>
+  if (filtrados.length === 0) return <MensagemDaLista>Nenhum checklist com este resultado</MensagemDaLista>
+
+  return (
+    <ul className="qualidade-itens">
+      {filtrados.map((checklist) => (
+        <CartaoDeChecklist
+          key={checklist.id}
+          checklist={checklist}
+          selecionado={idSelecionado === checklist.agendamento.id}
+          aoAbrir={() => aoAbrir(checklist.agendamento.id)}
+        />
+      ))}
+    </ul>
+  )
+}
+
+function CabecalhoDaQualidade({ filtros }) {
+  const { hoje, data, resultado, atualizar } = filtros
+
+  return (
+    <header className="qualidade-cabecalho">
+      <h1 className="titulo-tela">Qualidade</h1>
+      <div className="qualidade-acoes">
+        <SeletorDeDia data={data} hoje={hoje} aoMudar={(novaData) => atualizar(novaData, resultado)} />
+        <FiltroDeResultado valor={resultado} aoMudar={(novoResultado) => atualizar(data, novoResultado)} />
+      </div>
+    </header>
+  )
+}
+
+export default function Qualidade() {
+  const filtros = usarFiltrosDaQualidade()
+  const { data, resultado } = filtros
+  const [idSelecionado, setIdSelecionado] = useState(null)
+  const rota = usarDadosDaApi(async () => ({ data, itens: await listarChecklists(data) }), data)
+  const doDia = rota.dados?.data === data ? rota.dados.itens : []
+  const filtrados = resultado ? doDia.filter((checklist) => checklist.resultado === resultado) : doDia
+  const selecionado = filtrados.find((checklist) => checklist.agendamento.id === idSelecionado)
+
   return (
     <section>
-      <header className="qualidade-cabecalho">
-        <h1 className="titulo-tela">Qualidade</h1>
-        <div className="qualidade-acoes">
-          <SeletorDeDia data={data} hoje={hoje} aoMudar={(novaData) => atualizarParametros(novaData, resultado)} />
-          <FiltroDeResultado valor={resultado} aoMudar={(novoResultado) => atualizarParametros(data, novoResultado)} />
-        </div>
-      </header>
-
-      <ResumoDeResultados contagens={contarPorResultado(checklistsDoDia)} />
-
+      <CabecalhoDaQualidade filtros={filtros} />
+      <ResumoDeResultados contagens={contarPorResultado(doDia)} />
       <div className={selecionado ? 'area-com-painel painel-aberto' : 'area-com-painel'}>
-        <div className="qualidade-lista">{corpoDaLista()}</div>
-
-        {selecionado && (
-          <PainelLateral
-            titulo={selecionado.agendamento.cliente.nome}
-            aoFechar={() => setIdSelecionado(null)}
-          >
-            <DetalhesDoChecklist agendamentoId={selecionado.agendamento.id} />
-          </PainelLateral>
-        )}
+        <div className="qualidade-lista">
+          <CorpoDaLista rota={rota} doDia={doDia} filtrados={filtrados} idSelecionado={selecionado?.agendamento.id} aoAbrir={setIdSelecionado} />
+        </div>
+        {selecionado && <PainelDoChecklist agendamento={selecionado.agendamento} aoFechar={() => setIdSelecionado(null)} />}
       </div>
     </section>
   )

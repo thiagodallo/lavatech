@@ -1,14 +1,8 @@
 import { useState } from 'react'
 
 import { cadastrarServico, editarServico } from '../api/servicos.js'
+import { lerNumero } from '../formatacao/numero.js'
 import CampoDeTexto from './CampoDeTexto.jsx'
-
-function lerNumero(texto) {
-  if (!texto.trim()) {
-    return undefined
-  }
-  return Number(texto.replace(',', '.'))
-}
 
 export default function FormularioServico({ servico, aoSalvar }) {
   const [nome, setNome] = useState(servico?.nome ?? '')

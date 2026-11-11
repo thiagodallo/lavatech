@@ -1,0 +1,104 @@
+.estoque-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.estoque-cabecalho .titulo-tela {
+  margin: 0;
+}
+
+.estoque-lista {
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+  overflow: hidden;
+}
+
+.estoque-estado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
+  padding: 16px;
+}
+
+.estoque-estado p {
+  margin: 0;
+}
+
+.estoque-itens {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.produto-item + .produto-item {
+  border-top: 1px solid var(--cor-linha);
+}
+
+.produto-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+}
+
+.produto-linha:hover,
+.produto-linha[aria-current='true'] {
+  background: var(--cor-superficie);
+}
+
+.produto-dados {
+  display: flex;
+  flex: 1 1 160px;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.produto-nome {
+  font-weight: 500;
+}
+
+.produto-categoria {
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+}
+
+.produto-saldo {
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-mono);
+  font-size: 12px;
+}
+
+.selo-estoque {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
+  justify-content: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.selo-repor {
+  background: var(--status-cancelado-fundo);
+  color: var(--status-cancelado-texto);
+}
+
+.selo-ok {
+  background: var(--status-concluido-fundo);
+  color: var(--status-concluido-texto);
+}

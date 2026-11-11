@@ -1,0 +1,29 @@
+.novo-agendamento-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.novo-agendamento-cabecalho .titulo-tela {
+  margin: 0;
+}
+
+.novo-agendamento-estado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 560px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+}
+
+.novo-agendamento-estado p {
+  margin: 0;
+}

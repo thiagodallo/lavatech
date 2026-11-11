@@ -1,0 +1,84 @@
+.cartao-agendamento {
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+}
+
+.cartao-corpo {
+  display: flex;
+  border: 0;
+  border-radius: var(--raio-medio);
+  background: none;
+  color: inherit;
+  text-align: left;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  padding: 14px 16px;
+}
+
+.cartao-horario {
+  display: flex;
+  flex-direction: column;
+  min-width: 64px;
+}
+
+.cartao-hora {
+  font-family: var(--fonte-mono);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.cartao-fim {
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-mono);
+  font-size: 11px;
+}
+
+.cartao-dados {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cartao-cliente {
+  font-weight: 600;
+}
+
+.cartao-veiculo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+}
+
+.cartao-servico {
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+}
+
+.cartao-rodape {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 16px 14px;
+  border-top: 1px solid var(--cor-linha);
+}
+
+.cartao-erro {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--raio-pequeno);
+  background: var(--status-cancelado-fundo);
+  color: var(--status-cancelado-texto);
+  font-size: 13px;
+}
+
+.cartao-corpo:hover,
+.cartao-corpo[aria-current='true'] {
+  background: var(--cor-superficie);
+}

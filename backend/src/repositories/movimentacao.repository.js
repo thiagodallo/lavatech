@@ -42,3 +42,12 @@ export function registrar({ produtoId, tipo, quantidade, funcionarioId, observac
     return { movimentacao, saldoAtual: quantidade_atual }
   })
 }
+
+export function listar({ produtoId, limite }) {
+  return prisma.movimentacao_estoque.findMany({
+    where: { produto_id: produtoId },
+    include: COM_DETALHES,
+    orderBy: [{ data: 'desc' }, { id: 'desc' }],
+    take: limite,
+  })
+}

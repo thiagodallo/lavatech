@@ -108,7 +108,7 @@ Toda rota registrada depois do `exigirSessao` em `routes/index.js` responde 401 
 
 Todas as rotas ficam sob `/api`, recebem e devolvem JSON. Os nomes dos campos seguem as colunas do banco, em `snake_case`. Com exceção de `/health` e `/auth/login`, todas vão exigir sessão.
 
-Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/produtos`, `/funcionarios`, `/vagas`, `/agendamentos` (menos checklist) e `/pagamentos`. As outras estão aqui para o front-end já saber o que esperar.
+Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/produtos`, `/funcionarios`, `/vagas`, `/agendamentos` (menos checklist), `/pagamentos` e `/movimentacoes`. As outras estão aqui para o front-end já saber o que esperar.
 
 | Método | Rota | Requisito | Para que serve |
 |---|---|---|---|
@@ -137,8 +137,8 @@ Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `
 | PATCH | `/pagamentos/:id/estorno` | RF06 | Estorna um pagamento pago |
 | POST | `/agendamentos/:id/checklist` | RF10 | Salva o checklist e conclui a lavagem |
 | GET | `/checklists` | RF10 | Lista os checklists preenchidos |
-| GET | `/estoque` | RF09 | Saldo dos produtos |
-| POST | `/estoque/movimentacoes` | RF09 | Registra entrada ou saída |
+| POST | `/movimentacoes` | RF09 | Registra entrada ou saída e atualiza o saldo do produto |
+| GET | `/movimentacoes?produto_id=&limite=50` | RF09 | Lista as movimentações, as mais recentes primeiro |
 | GET | `/dashboard/operacional` | RF11 | Indicadores operacionais |
 | GET | `/dashboard/financeiro` | RF11 | Indicadores financeiros |
 | GET | `/dashboard/administrativo` | RF11 | Indicadores administrativos |
@@ -421,3 +421,44 @@ Erros do `POST`:
 `PATCH /api/pagamentos/:id/estorno`, sem corpo, muda o pagamento de `pago` para `estornado` e mantém o `pago_em`. Só pagamento `pago` pode ser estornado: outro status devolve 409 `Somente pagamento pago pode ser estornado`, e um id inexistente devolve 404 `Pagamento não encontrado`.
 
 Não existe rota para editar o valor nem para excluir o pagamento. Como cada agendamento aceita um pagamento só, um agendamento estornado não pode ser pago de novo. Isso é um limite conhecido desta versão.
+
+## Estoque (RF09)
+
+Todas as rotas desta seção exigem sessão. O saldo de cada produto é o campo `quantidade_atual` de `GET /api/produtos`. Ele não é editado à mão: só muda por movimentação (o `PUT /produtos/:id` ignora o campo). Não existe rota separada de saldo.
+
+`POST /api/movimentacoes` registra uma entrada ou uma saída:
+
+```json
+{ "produto_id": 2, "tipo": "saida", "quantidade": 1.5, "observacao": "Uso na lavagem do Gol" }
+```
+
+`tipo` vale `entrada` ou `saida`. `quantidade` é maior que zero, com no máximo duas casas decimais. `observacao` é opcional e vai até 500 caracteres. O funcionário gravado é o que está logado, e a `data` é gerada pela API no relógio de São Paulo, como nos horários do agendamento.
+
+A resposta é 201 com a movimentação e o saldo do produto depois da operação:
+
+```json
+{
+  "id": 7,
+  "produto": { "id": 2, "nome": "Cera líquida", "unidade_medida": "litro" },
+  "tipo": "saida",
+  "quantidade": 1.5,
+  "data": "2026-11-10T14:05:30-03:00",
+  "funcionario": { "id": 1, "nome": "Administrador" },
+  "observacao": "Uso na lavagem do Gol",
+  "saldo_atual": 0.5
+}
+```
+
+O registro da movimentação e a mudança do saldo acontecem na mesma transação: se um dos dois falhar, nenhum é salvo. A saída é descontada com uma condição no próprio `UPDATE` (o saldo precisa ser maior ou igual à quantidade), então duas saídas simultâneas nunca deixam o saldo negativo.
+
+Erros do `POST`:
+
+| Status | Quando |
+|---|---|
+| 400 | Quantidade zero, negativa ou com mais de duas casas, tipo inválido, observação longa, `produto_id` ausente |
+| 404 | `Produto não encontrado` |
+| 409 | `Saldo insuficiente`: a saída é maior que o saldo e nada muda |
+
+`GET /api/movimentacoes?produto_id=2&limite=50` lista as movimentações da mais recente para a mais antiga, no mesmo formato do item acima (sem `saldo_atual`). `produto_id` é opcional e `limite` vale de 1 a 200, com padrão 50. Um `produto_id` sem movimentações devolve `[]`.
+
+Limite conhecido: uma entrada que faria o saldo passar de 99.999.999,99 (o máximo da coluna `DECIMAL(10,2)`) devolve 500.

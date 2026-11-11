@@ -54,3 +54,17 @@ export async function listarAgendaDoDia({ data, status }) {
   const encontrados = await agendamentos.listarDoDia(inicio, fim, status)
   return encontrados.map(formatarAgendamento)
 }
+
+function minutosAte(horario, agora) {
+  return Math.ceil((horario.getTime() - agora.getTime()) / MS_POR_MINUTO)
+}
+
+export async function listarAlertas({ minutos }) {
+  const agora = relogioDoBanco(new Date())
+  const limite = somarMinutos(agora, minutos)
+  const encontrados = await agendamentos.listarParaAlerta(agora, limite)
+  return encontrados.map((agendamento) => ({
+    ...formatarAgendamento(agendamento),
+    minutos_restantes: minutosAte(agendamento.data_hora_agendada, agora),
+  }))
+}

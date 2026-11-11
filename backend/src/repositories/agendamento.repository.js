@@ -14,3 +14,13 @@ export function listarDoDia(inicio, fim, status) {
     orderBy: [{ data_hora_agendada: 'asc' }, { id: 'asc' }],
   })
 }
+
+const STATUS_COM_ALERTA = ['agendado', 'aguardando']
+
+export function listarParaAlerta(de, ate) {
+  return prisma.agendamento.findMany({
+    where: { status: { in: STATUS_COM_ALERTA }, data_hora_agendada: { gte: de, lte: ate } },
+    include: COM_DETALHES,
+    orderBy: [{ data_hora_agendada: 'asc' }, { id: 'asc' }],
+  })
+}

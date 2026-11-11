@@ -80,3 +80,33 @@ export function criar({ dados, horario, status, funcionarioId, agora }) {
     return agendamento
   })
 }
+
+function datasDoStatus(status, agora) {
+  if (status === 'em_andamento') {
+    return { data_hora_inicio: agora }
+  }
+  if (status === 'concluido') {
+    return { data_hora_fim: agora }
+  }
+  return {}
+}
+
+export function mudarStatus({ id, statusAnterior, statusNovo, funcionarioId, agora }) {
+  return prisma.$transaction(async (transacao) => {
+    const { count } = await transacao.agendamento.updateMany({
+      where: { id, status: statusAnterior },
+      data: { status: statusNovo, atualizado_em: agora, ...datasDoStatus(statusNovo, agora) },
+    })
+    if (count === 0) {
+      return null
+    }
+    await registrarHistorico(transacao, {
+      agendamentoId: id,
+      statusAnterior,
+      statusNovo,
+      funcionarioId,
+      agora,
+    })
+    return transacao.agendamento.findUnique({ where: { id }, include: COM_DETALHES })
+  })
+}

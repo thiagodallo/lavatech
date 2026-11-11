@@ -40,7 +40,8 @@ agendamentoRoutes.post('/', validarCorpo(formatoDoAgendamento), async (req, res)
 
 agendamentoRoutes.patch('/:id/status', validarCorpo(formatoDaMudancaDeStatus), async (req, res) => {
   const id = identificador.parse(req.params.id)
-  res.json(await mudarStatusDoAgendamento(id, req.body.status, req.session.funcionarioId))
+  const { status, checklist } = req.body
+  res.json(await mudarStatusDoAgendamento(id, status, req.session.funcionarioId, checklist))
 })
 
 agendamentoRoutes.get('/:id/historico', async (req, res) => {

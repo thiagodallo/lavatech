@@ -91,7 +91,16 @@ function datasDoStatus(status, agora) {
   return {}
 }
 
-export function mudarStatus({ id, statusAnterior, statusNovo, funcionarioId, agora }) {
+function gravarChecklist(transacao, { agendamentoId, funcionarioId, checklist }) {
+  if (!checklist) {
+    return
+  }
+  return transacao.checklist_qualidade.create({
+    data: { agendamento_id: agendamentoId, funcionario_id: funcionarioId, ...checklist },
+  })
+}
+
+export function mudarStatus({ id, statusAnterior, statusNovo, funcionarioId, agora, checklist }) {
   return prisma.$transaction(async (transacao) => {
     const { count } = await transacao.agendamento.updateMany({
       where: { id, status: statusAnterior },
@@ -107,6 +116,7 @@ export function mudarStatus({ id, statusAnterior, statusNovo, funcionarioId, ago
       funcionarioId,
       agora,
     })
+    await gravarChecklist(transacao, { agendamentoId: id, funcionarioId, checklist })
     return transacao.agendamento.findUnique({ where: { id }, include: COM_DETALHES })
   })
 }

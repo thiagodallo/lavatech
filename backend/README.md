@@ -108,7 +108,7 @@ Toda rota registrada depois do `exigirSessao` em `routes/index.js` responde 401 
 
 Todas as rotas ficam sob `/api`, recebem e devolvem JSON. Os nomes dos campos seguem as colunas do banco, em `snake_case`. Com exceção de `/health` e `/auth/login`, todas vão exigir sessão.
 
-Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/produtos`, `/funcionarios`, `/vagas`, `/agendamentos` (menos checklist), `/pagamentos` e `/movimentacoes`. As outras estão aqui para o front-end já saber o que esperar.
+Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/produtos`, `/funcionarios`, `/vagas`, `/agendamentos`, `/checklists`, `/pagamentos` e `/movimentacoes`. As outras estão aqui para o front-end já saber o que esperar.
 
 | Método | Rota | Requisito | Para que serve |
 |---|---|---|---|
@@ -131,12 +131,12 @@ Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `
 | GET | `/agendamentos/:id` | RF04 | Um agendamento |
 | GET | `/agendamentos/:id/historico` | RF07 | Histórico de status |
 | POST | `/agendamentos` | RF04, RF05 | Cria agendamento, devolve 409 se a vaga estiver ocupada |
-| PATCH | `/agendamentos/:id/status` | RF07 | Muda o status e grava o histórico |
+| PATCH | `/agendamentos/:id/status` | RF07, RF10 | Muda o status e grava o histórico; para `concluido` exige o `checklist` no corpo |
 | POST | `/agendamentos/:id/pagamento` | RF06 | Registra o pagamento |
 | GET | `/agendamentos/:id/pagamento` | RF06 | Consulta o pagamento do agendamento |
 | PATCH | `/pagamentos/:id/estorno` | RF06 | Estorna um pagamento pago |
-| POST | `/agendamentos/:id/checklist` | RF10 | Salva o checklist e conclui a lavagem |
-| GET | `/checklists` | RF10 | Lista os checklists preenchidos |
+| GET | `/agendamentos/:id/checklist` | RF10 | Consulta o checklist de um atendimento concluído |
+| GET | `/checklists?data=&resultado=` | RF10 | Lista os checklists preenchidos, os mais recentes primeiro |
 | POST | `/movimentacoes` | RF09 | Registra entrada ou saída e atualiza o saldo do produto |
 | GET | `/movimentacoes?produto_id=&limite=50` | RF09 | Lista as movimentações, as mais recentes primeiro |
 | GET | `/dashboard/operacional` | RF11 | Indicadores operacionais |
@@ -373,7 +373,7 @@ Conflito de horário: cada agendamento ocupa a vaga de `data_hora_agendada` até
 | `em_andamento` | `concluido`, `cancelado` |
 | `concluido`, `cancelado`, `no_show` | nenhuma |
 
-Qualquer outra transição responde 409 `Transição de status não permitida: de concluido para cancelado`. Marcar `aguardando` é manual (a atendente avisa que o cliente chegou). Neste momento `concluido` só troca o status; o checklist de qualidade (RF10) vai passar a ser exigido nessa transição.
+Qualquer outra transição responde 409 `Transição de status não permitida: de concluido para cancelado`. Marcar `aguardando` é manual (a atendente avisa que o cliente chegou). A transição para `concluido` exige o checklist de qualidade, descrito na seção Checklist de qualidade (RF10). Os outros status continuam sem checklist.
 
 A troca atualiza o status e `atualizado_em`, preenche `data_hora_inicio` ou `data_hora_fim` quando for o caso e grava a linha do histórico, tudo na mesma transação: se qualquer passo falhar, nada é salvo. Se duas pessoas mudarem o mesmo agendamento ao mesmo tempo, a segunda recebe 409 `O status do agendamento acabou de ser alterado, atualize a agenda`.
 
@@ -462,3 +462,91 @@ Erros do `POST`:
 `GET /api/movimentacoes?produto_id=2&limite=50` lista as movimentações da mais recente para a mais antiga, no mesmo formato do item acima (sem `saldo_atual`). `produto_id` é opcional e `limite` vale de 1 a 200, com padrão 50. Um `produto_id` sem movimentações devolve `[]`.
 
 Limite conhecido: uma entrada que faria o saldo passar de 99.999.999,99 (o máximo da coluna `DECIMAL(10,2)`) devolve 500.
+
+## Checklist de qualidade (RF10)
+
+Todas as rotas desta seção exigem sessão. O checklist não tem rota de criação própria: ele é enviado junto com a conclusão do atendimento. Isso muda o `PATCH /api/agendamentos/:id/status` com `"status": "concluido"`: sem o objeto `checklist` no corpo, a API responde 400 e nada é gravado. Quem testava a conclusão só com `{ "status": "concluido" }` precisa passar a enviar o checklist.
+
+```json
+{
+  "status": "concluido",
+  "checklist": {
+    "externa_sem_espuma": true,
+    "rodas_e_pneus_ok": true,
+    "vidros_sem_manchas": true,
+    "interior_aspirado": true,
+    "painel_e_portas_limpos": true,
+    "aromatizante_aplicado": true,
+    "sem_objetos_esquecidos": true,
+    "sem_danos_novos": false,
+    "resultado": "aprovado_com_ressalva",
+    "descricao_problema": "Risco leve no capô, já existia"
+  }
+}
+```
+
+Os oito itens são obrigatórios e `true` significa conforme. As regras do corpo:
+
+| Regra | Erro |
+|---|---|
+| `resultado` vale `aprovado`, `aprovado_com_ressalva` ou `reprovado` | 400 |
+| `aprovado` exige os oito itens `true` | 400 |
+| `aprovado_com_ressalva` e `reprovado` exigem `descricao_problema` não vazia (até 1000 caracteres) | 400 |
+| `necessita_retrabalho` (opcional, padrão `false`) só pode ser `true` quando o resultado é `reprovado` | 400 |
+| `houve_problema` não é aceito: a API calcula (`true` quando o resultado não é `aprovado`) | 400 |
+| `checklist` com qualquer status diferente de `concluido` | 400 |
+
+Nos 400, o `campos` traz a chave `checklist` com as mensagens, por exemplo `{ "campos": { "checklist": ["Resultado aprovado exige todos os itens conformes"] } }`. As outras regras de transição do PATCH continuam as mesmas, inclusive o 409 `Transição de status não permitida` e o 409 de pedidos simultâneos.
+
+O status `concluido` (com `data_hora_fim` e `atualizado_em`), a linha do histórico e o checklist são gravados na mesma transação: se qualquer um falhar, nada é salvo. O `funcionario_id` do checklist é o funcionário logado, `hora_fim` é o instante da conclusão no relógio de São Paulo e `hora_inicio` é o `data_hora_inicio` do agendamento. Um resultado `reprovado` também conclui o atendimento: o checklist é um registro de qualidade, e `necessita_retrabalho` é só informativo.
+
+`GET /api/agendamentos/:id/checklist` devolve o checklist do atendimento:
+
+```json
+{
+  "id": 4,
+  "agendamento_id": 69,
+  "externa_sem_espuma": true,
+  "rodas_e_pneus_ok": true,
+  "vidros_sem_manchas": true,
+  "interior_aspirado": true,
+  "painel_e_portas_limpos": true,
+  "aromatizante_aplicado": true,
+  "sem_objetos_esquecidos": true,
+  "sem_danos_novos": false,
+  "resultado": "aprovado_com_ressalva",
+  "descricao_problema": "Risco leve no capô, já existia",
+  "houve_problema": true,
+  "necessita_retrabalho": false,
+  "hora_inicio": "2026-11-10T09:02:11-03:00",
+  "hora_fim": "2026-11-10T09:55:40-03:00",
+  "funcionario": { "id": 1, "nome": "Administrador" }
+}
+```
+
+Responde 404 `Checklist não encontrado` se o atendimento ainda não foi concluído e 404 `Agendamento não encontrado` se o id não existe.
+
+`GET /api/checklists?data=2026-11-10&resultado=reprovado` alimenta a tela de qualidade. Os dois filtros são opcionais: `data` (AAAA-MM-DD) filtra pelo dia de `hora_fim` no relógio de São Paulo, e `resultado` pelo resultado. A lista vem dos mais recentes para os mais antigos e traz no máximo 100 itens:
+
+```json
+[
+  {
+    "id": 4,
+    "resultado": "aprovado_com_ressalva",
+    "houve_problema": true,
+    "necessita_retrabalho": false,
+    "hora_fim": "2026-11-10T09:55:40-03:00",
+    "itens_nao_conformes": ["sem_danos_novos"],
+    "funcionario": { "id": 1, "nome": "Administrador" },
+    "agendamento": {
+      "id": 69,
+      "data_hora_agendada": "2026-11-10T09:00:00-03:00",
+      "cliente": { "id": 1, "nome": "Marcos Andrade" },
+      "veiculo": { "id": 1, "modelo": "Argo", "placa": "RSD3G21" },
+      "servico": { "id": 1, "nome": "Lavagem Simples" }
+    }
+  }
+]
+```
+
+`itens_nao_conformes` lista os nomes dos itens que vieram `false`. Filtro inválido devolve 400 com `campos`.

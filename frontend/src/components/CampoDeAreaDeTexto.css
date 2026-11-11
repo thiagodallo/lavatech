@@ -1,0 +1,7 @@
+.campo-area {
+  height: auto;
+  min-height: 88px;
+  padding: 10px 12px;
+  line-height: 1.4;
+  resize: vertical;
+}

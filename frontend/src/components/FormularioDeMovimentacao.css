@@ -1,0 +1,16 @@
+.movimentacao-quantidade {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.movimentacao-quantidade .campo-entrada {
+  flex: 1;
+  min-width: 0;
+}
+
+.movimentacao-unidade {
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-mono);
+  font-size: 13px;
+}

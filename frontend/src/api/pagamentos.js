@@ -1,0 +1,10 @@
+import { requisitar } from './clienteHttp.js'
+
+export async function buscarPagamentoDoAgendamento(agendamentoId) {
+  try {
+    return await requisitar(`/agendamentos/${agendamentoId}/pagamento`)
+  } catch (erro) {
+    if (erro.status === 404 && erro.message === 'Pagamento não encontrado') return null
+    throw erro
+  }
+}

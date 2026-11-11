@@ -1,0 +1,29 @@
+.seletor-de-periodo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.periodo-atalhos {
+  display: flex;
+  gap: 6px;
+}
+
+.periodo-atalhos [aria-pressed='true'] {
+  border-color: var(--cor-marca);
+  background: var(--cor-superficie);
+  color: var(--cor-marca-escura);
+}
+
+.periodo-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.periodo-data {
+  height: 38px;
+  font-family: var(--fonte-mono);
+  font-size: 13px;
+}

@@ -7,3 +7,7 @@ export function listarAgendamentosDoDia(data) {
 export function mudarStatusDoAgendamento(id, status) {
   return requisitar(`/agendamentos/${id}/status`, { metodo: 'PATCH', corpo: { status } })
 }
+
+export function listarAlertas() {
+  return requisitar('/agendamentos/alertas?minutos=15')
+}

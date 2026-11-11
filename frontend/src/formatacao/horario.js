@@ -35,3 +35,12 @@ export function montarHorarioParaEnviar(data, hora) {
 export function primeiroDiaDoMes(data) {
   return `${data.slice(0, 8)}01`
 }
+
+export function formatarData(data) {
+  const [ano, mes, dia] = data.split('-')
+  return `${dia}/${mes}/${ano}`
+}
+
+export function formatarDiaEMes(data) {
+  return formatarData(data).slice(0, 5)
+}

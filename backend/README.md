@@ -108,7 +108,7 @@ Toda rota registrada depois do `exigirSessao` em `routes/index.js` responde 401 
 
 Todas as rotas ficam sob `/api`, recebem e devolvem JSON. Os nomes dos campos seguem as colunas do banco, em `snake_case`. Com exceção de `/health` e `/auth/login`, todas vão exigir sessão.
 
-Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/produtos`, `/funcionarios`, `/vagas` e `/agendamentos` (menos pagamento e checklist). As outras estão aqui para o front-end já saber o que esperar.
+Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/produtos`, `/funcionarios`, `/vagas`, `/agendamentos` (menos checklist) e `/pagamentos`. As outras estão aqui para o front-end já saber o que esperar.
 
 | Método | Rota | Requisito | Para que serve |
 |---|---|---|---|
@@ -133,6 +133,8 @@ Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `
 | POST | `/agendamentos` | RF04, RF05 | Cria agendamento, devolve 409 se a vaga estiver ocupada |
 | PATCH | `/agendamentos/:id/status` | RF07 | Muda o status e grava o histórico |
 | POST | `/agendamentos/:id/pagamento` | RF06 | Registra o pagamento |
+| GET | `/agendamentos/:id/pagamento` | RF06 | Consulta o pagamento do agendamento |
+| PATCH | `/pagamentos/:id/estorno` | RF06 | Estorna um pagamento pago |
 | POST | `/agendamentos/:id/checklist` | RF10 | Salva o checklist e conclui a lavagem |
 | GET | `/checklists` | RF10 | Lista os checklists preenchidos |
 | GET | `/estoque` | RF09 | Saldo dos produtos |
@@ -387,3 +389,35 @@ A troca atualiza o status e `atualizado_em`, preenche `data_hora_inicio` ou `dat
 ```
 
 Os demais erros são os de sempre: 400 com `campos` para corpo ou filtro inválido, 401 sem sessão e 404 `Agendamento não encontrado` nas rotas com `:id`.
+
+## Pagamento (RF06)
+
+Todas as rotas desta seção exigem sessão. Cada agendamento tem no máximo um pagamento (relação 1:1, garantida por `UNIQUE` no banco). O horário `pago_em` segue a regra de fuso da seção Agendamento: a API gera no relógio de São Paulo e devolve com `-03:00`.
+
+```json
+{
+  "id": 1,
+  "agendamento_id": 12,
+  "valor": 55.5,
+  "forma_pagamento": "pix",
+  "status": "pago",
+  "pago_em": "2026-11-10T10:42:15-03:00"
+}
+```
+
+`POST /api/agendamentos/:id/pagamento` com `{ "valor": 55.5, "forma_pagamento": "pix" }` responde 201 com o pagamento já com `status: "pago"`. O `valor` é maior que zero e tem no máximo duas casas decimais. A `forma_pagamento` vale `dinheiro`, `pix`, `cartao_debito` ou `cartao_credito`. O valor pode ser diferente do preço do serviço, por exemplo num desconto: a API não compara os dois.
+
+Erros do `POST`:
+
+| Status | Quando |
+|---|---|
+| 400 | Valor ou forma de pagamento inválidos, com `campos` |
+| 404 | `Agendamento não encontrado` |
+| 409 | `Pagamento já registrado para este agendamento`, inclusive quando dois pedidos chegam juntos (um 201 e um 409) |
+| 409 | `Não é possível registrar pagamento de agendamento cancelado ou não compareceu` |
+
+`GET /api/agendamentos/:id/pagamento` devolve o pagamento, ou 404 `Pagamento não encontrado` se o agendamento ainda não foi pago. Se o agendamento não existir, o 404 é `Agendamento não encontrado`.
+
+`PATCH /api/pagamentos/:id/estorno`, sem corpo, muda o pagamento de `pago` para `estornado` e mantém o `pago_em`. Só pagamento `pago` pode ser estornado: outro status devolve 409 `Somente pagamento pago pode ser estornado`, e um id inexistente devolve 404 `Pagamento não encontrado`.
+
+Não existe rota para editar o valor nem para excluir o pagamento. Como cada agendamento aceita um pagamento só, um agendamento estornado não pode ser pago de novo. Isso é um limite conhecido desta versão.

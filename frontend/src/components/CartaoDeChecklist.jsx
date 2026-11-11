@@ -3,12 +3,17 @@ import ChipsDeItens from './ChipsDeItens.jsx'
 import PilulaDeResultado from './PilulaDeResultado.jsx'
 import './CartaoDeChecklist.css'
 
-export default function CartaoDeChecklist({ checklist }) {
+export default function CartaoDeChecklist({ checklist, selecionado, aoAbrir }) {
   const { agendamento } = checklist
 
   return (
     <li className="cartao-checklist">
-      <div className="cartao-checklist-corpo">
+      <button
+        type="button"
+        className="cartao-checklist-corpo"
+        aria-current={selecionado ? 'true' : undefined}
+        onClick={aoAbrir}
+      >
         <span className="cartao-checklist-hora">
           {checklist.hora_fim ? horaDoTexto(checklist.hora_fim) : ''}
         </span>
@@ -27,7 +32,7 @@ export default function CartaoDeChecklist({ checklist }) {
           <PilulaDeResultado resultado={checklist.resultado} />
           {checklist.necessita_retrabalho && <span className="selo-retrabalho">Retrabalho</span>}
         </span>
-      </div>
+      </button>
     </li>
   )
 }

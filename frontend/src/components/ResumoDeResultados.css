@@ -1,0 +1,39 @@
+.resumo-de-resultados {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.resumo-de-resultados-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 16px;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+}
+
+.resumo-de-resultados-item dt {
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.resumo-de-resultados-item dd {
+  margin: 0;
+  font-family: var(--fonte-mono);
+  font-size: 22px;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .resumo-de-resultados {
+    gap: 8px;
+  }
+
+  .resumo-de-resultados-item {
+    padding: 10px 12px;
+  }
+}

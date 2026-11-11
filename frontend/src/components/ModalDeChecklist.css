@@ -1,0 +1,86 @@
+.modal-checklist {
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+  color: var(--cor-texto);
+}
+
+.modal-checklist[open] {
+  display: flex;
+  animation: modal-checklist-entrada 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.modal-checklist::backdrop {
+  background: rgb(15 36 48 / 55%);
+}
+
+.modal-checklist-formulario {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+}
+
+.modal-checklist-cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 20px 12px;
+}
+
+.modal-checklist-titulo {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.modal-checklist-contexto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+}
+
+.modal-checklist-corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  padding: 8px 20px 16px;
+  overflow-y: auto;
+}
+
+.modal-checklist-rodape {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--cor-linha);
+}
+
+.modal-checklist-erros {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  list-style: none;
+}
+
+@keyframes modal-checklist-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-checklist[open] {
+    animation: none;
+  }
+}

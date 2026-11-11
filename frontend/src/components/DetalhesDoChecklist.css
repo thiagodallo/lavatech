@@ -1,0 +1,30 @@
+.itens-do-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.itens-do-checklist li {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.item-do-checklist-situacao {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.item-conforme svg,
+.item-conforme .item-do-checklist-situacao {
+  color: var(--status-concluido-texto);
+}
+
+.item-nao-conforme svg,
+.item-nao-conforme .item-do-checklist-situacao {
+  color: var(--status-cancelado-texto);
+}

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { listarHistoricoDoAgendamento } from '../api/agendamentos.js'
 import { dataEHoraDoTexto, horaDoTexto } from '../formatacao/horario.js'
 import BlocoDePagamento from './BlocoDePagamento.jsx'
+import BlocoDeQualidade from './BlocoDeQualidade.jsx'
 import PilulaDeStatus from './PilulaDeStatus.jsx'
 import './DetalhesDoAgendamento.css'
 
@@ -103,6 +104,10 @@ export default function DetalhesDoAgendamento({ agendamento }) {
       </dl>
 
       <BlocoDePagamento key={agendamento.id} agendamento={agendamento} />
+
+      {agendamento.status === 'concluido' && (
+        <BlocoDeQualidade key={agendamento.id} agendamentoId={agendamento.id} />
+      )}
 
       <section aria-labelledby="historico-titulo">
         <h3 className="detalhes-subtitulo" id="historico-titulo">

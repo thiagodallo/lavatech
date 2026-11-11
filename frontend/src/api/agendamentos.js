@@ -4,8 +4,9 @@ export function listarAgendamentosDoDia(data) {
   return requisitar(`/agendamentos?data=${data}`)
 }
 
-export function mudarStatusDoAgendamento(id, status) {
-  return requisitar(`/agendamentos/${id}/status`, { metodo: 'PATCH', corpo: { status } })
+export function mudarStatusDoAgendamento(id, status, checklist) {
+  const corpo = checklist ? { status, checklist } : { status }
+  return requisitar(`/agendamentos/${id}/status`, { metodo: 'PATCH', corpo })
 }
 
 export function listarAlertas() {

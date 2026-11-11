@@ -1,8 +1,9 @@
-import { Plus, Search, X } from 'lucide-react'
+import { Plus, Search } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { listarClientes } from '../api/clientes.js'
 import FormularioCliente from '../components/FormularioCliente.jsx'
+import PainelLateral from '../components/PainelLateral.jsx'
 import VeiculosDoCliente from '../components/VeiculosDoCliente.jsx'
 import './Clientes.css'
 
@@ -125,22 +126,14 @@ export default function Clientes() {
         </div>
       </header>
 
-      <div className={painel ? 'clientes-area com-painel' : 'clientes-area'}>
+      <div className={painel ? 'area-com-painel painel-aberto' : 'area-com-painel'}>
         <div className="clientes-lista">{corpoDaLista()}</div>
 
         {painel && (
-          <aside className="clientes-painel" aria-label={painel.cliente ? 'Editar cliente' : 'Novo cliente'}>
-            <header className="clientes-painel-cabecalho">
-              <h2 className="clientes-painel-titulo">{painel.cliente ? 'Editar cliente' : 'Novo cliente'}</h2>
-              <button
-                type="button"
-                className="clientes-painel-fechar"
-                aria-label="Fechar"
-                onClick={() => setPainel(null)}
-              >
-                <X size={16} aria-hidden="true" />
-              </button>
-            </header>
+          <PainelLateral
+            titulo={painel.cliente ? 'Editar cliente' : 'Novo cliente'}
+            aoFechar={() => setPainel(null)}
+          >
             <FormularioCliente
               key={`formulario-${painel.cliente?.id ?? 'novo'}`}
               cliente={painel.cliente}
@@ -154,7 +147,7 @@ export default function Clientes() {
                 aoCadastrar={aoCadastrarVeiculo}
               />
             )}
-          </aside>
+          </PainelLateral>
         )}
       </div>
     </section>

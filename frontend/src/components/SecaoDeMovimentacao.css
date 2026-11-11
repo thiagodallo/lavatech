@@ -1,0 +1,7 @@
+.secao-de-movimentacao {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--cor-linha);
+}

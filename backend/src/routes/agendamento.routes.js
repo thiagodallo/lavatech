@@ -4,7 +4,9 @@ import {
   formatoDaAgenda,
   formatoDosAlertas,
 } from '../schemas/agendamento.schema.js'
+import { identificador } from '../schemas/identificador.schema.js'
 import {
+  buscarAgendamento,
   listarAgendaDoDia,
   listarAlertas,
 } from '../services/agendamento.service.js'
@@ -19,6 +21,11 @@ agendamentoRoutes.get('/', async (req, res) => {
 agendamentoRoutes.get('/alertas', async (req, res) => {
   const filtro = formatoDosAlertas.parse(req.query)
   res.json(await listarAlertas(filtro))
+})
+
+agendamentoRoutes.get('/:id', async (req, res) => {
+  const id = identificador.parse(req.params.id)
+  res.json(await buscarAgendamento(id))
 })
 
 export default agendamentoRoutes

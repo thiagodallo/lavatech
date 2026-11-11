@@ -24,3 +24,7 @@ export function listarParaAlerta(de, ate) {
     orderBy: [{ data_hora_agendada: 'asc' }, { id: 'asc' }],
   })
 }
+
+export function buscarPorId(id) {
+  return prisma.agendamento.findUnique({ where: { id }, include: COM_DETALHES })
+}

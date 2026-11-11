@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { listarProdutos } from '../api/produtos.js'
 import FormularioProduto from '../components/FormularioProduto.jsx'
 import PainelLateral from '../components/PainelLateral.jsx'
+import SecaoDeMovimentacao from '../components/SecaoDeMovimentacao.jsx'
 import { formatarQuantidade } from '../formatacao/quantidade.js'
 import './Estoque.css'
 
@@ -124,6 +125,9 @@ export default function Estoque() {
               produto={painel.produto}
               aoSalvar={aoSalvarProduto}
             />
+            {painel.produto && (
+              <SecaoDeMovimentacao key={`movimentacao-${painel.produto.id}`} produto={painel.produto} />
+            )}
           </PainelLateral>
         )}
       </div>

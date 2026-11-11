@@ -3,7 +3,14 @@ import { Router } from 'express'
 import validarCorpo from '../middlewares/validarCorpo.js'
 import { formatoDaBusca, formatoDoCliente } from '../schemas/cliente.schema.js'
 import { identificador } from '../schemas/identificador.schema.js'
-import { cadastrarCliente, editarCliente, listarClientes } from '../services/cliente.service.js'
+import { formatoDoVeiculo } from '../schemas/veiculo.schema.js'
+import {
+  cadastrarCliente,
+  cadastrarVeiculo,
+  editarCliente,
+  listarClientes,
+  listarVeiculosDoCliente,
+} from '../services/cliente.service.js'
 
 const clienteRoutes = Router()
 
@@ -19,6 +26,16 @@ clienteRoutes.post('/', validarCorpo(formatoDoCliente), async (req, res) => {
 clienteRoutes.put('/:id', validarCorpo(formatoDoCliente), async (req, res) => {
   const id = identificador.parse(req.params.id)
   res.json(await editarCliente(id, req.body))
+})
+
+clienteRoutes.get('/:id/veiculos', async (req, res) => {
+  const id = identificador.parse(req.params.id)
+  res.json(await listarVeiculosDoCliente(id))
+})
+
+clienteRoutes.post('/:id/veiculos', validarCorpo(formatoDoVeiculo), async (req, res) => {
+  const id = identificador.parse(req.params.id)
+  res.status(201).json(await cadastrarVeiculo(id, req.body))
 })
 
 export default clienteRoutes

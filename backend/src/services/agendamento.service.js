@@ -51,9 +51,23 @@ function somarDuracoes(itens) {
   return itens.reduce((soma, item) => soma + item.duracao_minutos, 0)
 }
 
+function formatarServico(item) {
+  return {
+    id: item.servico_id,
+    nome: item.servico.nome,
+    duracao_minutos: item.duracao_minutos,
+    preco: Number(item.preco),
+  }
+}
+
+function somarPrecos(itens) {
+  const totalEmCentavos = itens.reduce((soma, item) => soma + Math.round(Number(item.preco) * 100), 0)
+  return totalEmCentavos / 100
+}
+
 function formatarAgendamento(agendamento) {
-  const { servico } = agendamento
-  const duracaoTotal = somarDuracoes(agendamento.agendamento_servico)
+  const itens = agendamento.agendamento_servico
+  const duracaoTotal = somarDuracoes(itens)
   const fimPrevisto = somarMinutos(agendamento.data_hora_agendada, duracaoTotal)
   return {
     id: agendamento.id,
@@ -65,7 +79,9 @@ function formatarAgendamento(agendamento) {
     observacoes: agendamento.observacoes,
     cliente: agendamento.cliente,
     veiculo: agendamento.veiculo,
-    servico: { ...servico, preco: Number(servico.preco) },
+    servicos: itens.map(formatarServico),
+    duracao_total_minutos: duracaoTotal,
+    preco_total: somarPrecos(itens),
     vaga: agendamento.vaga_lavagem,
   }
 }

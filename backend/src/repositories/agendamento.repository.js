@@ -3,7 +3,6 @@ import prisma from '../database/prisma.js'
 const COM_DETALHES = {
   cliente: { select: { id: true, nome: true } },
   veiculo: { select: { id: true, modelo: true, placa: true } },
-  servico: { select: { id: true, nome: true, duracao_minutos: true, preco: true } },
   agendamento_servico: {
     select: {
       servico_id: true,
@@ -72,7 +71,6 @@ export function criar({ dados, itens, horario, status, funcionarioId, agora }) {
       data: {
         cliente_id: dados.cliente_id,
         veiculo_id: dados.veiculo_id,
-        servico_id: itens[0].servico_id,
         vaga_id: dados.vaga_id,
         funcionario_id: funcionarioId,
         data_hora_agendada: horario,

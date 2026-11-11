@@ -1,0 +1,87 @@
+.catalogo-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.catalogo-cabecalho .titulo-tela {
+  margin: 0;
+}
+
+.catalogo-estado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+}
+
+.catalogo-estado p {
+  margin: 0;
+}
+
+.catalogo-itens {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.servico {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+}
+
+.servico-inativo {
+  opacity: 0.6;
+}
+
+.servico-dados {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+  min-width: 0;
+}
+
+.servico-nome {
+  flex-basis: 100%;
+  font-weight: 600;
+}
+
+.servico-duracao {
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+}
+
+.servico-selo {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--status-agendado-fundo);
+  color: var(--status-agendado-texto);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.servico-preco {
+  color: var(--cor-marca);
+  font-family: var(--fonte-titulo);
+  font-size: 18px;
+  font-weight: 700;
+  white-space: nowrap;
+}

@@ -108,7 +108,7 @@ Toda rota registrada depois do `exigirSessao` em `routes/index.js` responde 401 
 
 Todas as rotas ficam sob `/api`, recebem e devolvem JSON. Os nomes dos campos seguem as colunas do banco, em `snake_case`. Com exceção de `/health` e `/auth/login`, todas vão exigir sessão.
 
-Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`. As outras estão aqui para o front-end já saber o que esperar.
+Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos` e `/produtos`. As outras estão aqui para o front-end já saber o que esperar.
 
 | Método | Rota | Requisito | Para que serve |
 |---|---|---|---|
@@ -188,3 +188,56 @@ Erros próprios destas rotas, além do 400 de corpo inválido e do 401 sem sess�
 | 409 | `Telefone já cadastrado` ou `Placa já cadastrada` |
 
 Não existe rota para excluir cliente nem para editar um veículo.
+
+## Serviços e produtos (RF03)
+
+### Serviços
+
+`GET /api/servicos` lista os serviços por ordem de nome, inclusive os desativados. `?ativo=true` devolve só os ativos (é o que a tela de agendamento vai usar) e `?ativo=false` só os desativados.
+
+```json
+[
+  { "id": 1, "nome": "Lavagem Simples", "descricao": "Lavagem externa e secagem", "preco": 35, "duracao_minutos": 30, "ativo": true }
+]
+```
+
+`POST /api/servicos` e `PUT /api/servicos/:id` recebem o mesmo corpo. O `PUT` troca todos os campos, então a `descricao` que não vier fica nula.
+
+```json
+{ "nome": "Higienização", "descricao": "Limpeza de bancos", "preco": 120.5, "duracao_minutos": 90, "ativo": true }
+```
+
+- `nome`: de 2 a 100 caracteres.
+- `descricao`: opcional, até 500 caracteres.
+- `preco`: número JSON (não texto) de 0 a 99999999.99, com no máximo duas casas decimais.
+- `duracao_minutos`: inteiro de 1 a 720. Serve para calcular o fim estimado do agendamento.
+- `ativo`: `true` ou `false`. No `POST` é opcional e o padrão é `true`. No `PUT` é obrigatório, para uma edição nunca reativar um serviço sem querer.
+
+O `POST` responde 201 e o `PUT` responde 200, os dois com o serviço no formato acima. Para tirar um serviço do catálogo, edite com `"ativo": false`. Não existe rota de exclusão, porque os agendamentos dependem do serviço.
+
+### Produtos
+
+`GET /api/produtos` lista os produtos por ordem de nome.
+
+```json
+[
+  { "id": 1, "nome": "Shampoo automotivo", "categoria": "limpeza", "unidade_medida": "litro", "quantidade_atual": 8, "quantidade_minima": 5 }
+]
+```
+
+`POST /api/produtos` e `PUT /api/produtos/:id` recebem o mesmo corpo.
+
+```json
+{ "nome": "Flanela", "categoria": "acessorio", "unidade_medida": "un", "quantidade_minima": 5 }
+```
+
+- `nome`: de 2 a 100 caracteres.
+- `categoria`: opcional, até 50 caracteres.
+- `unidade_medida`: opcional, até 10 caracteres (`un`, `litro`, `kg`, convenção livre).
+- `quantidade_minima`: número de 0 a 99999999.99 com até duas casas, e o padrão é 0. É o saldo abaixo do qual o produto vira alerta de reposição.
+
+O `quantidade_atual` não é aceito: se vier no corpo, é ignorado. O produto nasce com saldo 0 e o saldo só muda pelas movimentações de estoque (RF09), que ficam registradas. O `POST` responde 201 e o `PUT` responde 200. Não existe rota de exclusão nem de desativação de produto.
+
+### Erros
+
+Além do 400 de corpo inválido, com os `campos`, e do 401 sem sessão, o `PUT` responde 404 com `Serviço não encontrado` ou `Produto não encontrado` quando o `id` não existe.

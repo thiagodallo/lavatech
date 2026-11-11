@@ -6,6 +6,11 @@
 
 .cartao-corpo {
   display: flex;
+  border: 0;
+  border-radius: var(--raio-medio);
+  background: none;
+  color: inherit;
+  text-align: left;
   align-items: flex-start;
   gap: 16px;
   width: 100%;
@@ -71,4 +76,9 @@
   background: var(--status-cancelado-fundo);
   color: var(--status-cancelado-texto);
   font-size: 13px;
+}
+
+.cartao-corpo:hover,
+.cartao-corpo[aria-current='true'] {
+  background: var(--cor-superficie);
 }

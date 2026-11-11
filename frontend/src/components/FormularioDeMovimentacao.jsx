@@ -41,6 +41,10 @@ export default function FormularioDeMovimentacao({ produto, aoRegistrar }) {
       setRegistrado(true)
       aoRegistrar(movimentacao)
     } catch (erro) {
+      if (erro.status === 409) {
+        setErrosDosCampos({ quantidade: [erro.message] })
+        return
+      }
       const camposComErro = erro.campos ?? {}
       setErrosDosCampos(camposComErro)
       setMensagemDeErro(Object.keys(camposComErro).length > 0 ? '' : erro.message)

@@ -42,6 +42,14 @@ export default function Estoque() {
     setTentativa((anterior) => anterior + 1)
   }
 
+  function aoRegistrarMovimentacao(movimentacao) {
+    setPainel((atual) => {
+      if (atual?.produto?.id !== movimentacao.produto.id) return atual
+      return { produto: { ...atual.produto, quantidade_atual: movimentacao.saldo_atual } }
+    })
+    setTentativa((anterior) => anterior + 1)
+  }
+
   function corpoDaLista() {
     if (mensagemDeErro) {
       return (
@@ -126,7 +134,11 @@ export default function Estoque() {
               aoSalvar={aoSalvarProduto}
             />
             {painel.produto && (
-              <SecaoDeMovimentacao key={`movimentacao-${painel.produto.id}`} produto={painel.produto} />
+              <SecaoDeMovimentacao
+                key={`movimentacao-${painel.produto.id}`}
+                produto={painel.produto}
+                aoRegistrar={aoRegistrarMovimentacao}
+              />
             )}
           </PainelLateral>
         )}

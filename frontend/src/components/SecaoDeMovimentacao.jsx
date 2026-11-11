@@ -4,8 +4,13 @@ import FormularioDeMovimentacao from './FormularioDeMovimentacao.jsx'
 import HistoricoDeMovimentacoes from './HistoricoDeMovimentacoes.jsx'
 import './SecaoDeMovimentacao.css'
 
-export default function SecaoDeMovimentacao({ produto }) {
+export default function SecaoDeMovimentacao({ produto, aoRegistrar }) {
   const [versaoDoHistorico, setVersaoDoHistorico] = useState(0)
+
+  function registrar(movimentacao) {
+    setVersaoDoHistorico((anterior) => anterior + 1)
+    aoRegistrar(movimentacao)
+  }
 
   return (
     <div className="secao-de-movimentacao">
@@ -15,7 +20,7 @@ export default function SecaoDeMovimentacao({ produto }) {
         </h3>
         <FormularioDeMovimentacao
           produto={produto}
-          aoRegistrar={() => setVersaoDoHistorico((anterior) => anterior + 1)}
+          aoRegistrar={registrar}
         />
       </section>
       <HistoricoDeMovimentacoes produtoId={produto.id} versao={versaoDoHistorico} />

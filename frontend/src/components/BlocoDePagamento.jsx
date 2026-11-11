@@ -18,7 +18,7 @@ export default function BlocoDePagamento({ agendamento }) {
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [tentativa, setTentativa] = useState(0)
   const [estornando, setEstornando] = useState(false)
-  const [mensagemDoEstorno, setMensagemDoEstorno] = useState('')
+  const [aviso, setAviso] = useState('')
 
   useEffect(() => {
     let atual = true
@@ -46,13 +46,24 @@ export default function BlocoDePagamento({ agendamento }) {
     setTentativa((anterior) => anterior + 1)
   }
 
+  function avisarConflito(mensagem) {
+    setAviso(mensagem)
+    setTentativa((anterior) => anterior + 1)
+  }
+
+  function registrar(registrado) {
+    setAviso('')
+    setPagamento(registrado)
+  }
+
   async function estornar() {
     setEstornando(true)
-    setMensagemDoEstorno('')
+    setAviso('')
     try {
       setPagamento(await estornarPagamento(pagamento.id))
     } catch (erro) {
-      setMensagemDoEstorno(erro.message)
+      if (erro.status === 409) avisarConflito(erro.message)
+      else setAviso(erro.message)
     } finally {
       setEstornando(false)
     }
@@ -79,7 +90,13 @@ export default function BlocoDePagamento({ agendamento }) {
     }
 
     if (!pagamento && aceitaPagamento(agendamento.status)) {
-      return <FormularioDePagamento agendamento={agendamento} aoRegistrar={setPagamento} />
+      return (
+        <FormularioDePagamento
+          agendamento={agendamento}
+          aoRegistrar={registrar}
+          aoEncontrarConflito={avisarConflito}
+        />
+      )
     }
 
     if (!pagamento) {
@@ -110,11 +127,6 @@ export default function BlocoDePagamento({ agendamento }) {
             <dd>{dataEHoraDoTexto(pagamento.pago_em)}</dd>
           </div>
         </dl>
-        {mensagemDoEstorno && (
-          <p className="formulario-erro" role="alert">
-            {mensagemDoEstorno}
-          </p>
-        )}
         {pagamento.status === 'pago' && (
           <BotoesDeStatus acoes={[acaoDeEstorno]} desabilitado={estornando} aoEscolher={estornar} />
         )}
@@ -127,6 +139,11 @@ export default function BlocoDePagamento({ agendamento }) {
       <h3 className="detalhes-subtitulo" id="pagamento-titulo">
         Pagamento
       </h3>
+      {aviso && (
+        <p className="formulario-erro pagamento-aviso" role="alert">
+          {aviso}
+        </p>
+      )}
       {corpoDoPagamento()}
     </section>
   )

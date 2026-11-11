@@ -21,3 +21,7 @@
   flex-direction: column;
   gap: 12px;
 }
+
+.pagamento-aviso {
+  margin-bottom: 12px;
+}

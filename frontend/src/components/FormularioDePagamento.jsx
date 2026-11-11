@@ -6,7 +6,7 @@ import { lerNumero } from '../formatacao/numero.js'
 import CampoDeTexto from './CampoDeTexto.jsx'
 import SeletorDeFormaDePagamento from './SeletorDeFormaDePagamento.jsx'
 
-export default function FormularioDePagamento({ agendamento, aoRegistrar }) {
+export default function FormularioDePagamento({ agendamento, aoRegistrar, aoEncontrarConflito }) {
   const [valor, setValor] = useState(formatarValorParaEditar(agendamento.servico.preco))
   const [forma, setForma] = useState('')
   const [mensagemDeErro, setMensagemDeErro] = useState('')
@@ -31,6 +31,10 @@ export default function FormularioDePagamento({ agendamento, aoRegistrar }) {
       })
       aoRegistrar(registrado)
     } catch (erro) {
+      if (erro.status === 409) {
+        aoEncontrarConflito(erro.message)
+        return
+      }
       const camposComErro = erro.campos ?? {}
       setErrosDosCampos(camposComErro)
       setMensagemDeErro(Object.keys(camposComErro).length > 0 ? '' : erro.message)

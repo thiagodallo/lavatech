@@ -1,0 +1,113 @@
+.grafico-barras {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.grafico-leitura {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-height: 24px;
+  margin: 0;
+  color: var(--cor-texto-suave);
+}
+
+.grafico-leitura strong {
+  color: var(--cor-texto);
+  font-family: var(--fonte-mono);
+  font-size: 16px;
+}
+
+.grafico-area {
+  display: flex;
+  align-items: flex-end;
+  height: 140px;
+  border-bottom: 1px solid var(--cor-linha);
+  border-radius: 4px;
+}
+
+.barra-coluna {
+  display: flex;
+  flex: 1 1 0;
+  align-items: flex-end;
+  min-width: 0;
+  height: 100%;
+}
+
+.barra {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  background: var(--cor-marca);
+}
+
+.barra-zero {
+  height: 2px;
+  background: var(--cor-linha);
+}
+
+.barra-ativa {
+  background: var(--cor-alerta-escura);
+}
+
+.barra-zero.barra-ativa {
+  background: var(--cor-texto-suave);
+}
+
+.grafico-eixo {
+  position: relative;
+  height: 16px;
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-mono);
+  font-size: 11px;
+}
+
+.eixo-rotulo {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
+.eixo-centro {
+  transform: translateX(-50%);
+}
+
+.eixo-inicio {
+  left: 0;
+}
+
+.eixo-fim {
+  right: 0;
+}
+
+.grafico-tabela summary {
+  width: fit-content;
+  color: var(--cor-marca);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tabela-rolagem {
+  max-height: 240px;
+  margin-top: 8px;
+  overflow-y: auto;
+}
+
+.grafico-tabela table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.grafico-tabela th,
+.grafico-tabela td {
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--cor-linha);
+  text-align: left;
+}
+
+.grafico-tabela th:last-child,
+.grafico-tabela td:last-child {
+  text-align: right;
+  font-family: var(--fonte-mono);
+}

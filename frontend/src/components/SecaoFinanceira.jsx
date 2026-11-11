@@ -1,7 +1,10 @@
 import { buscarResumoDoPeriodo } from '../api/dashboard.js'
 import usarDadosDaApi from '../hooks/usarDadosDaApi.js'
 import BlocoDoDashboard from './BlocoDoDashboard.jsx'
+import FaturamentoPorDia from './FaturamentoPorDia.jsx'
 import NumerosDoFinanceiro from './NumerosDoFinanceiro.jsx'
+
+const semPagamentos = (resumo) => resumo.pagamentos === 0
 
 export default function SecaoFinanceira({ periodo }) {
   const rota = usarDadosDaApi(() => buscarResumoDoPeriodo(periodo), `${periodo.de}|${periodo.ate}`)
@@ -12,6 +15,9 @@ export default function SecaoFinanceira({ periodo }) {
       <div className="dashboard-blocos">
         <BlocoDoDashboard titulo="Resumo" rota={rota}>
           {(resumo) => <NumerosDoFinanceiro resumo={resumo} />}
+        </BlocoDoDashboard>
+        <BlocoDoDashboard titulo="Faturamento por dia" rota={rota} vazio={semPagamentos}>
+          {(resumo) => <FaturamentoPorDia dias={resumo.faturamento_por_dia} />}
         </BlocoDoDashboard>
       </div>
     </>

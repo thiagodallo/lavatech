@@ -108,3 +108,30 @@ export async function contarCancelamentos(de, ate) {
     WHERE data_hora_agendada >= ${de}::date AND data_hora_agendada < ${ate}::date + 1`
   return contagem
 }
+
+export function listarTempoMedioPorServico(de, ate) {
+  return prisma.$queryRaw`
+    SELECT
+      s.id AS servico_id,
+      s.nome,
+      s.duracao_minutos AS duracao_prevista_minutos,
+      COUNT(*)::int AS atendimentos,
+      AVG(EXTRACT(EPOCH FROM (a.data_hora_fim - a.data_hora_inicio)) / 60) AS tempo_medio_minutos
+    FROM agendamento a
+    JOIN servico s ON s.id = a.servico_id
+    WHERE a.status = 'concluido'
+      AND a.data_hora_inicio IS NOT NULL
+      AND a.data_hora_fim IS NOT NULL
+      AND a.data_hora_agendada >= ${de}::date AND a.data_hora_agendada < ${ate}::date + 1
+    GROUP BY s.id, s.nome, s.duracao_minutos
+    ORDER BY s.nome, s.id`
+}
+
+export function listarAgendamentosPorHora(de, ate) {
+  return prisma.$queryRaw`
+    SELECT EXTRACT(HOUR FROM data_hora_agendada)::int AS hora, COUNT(*)::int AS agendamentos
+    FROM agendamento
+    WHERE status <> 'cancelado'
+      AND data_hora_agendada >= ${de}::date AND data_hora_agendada < ${ate}::date + 1
+    GROUP BY 1`
+}

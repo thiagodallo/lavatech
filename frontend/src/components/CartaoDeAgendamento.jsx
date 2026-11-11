@@ -1,8 +1,12 @@
+import { acoesDoStatus } from '../dominio/statusDoAgendamento.js'
 import { horaDoTexto } from '../formatacao/horario.js'
+import BotoesDeStatus from './BotoesDeStatus.jsx'
 import PilulaDeStatus from './PilulaDeStatus.jsx'
 import './CartaoDeAgendamento.css'
 
-export default function CartaoDeAgendamento({ agendamento }) {
+export default function CartaoDeAgendamento({ agendamento, ocupado, mensagemDeErro, aoMudarStatus }) {
+  const acoes = acoesDoStatus(agendamento.status)
+
   return (
     <li className="cartao-agendamento">
       <div className="cartao-corpo">
@@ -22,6 +26,19 @@ export default function CartaoDeAgendamento({ agendamento }) {
         </span>
         <PilulaDeStatus status={agendamento.status} />
       </div>
+
+      {(acoes.length > 0 || mensagemDeErro) && (
+        <div className="cartao-rodape">
+          {mensagemDeErro && (
+            <p className="cartao-erro" role="alert">
+              {mensagemDeErro}
+            </p>
+          )}
+          {acoes.length > 0 && (
+            <BotoesDeStatus acoes={acoes} desabilitado={ocupado} aoEscolher={aoMudarStatus} />
+          )}
+        </div>
+      )}
     </li>
   )
 }

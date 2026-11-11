@@ -55,3 +55,20 @@
   color: var(--cor-texto-suave);
   font-size: 13px;
 }
+
+.cartao-rodape {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 16px 14px;
+  border-top: 1px solid var(--cor-linha);
+}
+
+.cartao-erro {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--raio-pequeno);
+  background: var(--status-cancelado-fundo);
+  color: var(--status-cancelado-texto);
+  font-size: 13px;
+}

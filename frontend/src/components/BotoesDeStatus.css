@@ -1,0 +1,42 @@
+.botoes-de-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.botao-pequeno {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--raio-pequeno);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.botao-pequeno.botao-primario {
+  height: 32px;
+}
+
+.botao-pequeno.botao-secundario {
+  height: 32px;
+}
+
+.botao-perigo {
+  border: 1px solid var(--status-cancelado-texto);
+  background: var(--status-cancelado-fundo);
+  color: var(--status-cancelado-texto);
+}
+
+.botao-perigo:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .botao-pequeno {
+    transition: none;
+  }
+}

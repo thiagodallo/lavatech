@@ -1,4 +1,10 @@
 import ErroDeAplicacao from '../errors/ErroDeAplicacao.js'
+import {
+  diaDeHoje,
+  formatarHorario,
+  formatarHorarioOpcional,
+  relogioDoBanco,
+} from '../horario/horarioDeSaoPaulo.js'
 import * as agendamentos from '../repositories/agendamento.repository.js'
 import * as clientes from '../repositories/cliente.repository.js'
 import * as servicos from '../repositories/servico.repository.js'
@@ -28,31 +34,13 @@ const TRANSICOES_PERMITIDAS = {
 }
 const MS_POR_MINUTO = 60 * 1000
 const MS_POR_DIA = 24 * 60 * MS_POR_MINUTO
-const DESLOCAMENTO_DO_FUSO_MS = 3 * 60 * MS_POR_MINUTO
-const SUFIXO_DO_FUSO = '-03:00'
 
 export function listarVagasAtivas() {
   return vagas.listarAtivas()
 }
 
-function relogioDoBanco(instante) {
-  return new Date(instante.getTime() - DESLOCAMENTO_DO_FUSO_MS)
-}
-
 function somarMinutos(horario, minutos) {
   return new Date(horario.getTime() + minutos * MS_POR_MINUTO)
-}
-
-function formatarHorario(horarioDoBanco) {
-  return `${horarioDoBanco.toISOString().slice(0, 19)}${SUFIXO_DO_FUSO}`
-}
-
-function formatarHorarioOpcional(horarioDoBanco) {
-  return horarioDoBanco ? formatarHorario(horarioDoBanco) : null
-}
-
-function diaDeHoje() {
-  return relogioDoBanco(new Date()).toISOString().slice(0, 10)
 }
 
 function formatarAgendamento(agendamento) {

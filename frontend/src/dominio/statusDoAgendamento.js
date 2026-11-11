@@ -26,3 +26,9 @@ const acoesPorStatus = {
 export function acoesDoStatus(status) {
   return acoesPorStatus[status] ?? []
 }
+
+const statusQueAceitamPagamento = ['em_andamento', 'concluido']
+
+export function aceitaPagamento(status) {
+  return statusQueAceitamPagamento.includes(status)
+}

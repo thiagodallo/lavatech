@@ -8,3 +8,7 @@ export async function buscarPagamentoDoAgendamento(agendamentoId) {
     throw erro
   }
 }
+
+export function registrarPagamento(agendamentoId, dados) {
+  return requisitar(`/agendamentos/${agendamentoId}/pagamento`, { metodo: 'POST', corpo: dados })
+}

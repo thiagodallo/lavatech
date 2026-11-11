@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 
 import { buscarPagamentoDoAgendamento } from '../api/pagamentos.js'
+import { aceitaPagamento } from '../dominio/statusDoAgendamento.js'
 import { rotuloDaForma } from '../dominio/formasDePagamento.js'
 import { dataEHoraDoTexto } from '../formatacao/horario.js'
 import { formatarMoeda } from '../formatacao/moeda.js'
+import FormularioDePagamento from './FormularioDePagamento.jsx'
 import './BlocoDePagamento.css'
 
 const rotulosDaSituacao = { pago: 'Pago', estornado: 'Estornado' }
@@ -58,6 +60,10 @@ export default function BlocoDePagamento({ agendamento }) {
           Carregando
         </p>
       )
+    }
+
+    if (!pagamento && aceitaPagamento(agendamento.status)) {
+      return <FormularioDePagamento agendamento={agendamento} aoRegistrar={setPagamento} />
     }
 
     if (!pagamento) {

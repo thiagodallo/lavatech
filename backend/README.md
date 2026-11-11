@@ -108,7 +108,7 @@ Toda rota registrada depois do `exigirSessao` em `routes/index.js` responde 401 
 
 Todas as rotas ficam sob `/api`, recebem e devolvem JSON. Os nomes dos campos seguem as colunas do banco, em `snake_case`. Com exceção de `/health` e `/auth/login`, todas vão exigir sessão.
 
-Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/produtos` e `/funcionarios`. As outras estão aqui para o front-end já saber o que esperar.
+Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/produtos`, `/funcionarios`, `/vagas` e `/agendamentos` (menos pagamento e checklist). As outras estão aqui para o front-end já saber o que esperar.
 
 | Método | Rota | Requisito | Para que serve |
 |---|---|---|---|
@@ -127,6 +127,9 @@ Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `
 | PUT | `/produtos/:id` | RF03 | Edita um produto |
 | GET | `/vagas` | RF04 | Lista as vagas de lavagem |
 | GET | `/agendamentos?data=AAAA-MM-DD` | RF04, RF08 | Agenda do dia |
+| GET | `/agendamentos/alertas?minutos=15` | RF08 | Agendamentos que começam nos próximos minutos |
+| GET | `/agendamentos/:id` | RF04 | Um agendamento |
+| GET | `/agendamentos/:id/historico` | RF07 | Histórico de status |
 | POST | `/agendamentos` | RF04, RF05 | Cria agendamento, devolve 409 se a vaga estiver ocupada |
 | PATCH | `/agendamentos/:id/status` | RF07 | Muda o status e grava o histórico |
 | POST | `/agendamentos/:id/pagamento` | RF06 | Registra o pagamento |
@@ -281,3 +284,106 @@ Erros próprios destas rotas, além do 400 de corpo inválido e do 401 sem sess�
 | 409 | `E-mail já cadastrado`, ou `Você não pode desativar a própria conta` |
 
 Ainda não existe uma rota de troca de senha que peça a senha atual: a redefinição é feita pelo `PUT`, por qualquer funcionário logado, inclusive para a própria conta.
+
+## Agendamento (RF04, RF05, RF07, RF08)
+
+Todas as rotas desta seção exigem sessão. Um agendamento tem um serviço só, e o funcionário gravado nele é o que está logado.
+
+### Fuso horário
+
+As colunas `data_hora_*` são `TIMESTAMP` sem fuso. A regra única da API: o banco guarda o horário de parede de São Paulo (America/Sao_Paulo, UTC-3 fixo, sem horário de verão), então `10:00` no pgAdmin é 10:00 no relógio da lavação. Por isso o filtro por dia e a conta de sobreposição funcionam direto sobre a coluna.
+
+- Quem envia: `data_hora_agendada` em ISO 8601 **com** fuso (`2026-11-10T10:00:00-03:00` ou `2026-11-10T13:00:00Z`). Sem fuso, devolve 400. A API converte para o horário de São Paulo antes de gravar.
+- Quem recebe: todo horário volta como `2026-11-10T10:00:00-03:00`, o mesmo que foi gravado.
+- `?data=AAAA-MM-DD` é o dia em São Paulo. Sem `data`, vale o dia de hoje em São Paulo.
+- Os horários de início, fim e histórico são gerados pela API no mesmo fuso, em vez de usar o `now()` do banco.
+
+### Vagas
+
+`GET /api/vagas` lista as vagas ativas por id.
+
+```json
+[{ "id": 1, "identificacao": "Vaga 1" }, { "id": 2, "identificacao": "Vaga 2" }]
+```
+
+### Formato do agendamento
+
+Todas as rotas abaixo devolvem o agendamento neste formato (a lista é um array dele).
+
+```json
+{
+  "id": 3,
+  "data_hora_agendada": "2026-11-10T10:00:00-03:00",
+  "data_hora_fim_prevista": "2026-11-10T11:00:00-03:00",
+  "data_hora_inicio": null,
+  "data_hora_fim": null,
+  "status": "agendado",
+  "observacoes": "Cliente pediu cera",
+  "cliente": { "id": 1, "nome": "Marcos Andrade" },
+  "veiculo": { "id": 1, "modelo": "Argo", "placa": "RSD3G21" },
+  "servico": { "id": 2, "nome": "Lavagem Completa", "duracao_minutos": 60, "preco": 60 },
+  "vaga": { "id": 1, "identificacao": "Vaga 1" }
+}
+```
+
+`data_hora_fim_prevista` é o horário agendado mais a duração do serviço. `data_hora_inicio` é preenchido quando o status vira `em_andamento` e `data_hora_fim` quando vira `concluido`.
+
+### Agenda do dia (RF04)
+
+`GET /api/agendamentos?data=2026-11-10&status=agendado` lista os agendamentos do dia por horário. `data` e `status` são opcionais. O `status` vale um destes: `agendado`, `aguardando`, `em_andamento`, `concluido`, `cancelado`, `no_show`.
+
+`GET /api/agendamentos/:id` devolve um agendamento, ou 404 `Agendamento não encontrado`.
+
+### Alertas (RF08)
+
+`GET /api/agendamentos/alertas?minutos=15` lista os agendamentos `agendado` ou `aguardando` cujo horário está entre agora e agora mais `minutos`. O padrão é 15 e vale de 1 a 240. Cada item vem no formato acima mais `minutos_restantes`, inteiro arredondado para cima. A rota só calcula: ela nunca muda o status.
+
+### Cadastro (RF04, RF05)
+
+`POST /api/agendamentos` responde 201 com o agendamento. O status inicial é `agendado`.
+
+```json
+{ "cliente_id": 1, "veiculo_id": 1, "servico_id": 2, "vaga_id": 1, "data_hora_agendada": "2026-11-10T10:00:00-03:00", "observacoes": "Cliente pediu cera" }
+```
+
+- `observacoes`: opcional, até 500 caracteres.
+- Não há bloqueio de data passada, para permitir lançar atendimento retroativo.
+- Remarcar não existe: cancele e crie outro.
+
+O agendamento e a primeira linha do histórico (`status_anterior` nulo, `status_novo` `agendado`) são gravados na mesma transação.
+
+Conflito de horário: cada agendamento ocupa a vaga de `data_hora_agendada` até o fim previsto. Se o intervalo cruzar com o de outro agendamento da mesma vaga, responde 409 `Vaga ocupada nesse horário`. Agendamentos `cancelado` e `no_show` não ocupam a vaga. Dois pedidos simultâneos para o mesmo horário exato também terminam em um 201 e um 409, porque o índice único do banco recusa o segundo.
+
+| Status | Quando |
+|---|---|
+| 400 | `O veículo não pertence a esse cliente`, `Serviço inativo` ou `Vaga inativa` |
+| 404 | `Cliente não encontrado`, `Serviço não encontrado` ou `Vaga não encontrada` |
+| 409 | `Vaga ocupada nesse horário` |
+
+### Mudança de status (RF07)
+
+`PATCH /api/agendamentos/:id/status` com `{ "status": "aguardando" }` devolve o agendamento atualizado. As transições permitidas:
+
+| De | Para |
+|---|---|
+| `agendado` | `aguardando`, `em_andamento`, `cancelado`, `no_show` |
+| `aguardando` | `em_andamento`, `cancelado`, `no_show` |
+| `em_andamento` | `concluido`, `cancelado` |
+| `concluido`, `cancelado`, `no_show` | nenhuma |
+
+Qualquer outra transição responde 409 `Transição de status não permitida: de concluido para cancelado`. Marcar `aguardando` é manual (a atendente avisa que o cliente chegou). Neste momento `concluido` só troca o status; o checklist de qualidade (RF10) vai passar a ser exigido nessa transição.
+
+A troca atualiza o status e `atualizado_em`, preenche `data_hora_inicio` ou `data_hora_fim` quando for o caso e grava a linha do histórico, tudo na mesma transação: se qualquer passo falhar, nada é salvo. Se duas pessoas mudarem o mesmo agendamento ao mesmo tempo, a segunda recebe 409 `O status do agendamento acabou de ser alterado, atualize a agenda`.
+
+### Histórico
+
+`GET /api/agendamentos/:id/historico` lista as mudanças por ordem de data.
+
+```json
+[
+  { "status_anterior": null, "status_novo": "agendado", "alterado_em": "2026-11-05T09:12:03-03:00", "alterado_por": { "id": 1, "nome": "Administrador" } },
+  { "status_anterior": "agendado", "status_novo": "aguardando", "alterado_em": "2026-11-10T09:55:40-03:00", "alterado_por": { "id": 1, "nome": "Administrador" } }
+]
+```
+
+Os demais erros são os de sempre: 400 com `campos` para corpo ou filtro inválido, 401 sem sessão e 404 `Agendamento não encontrado` nas rotas com `:id`.

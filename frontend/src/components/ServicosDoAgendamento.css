@@ -1,0 +1,21 @@
+.servicos-do-agendamento {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.servicos-do-agendamento li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.servico-do-agendamento-dados {
+  font-family: var(--fonte-mono);
+  font-size: 12px;
+  white-space: nowrap;
+}

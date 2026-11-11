@@ -12,3 +12,14 @@ export function criar({ nome, descricao, preco, duracao_minutos, ativo }) {
     data: { nome, descricao: descricao || null, preco, duracao_minutos, ativo },
   })
 }
+
+export function buscarPorId(id) {
+  return prisma.servico.findUnique({ where: { id } })
+}
+
+export function atualizar(id, { nome, descricao, preco, duracao_minutos, ativo }) {
+  return prisma.servico.update({
+    where: { id },
+    data: { nome, descricao: descricao || null, preco, duracao_minutos, ativo },
+  })
+}

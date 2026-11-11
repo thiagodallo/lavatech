@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { listarProdutos } from '../api/produtos.js'
 import FormularioProduto from '../components/FormularioProduto.jsx'
 import PainelLateral from '../components/PainelLateral.jsx'
+import SecaoDeMovimentacao from '../components/SecaoDeMovimentacao.jsx'
 import { formatarQuantidade } from '../formatacao/quantidade.js'
 import './Estoque.css'
 
@@ -38,6 +39,14 @@ export default function Estoque() {
 
   function aoSalvarProduto(produto) {
     setPainel({ produto })
+    setTentativa((anterior) => anterior + 1)
+  }
+
+  function aoRegistrarMovimentacao(movimentacao) {
+    setPainel((atual) => {
+      if (atual?.produto?.id !== movimentacao.produto.id) return atual
+      return { produto: { ...atual.produto, quantidade_atual: movimentacao.saldo_atual } }
+    })
     setTentativa((anterior) => anterior + 1)
   }
 
@@ -124,6 +133,13 @@ export default function Estoque() {
               produto={painel.produto}
               aoSalvar={aoSalvarProduto}
             />
+            {painel.produto && (
+              <SecaoDeMovimentacao
+                key={`movimentacao-${painel.produto.id}`}
+                produto={painel.produto}
+                aoRegistrar={aoRegistrarMovimentacao}
+              />
+            )}
           </PainelLateral>
         )}
       </div>

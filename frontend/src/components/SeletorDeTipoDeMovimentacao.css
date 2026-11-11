@@ -1,0 +1,49 @@
+.seletor-de-tipo {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.seletor-de-tipo legend {
+  padding: 0;
+  margin-bottom: 6px;
+}
+
+.seletor-de-tipo-opcoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.seletor-de-tipo-opcao {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-superficie);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.seletor-de-tipo-opcao:has(input:checked) {
+  border-color: var(--cor-marca);
+  background: var(--status-aguardando-fundo);
+  color: var(--status-aguardando-texto);
+}
+
+.seletor-de-tipo-opcao:has(input:focus-visible) {
+  outline: 2px solid var(--cor-alerta);
+  outline-offset: 2px;
+}
+
+.seletor-de-tipo-opcao input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--cor-marca);
+}

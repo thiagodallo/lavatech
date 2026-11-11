@@ -102,12 +102,28 @@ function formatarServicoVendido(linha) {
   }
 }
 
+function percentualDe(parte, total) {
+  return total ? arredondar((parte / total) * 100, 1) : 0
+}
+
+function formatarCancelamentos({ total, cancelados, no_shows }) {
+  return {
+    total_agendamentos: total,
+    cancelados,
+    no_shows,
+    percentual_cancelados: percentualDe(cancelados, total),
+    percentual_no_shows: percentualDe(no_shows, total),
+  }
+}
+
 export async function resumirPeriodo({ de, ate }) {
-  const [resumo, formas, dias, servicos] = await Promise.all([
+  const [resumo, formas, dias, servicos, clientes, cancelamentos] = await Promise.all([
     dashboard.somarFaturamento(de, ate),
     dashboard.listarFaturamentoPorForma(de, ate),
     dashboard.listarFaturamentoPorDia(de, ate),
     dashboard.listarServicosMaisVendidos(de, ate, TAMANHO_DO_RANKING),
+    dashboard.contarClientesNovosERecorrentes(de, ate),
+    dashboard.contarCancelamentos(de, ate),
   ])
   const faturamento = Number(resumo.faturamento)
   return {
@@ -118,5 +134,7 @@ export async function resumirPeriodo({ de, ate }) {
     faturamento_por_forma: montarFaturamentoPorForma(formas),
     faturamento_por_dia: montarFaturamentoPorDia(dias, de, ate),
     servicos_mais_vendidos: servicos.map(formatarServicoVendido),
+    clientes,
+    cancelamentos: formatarCancelamentos(cancelamentos),
   }
 }

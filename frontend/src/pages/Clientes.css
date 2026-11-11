@@ -44,17 +44,6 @@
   font: inherit;
 }
 
-.clientes-area {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 16px;
-  align-items: start;
-}
-
-.clientes-area.com-painel {
-  grid-template-columns: minmax(0, 1fr) 380px;
-}
-
 .clientes-lista {
   border: 1px solid var(--cor-linha);
   border-radius: var(--raio-medio);
@@ -119,48 +108,4 @@
   color: var(--cor-texto-suave);
   font-family: var(--fonte-mono);
   font-size: 12px;
-}
-
-.clientes-painel {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-  border: 1px solid var(--cor-linha);
-  border-radius: var(--raio-medio);
-  background: var(--cor-cartao);
-}
-
-.clientes-painel-cabecalho {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.clientes-painel-titulo {
-  margin: 0;
-  font-family: var(--fonte-titulo);
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.clientes-painel-fechar {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border: 0;
-  border-radius: var(--raio-pequeno);
-  background: none;
-  color: var(--cor-texto-suave);
-}
-
-.clientes-painel-fechar:hover {
-  background: var(--cor-superficie);
-}
-
-@media (max-width: 1000px) {
-  .clientes-area.com-painel {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }

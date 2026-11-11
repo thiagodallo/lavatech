@@ -6,6 +6,7 @@ import authRoutes from './auth.routes.js'
 import clienteRoutes from './cliente.routes.js'
 import funcionarioRoutes from './funcionario.routes.js'
 import healthRoutes from './health.routes.js'
+import movimentacaoRoutes from './movimentacao.routes.js'
 import pagamentoRoutes from './pagamento.routes.js'
 import produtoRoutes from './produto.routes.js'
 import servicoRoutes from './servico.routes.js'
@@ -23,5 +24,6 @@ rotas.use('/funcionarios', funcionarioRoutes)
 rotas.use('/vagas', vagaRoutes)
 rotas.use('/agendamentos', agendamentoRoutes)
 rotas.use(pagamentoRoutes)
+rotas.use('/movimentacoes', movimentacaoRoutes)
 
 export default rotas

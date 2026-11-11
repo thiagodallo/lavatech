@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 
 import { listarAgendamentosDoDia, mudarStatusDoAgendamento } from '../api/agendamentos.js'
+import AlertaDeProximoAtendimento from '../components/AlertaDeProximoAtendimento.jsx'
 import CartaoDeAgendamento from '../components/CartaoDeAgendamento.jsx'
 import SeletorDeDia from '../components/SeletorDeDia.jsx'
 import { dataDeHoje, ehDataValida } from '../formatacao/horario.js'
@@ -20,6 +21,7 @@ export default function Agenda() {
   const [tentativa, setTentativa] = useState(0)
   const [idEmAcao, setIdEmAcao] = useState(null)
   const [errosPorId, setErrosPorId] = useState({})
+  const [versaoDosAlertas, setVersaoDosAlertas] = useState(0)
   const agendamentosDoDia = diaCarregado === data ? agendamentos : []
 
   useEffect(() => {
@@ -57,6 +59,7 @@ export default function Agenda() {
       if (erro.status === 409) setTentativa((anterior) => anterior + 1)
     } finally {
       setIdEmAcao(null)
+      setVersaoDosAlertas((anterior) => anterior + 1)
     }
   }
 
@@ -119,6 +122,8 @@ export default function Agenda() {
           </Link>
         </div>
       </header>
+
+      <AlertaDeProximoAtendimento versao={versaoDosAlertas} />
 
       {corpoDaLista()}
     </section>

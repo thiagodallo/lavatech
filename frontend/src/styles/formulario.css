@@ -1,0 +1,58 @@
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo-rotulo {
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.campo-entrada {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-superficie);
+  color: var(--cor-texto);
+  font: inherit;
+}
+
+.campo-entrada[aria-invalid='true'] {
+  border-color: var(--status-cancelado-texto);
+}
+
+.campo-erro {
+  margin: 0;
+  color: var(--status-cancelado-texto);
+  font-size: 12px;
+}
+
+.formulario-erro {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--raio-pequeno);
+  background: var(--status-cancelado-fundo);
+  color: var(--status-cancelado-texto);
+  font-size: 13px;
+}
+
+.formulario-acoes {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.formulario-salvo {
+  color: var(--status-concluido-texto);
+  font-size: 13px;
+  font-weight: 600;
+}

@@ -5,9 +5,10 @@ export function definirAoExpirarSessao(funcao) {
 }
 
 export class ErroDaApi extends Error {
-  constructor(status, mensagem) {
+  constructor(status, mensagem, campos = {}) {
     super(mensagem)
     this.status = status
+    this.campos = campos
   }
 }
 
@@ -27,7 +28,11 @@ export async function requisitar(caminho, { metodo = 'GET', corpo } = {}) {
     if (resposta.status === 401 && !caminho.startsWith('/auth/')) {
       aoExpirarSessao?.()
     }
-    throw new ErroDaApi(resposta.status, dados?.erro ?? 'Não foi possível falar com o servidor')
+    throw new ErroDaApi(
+      resposta.status,
+      dados?.erro ?? 'Não foi possível falar com o servidor',
+      dados?.campos,
+    )
   }
 
   return dados

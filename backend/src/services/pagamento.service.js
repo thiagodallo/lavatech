@@ -9,6 +9,7 @@ const PAGAMENTO_NAO_ENCONTRADO = 'Pagamento não encontrado'
 const AGENDAMENTO_SEM_PAGAMENTO =
   'Não é possível registrar pagamento de agendamento cancelado ou não compareceu'
 const STATUS_SEM_PAGAMENTO = ['cancelado', 'no_show']
+const PAGAMENTO_NAO_ESTORNAVEL = 'Somente pagamento pago pode ser estornado'
 const STATUS_PAGO = 'pago'
 const REGISTRO_DUPLICADO = 'P2002'
 
@@ -49,6 +50,26 @@ export async function buscarPagamentoDoAgendamento(agendamentoId) {
     throw new ErroDeAplicacao(404, PAGAMENTO_NAO_ENCONTRADO)
   }
   return formatarPagamento(pagamento)
+}
+
+async function exigirPagamento(id) {
+  const pagamento = await pagamentos.buscarPorId(id)
+  if (!pagamento) {
+    throw new ErroDeAplicacao(404, PAGAMENTO_NAO_ENCONTRADO)
+  }
+  return pagamento
+}
+
+export async function estornarPagamento(id) {
+  const { status } = await exigirPagamento(id)
+  if (status !== STATUS_PAGO) {
+    throw new ErroDeAplicacao(409, PAGAMENTO_NAO_ESTORNAVEL)
+  }
+  const estornado = await pagamentos.estornar(id)
+  if (!estornado) {
+    throw new ErroDeAplicacao(409, PAGAMENTO_NAO_ESTORNAVEL)
+  }
+  return formatarPagamento(estornado)
 }
 
 export async function registrarPagamento(agendamentoId, { valor, forma_pagamento }) {

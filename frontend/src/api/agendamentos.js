@@ -15,3 +15,7 @@ export function listarAlertas() {
 export function listarHistoricoDoAgendamento(id) {
   return requisitar(`/agendamentos/${id}/historico`)
 }
+
+export function cadastrarAgendamento(dados) {
+  return requisitar('/agendamentos', { metodo: 'POST', corpo: dados })
+}

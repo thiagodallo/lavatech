@@ -23,3 +23,11 @@ export function dataEHoraDoTexto(texto) {
   const [ano, mes, dia] = texto.slice(0, 10).split('-')
   return `${dia}/${mes}/${ano} ${horaDoTexto(texto)}`
 }
+
+export function dataDoTexto(texto) {
+  return texto.slice(0, 10)
+}
+
+export function montarHorarioParaEnviar(data, hora) {
+  return `${data}T${hora}:00-03:00`
+}

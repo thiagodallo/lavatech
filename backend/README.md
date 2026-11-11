@@ -108,7 +108,7 @@ Toda rota registrada depois do `exigirSessao` em `routes/index.js` responde 401 
 
 Todas as rotas ficam sob `/api`, recebem e devolvem JSON. Os nomes dos campos seguem as colunas do banco, em `snake_case`. Com exceção de `/health` e `/auth/login`, todas vão exigir sessão.
 
-Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/produtos`, `/funcionarios`, `/vagas`, `/agendamentos`, `/checklists`, `/pagamentos` e `/movimentacoes`. As outras estão aqui para o front-end já saber o que esperar.
+Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/produtos`, `/funcionarios`, `/vagas`, `/agendamentos`, `/checklists`, `/pagamentos`, `/movimentacoes` e `/dashboard`.
 
 | Método | Rota | Requisito | Para que serve |
 |---|---|---|---|
@@ -139,9 +139,9 @@ Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `
 | GET | `/checklists?data=&resultado=` | RF10 | Lista os checklists preenchidos, os mais recentes primeiro |
 | POST | `/movimentacoes` | RF09 | Registra entrada ou saída e atualiza o saldo do produto |
 | GET | `/movimentacoes?produto_id=&limite=50` | RF09 | Lista as movimentações, as mais recentes primeiro |
-| GET | `/dashboard/operacional` | RF11 | Indicadores operacionais |
-| GET | `/dashboard/financeiro` | RF11 | Indicadores financeiros |
-| GET | `/dashboard/administrativo` | RF11 | Indicadores administrativos |
+| GET | `/dashboard/dia?data=` | RF11 | Resumo do dia: agendamentos por status, próximo atendimento, estoque baixo e vagas |
+| GET | `/dashboard/periodo?de=&ate=` | RF11 | Faturamento, ranking de serviços, clientes novos e recorrentes, cancelamentos |
+| GET | `/dashboard/operacao?de=&ate=` | RF11 | Tempo médio por serviço e horários de pico |
 
 O formato do corpo de cada rota entra neste arquivo junto com o PR que a implementa.
 
@@ -550,3 +550,89 @@ Responde 404 `Checklist não encontrado` se o atendimento ainda não foi conclu�
 ```
 
 `itens_nao_conformes` lista os nomes dos itens que vieram `false`. Filtro inválido devolve 400 com `campos`.
+
+## Dashboard (RF11)
+
+Todas as rotas desta seção exigem sessão e só leem dados: nada é gravado. Os indicadores são divididos por tipo de consulta (dia, período e operação), e não pelas duas seções do protótipo (Operacional e Financeiro), porque cada tipo usa um filtro de data diferente. Datas e horas seguem a regra de fuso das outras seções: o banco guarda o relógio de São Paulo e os dias são sempre dias de São Paulo. Valores em reais saem como número com duas casas. Sem dados, os números vêm zerados e as listas vazias, nunca erro.
+
+### Resumo do dia
+
+`GET /api/dashboard/dia?data=2026-11-10` (`data` opcional, padrão hoje):
+
+```json
+{
+  "data": "2026-11-10",
+  "total": 6,
+  "por_status": { "agendado": 2, "aguardando": 1, "em_andamento": 2, "concluido": 1, "cancelado": 0, "no_show": 0 },
+  "proximo_atendimento": {
+    "id": 14,
+    "data_hora_agendada": "2026-11-10T14:00:00-03:00",
+    "status": "agendado",
+    "cliente": { "id": 1, "nome": "Marcos Andrade" },
+    "veiculo": { "id": 1, "modelo": "Argo", "placa": "RSD3G21" },
+    "servico": { "id": 1, "nome": "Lavagem Simples" },
+    "vaga": { "id": 1, "identificacao": "Vaga 1" }
+  },
+  "estoque_abaixo_do_minimo": [
+    { "id": 2, "nome": "Cera líquida", "quantidade_atual": 2, "quantidade_minima": 6, "unidade_medida": "litro" }
+  ],
+  "ocupacao_vagas": { "em_uso": 2, "total": 2 }
+}
+```
+
+`por_status` conta os agendamentos do dia (pelo horário agendado) e `total` é a soma. O `proximo_atendimento` é o primeiro agendamento `agendado` ou `aguardando` a partir de agora, mesmo que seja de outro dia, ou `null`. O estoque baixo usa a mesma regra da tela de Estoque: `quantidade_atual` menor que `quantidade_minima`. `ocupacao_vagas` é a foto de agora: vagas ativas com um agendamento `em_andamento` sobre o total de vagas ativas.
+
+### Período
+
+`GET /api/dashboard/periodo?de=2026-11-01&ate=2026-11-30`. `de` e `ate` são opcionais e inclusivos; o padrão são os últimos 30 dias até hoje. O período tem no máximo 366 dias. Se só `ate` vier, `de` é 29 dias antes dele. Se só `de` vier, `ate` é hoje.
+
+```json
+{
+  "periodo": { "de": "2026-11-01", "ate": "2026-11-30", "dias": 30 },
+  "faturamento": 1250.5,
+  "pagamentos": 21,
+  "ticket_medio": 59.55,
+  "faturamento_por_forma": [
+    { "forma_pagamento": "dinheiro", "faturamento": 300, "pagamentos": 5 },
+    { "forma_pagamento": "pix", "faturamento": 700.5, "pagamentos": 12 },
+    { "forma_pagamento": "cartao_debito", "faturamento": 150, "pagamentos": 2 },
+    { "forma_pagamento": "cartao_credito", "faturamento": 100, "pagamentos": 2 }
+  ],
+  "faturamento_por_dia": [{ "data": "2026-11-01", "faturamento": 0, "pagamentos": 0 }],
+  "servicos_mais_vendidos": [{ "servico_id": 2, "nome": "Lavagem Completa", "quantidade": 9, "receita": 540 }],
+  "clientes": { "novos": 4, "recorrentes": 11 },
+  "cancelamentos": {
+    "total_agendamentos": 40,
+    "cancelados": 3,
+    "no_shows": 2,
+    "percentual_cancelados": 7.5,
+    "percentual_no_shows": 5
+  }
+}
+```
+
+- **Faturamento**: soma dos pagamentos com status `pago`, pela data de `pago_em`. Pagamento `estornado` e `pendente` não entram. `ticket_medio` é o faturamento dividido pela quantidade de pagamentos pagos, ou 0 se não houve nenhum.
+- **Por forma de pagamento**: sempre as quatro formas, com zero quando não houve. **Por dia**: um item para cada dia do período, com zero nos dias sem pagamento. Um pagamento feito depois da meia-noite conta no dia seguinte ao do atendimento.
+- **Serviços mais vendidos**: agendamentos `concluido` com horário agendado dentro do período, agrupados por serviço, os 5 primeiros por quantidade (empate vai para a maior receita). A `receita` soma os pagamentos pagos desses agendamentos.
+- **Clientes**: considera quem tem agendamento não cancelado no período. É novo quem tem o primeiro agendamento não cancelado dentro do período, e recorrente quem já tinha algum antes do início. Agendamento `no_show` conta, o `cancelado` não.
+- **Cancelamentos**: contagens e percentual (uma casa decimal) sobre todos os agendamentos do período, de qualquer status.
+
+### Operação
+
+`GET /api/dashboard/operacao?de=2026-11-01&ate=2026-11-30` (mesmos padrões de período):
+
+```json
+{
+  "periodo": { "de": "2026-11-01", "ate": "2026-11-30", "dias": 30 },
+  "tempo_medio_por_servico": [
+    { "servico_id": 2, "nome": "Lavagem Completa", "atendimentos": 9, "tempo_medio_minutos": 68.4, "duracao_prevista_minutos": 60 }
+  ],
+  "horarios_de_pico": [{ "hora": 0, "agendamentos": 0 }, { "hora": 9, "agendamentos": 7 }]
+}
+```
+
+`tempo_medio_minutos` é a média de `data_hora_fim` menos `data_hora_inicio` dos agendamentos `concluido` do período que têm os dois horários, com uma casa decimal, por ordem de nome do serviço. Serviços sem nenhum atendimento medido não aparecem. `horarios_de_pico` traz sempre as 24 horas cheias (0 a 23), contando os agendamentos não cancelados pela hora do horário agendado.
+
+Erros comuns das três rotas: 400 com `campos` para data fora do formato `AAAA-MM-DD`, `ate` antes de `de` ou período com mais de 366 dias, e 401 sem sessão.
+
+Limites conhecidos: não existe indicador de valores a receber, porque a API só registra pagamento já `pago`. Não há índice em `pagamento.pago_em`: com milhares de pagamentos a consulta lê a tabela inteira, o que ainda é instantâneo (medimos 2 mil agendamentos em poucos milissegundos). Se a tabela crescer muito, o índice entra numa migration própria.

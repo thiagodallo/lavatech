@@ -1,5 +1,16 @@
-import TelaEmConstrucao from '../components/TelaEmConstrucao.jsx'
+import SecaoOperacional from '../components/SecaoOperacional.jsx'
+import { dataDeHoje } from '../formatacao/horario.js'
+import './Dashboard.css'
 
 export default function Dashboard() {
-  return <TelaEmConstrucao titulo="Dashboard" requisito="RF11" />
+  const hoje = dataDeHoje()
+
+  return (
+    <section>
+      <header className="dashboard-cabecalho">
+        <h1 className="titulo-tela">Dashboard</h1>
+      </header>
+      <SecaoOperacional hoje={hoje} />
+    </section>
+  )
 }

@@ -1,0 +1,14 @@
+.barra-proporcao {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--cor-superficie);
+  overflow: hidden;
+}
+
+.barra-proporcao-preenchida {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--cor-marca);
+}

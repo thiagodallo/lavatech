@@ -31,3 +31,16 @@ export function dataDoTexto(texto) {
 export function montarHorarioParaEnviar(data, hora) {
   return `${data}T${hora}:00-03:00`
 }
+
+export function primeiroDiaDoMes(data) {
+  return `${data.slice(0, 8)}01`
+}
+
+export function formatarData(data) {
+  const [ano, mes, dia] = data.split('-')
+  return `${dia}/${mes}/${ano}`
+}
+
+export function formatarDiaEMes(data) {
+  return formatarData(data).slice(0, 5)
+}

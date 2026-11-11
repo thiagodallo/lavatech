@@ -11,3 +11,7 @@ export function mudarStatusDoAgendamento(id, status) {
 export function listarAlertas() {
   return requisitar('/agendamentos/alertas?minutos=15')
 }
+
+export function listarHistoricoDoAgendamento(id) {
+  return requisitar(`/agendamentos/${id}/historico`)
+}

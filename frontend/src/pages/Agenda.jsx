@@ -5,6 +5,8 @@ import { Link, useSearchParams } from 'react-router'
 import { listarAgendamentosDoDia, mudarStatusDoAgendamento } from '../api/agendamentos.js'
 import AlertaDeProximoAtendimento from '../components/AlertaDeProximoAtendimento.jsx'
 import CartaoDeAgendamento from '../components/CartaoDeAgendamento.jsx'
+import DetalhesDoAgendamento from '../components/DetalhesDoAgendamento.jsx'
+import PainelLateral from '../components/PainelLateral.jsx'
 import SeletorDeDia from '../components/SeletorDeDia.jsx'
 import { dataDeHoje, ehDataValida } from '../formatacao/horario.js'
 import './Agenda.css'
@@ -22,7 +24,9 @@ export default function Agenda() {
   const [idEmAcao, setIdEmAcao] = useState(null)
   const [errosPorId, setErrosPorId] = useState({})
   const [versaoDosAlertas, setVersaoDosAlertas] = useState(0)
+  const [idSelecionado, setIdSelecionado] = useState(null)
   const agendamentosDoDia = diaCarregado === data ? agendamentos : []
+  const selecionado = agendamentosDoDia.find((agendamento) => agendamento.id === idSelecionado)
 
   useEffect(() => {
     let atual = true
@@ -101,8 +105,10 @@ export default function Agenda() {
           <CartaoDeAgendamento
             key={agendamento.id}
             agendamento={agendamento}
+            selecionado={selecionado?.id === agendamento.id}
             ocupado={idEmAcao === agendamento.id}
             mensagemDeErro={errosPorId[agendamento.id]}
+            aoAbrir={() => setIdSelecionado(agendamento.id)}
             aoMudarStatus={(novoStatus) => mudarStatus(agendamento, novoStatus)}
           />
         ))}
@@ -125,7 +131,15 @@ export default function Agenda() {
 
       <AlertaDeProximoAtendimento versao={versaoDosAlertas} />
 
-      {corpoDaLista()}
+      <div className={selecionado ? 'area-com-painel painel-aberto' : 'area-com-painel'}>
+        <div className="agenda-lista">{corpoDaLista()}</div>
+
+        {selecionado && (
+          <PainelLateral titulo={selecionado.cliente.nome} aoFechar={() => setIdSelecionado(null)}>
+            <DetalhesDoAgendamento agendamento={selecionado} />
+          </PainelLateral>
+        )}
+      </div>
     </section>
   )
 }

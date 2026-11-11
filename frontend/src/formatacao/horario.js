@@ -18,3 +18,8 @@ export function somarDias(data, dias) {
   const [ano, mes, dia] = data.split('-').map(Number)
   return new Date(Date.UTC(ano, mes - 1, dia + dias)).toISOString().slice(0, 10)
 }
+
+export function dataEHoraDoTexto(texto) {
+  const [ano, mes, dia] = texto.slice(0, 10).split('-')
+  return `${dia}/${mes}/${ano} ${horaDoTexto(texto)}`
+}

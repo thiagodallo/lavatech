@@ -1,0 +1,18 @@
+.linha-de-servicos {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.linha-de-servicos-nomes {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.linha-de-servicos-complemento {
+  flex: none;
+  white-space: nowrap;
+}

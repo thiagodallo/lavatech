@@ -1,215 +1,62 @@
-import { useState } from 'react'
 import { Link } from 'react-router'
 
-import { cadastrarAgendamento } from '../api/agendamentos.js'
-import { dataDeHoje, montarHorarioParaEnviar } from '../formatacao/horario.js'
-import { formatarMoeda } from '../formatacao/moeda.js'
-import CampoDeSelecao from './CampoDeSelecao.jsx'
-import CampoDeTexto from './CampoDeTexto.jsx'
+import { montarHorarioParaEnviar } from '../formatacao/horario.js'
+import usarCamposDoAgendamento from '../hooks/usarCamposDoAgendamento.js'
+import usarEnvioDoAgendamento from '../hooks/usarEnvioDoAgendamento.js'
+import CampoDeObservacoes from './CampoDeObservacoes.jsx'
+import CampoDeServicos from './CampoDeServicos.jsx'
+import CampoDeVeiculo from './CampoDeVeiculo.jsx'
+import CamposDeVagaEHorario from './CamposDeVagaEHorario.jsx'
 import SeletorDeCliente from './SeletorDeCliente.jsx'
 import './FormularioDeAgendamento.css'
 
-const PASSO_DO_HORARIO_EM_SEGUNDOS = 300
-const ID_DO_ERRO_DE_HORARIO = 'agendamento-erro-horario'
+function dadosParaEnviar(campos) {
+  return {
+    cliente_id: campos.cliente?.id,
+    veiculo_id: Number(campos.veiculoId) || undefined,
+    servico_ids: campos.servicoIds,
+    vaga_id: Number(campos.vagaId) || undefined,
+    data_hora_agendada: montarHorarioParaEnviar(campos.data, campos.hora),
+    observacoes: campos.observacoes.trim() || null,
+  }
+}
+
+function AcoesDoFormulario({ enviando }) {
+  return (
+    <div className="formulario-acoes">
+      <button type="submit" className="botao-primario" disabled={enviando}>
+        {enviando ? 'Salvando' : 'Salvar'}
+      </button>
+      <Link to="/agenda" className="botao-secundario">
+        Cancelar
+      </Link>
+    </div>
+  )
+}
 
 export default function FormularioDeAgendamento({ servicos, vagas, aoSalvar }) {
-  const [cliente, setCliente] = useState(null)
-  const [veiculoId, setVeiculoId] = useState('')
-  const [servicoId, setServicoId] = useState('')
-  const [vagaId, setVagaId] = useState('')
-  const [data, setData] = useState(dataDeHoje())
-  const [hora, setHora] = useState('')
-  const [observacoes, setObservacoes] = useState('')
-  const [mensagemDeErro, setMensagemDeErro] = useState('')
-  const [erroDeHorario, setErroDeHorario] = useState('')
-  const [errosDosCampos, setErrosDosCampos] = useState({})
-  const [enviando, setEnviando] = useState(false)
+  const envio = usarEnvioDoAgendamento(aoSalvar)
+  const campos = usarCamposDoAgendamento(envio.limparErroDeHorario)
+  const erros = envio.errosDosCampos
 
-  function escolherCliente(escolhido) {
-    setCliente(escolhido)
-    const unicoVeiculo = escolhido?.veiculos.length === 1 ? escolhido.veiculos[0] : null
-    setVeiculoId(unicoVeiculo ? String(unicoVeiculo.id) : '')
-  }
-
-  function alterarCampoDeHorario(definirCampo) {
-    return (evento) => {
-      definirCampo(evento.target.value)
-      setErroDeHorario('')
-    }
-  }
-
-  function tratarErro(erro) {
-    const camposComErro = erro.campos ?? {}
-    setErrosDosCampos(camposComErro)
-    if (erro.status === 409) {
-      setErroDeHorario(erro.message)
-      return
-    }
-    setMensagemDeErro(Object.keys(camposComErro).length > 0 ? '' : erro.message)
-  }
-
-  async function enviarFormulario(evento) {
+  function enviarFormulario(evento) {
     evento.preventDefault()
-    setMensagemDeErro('')
-    setErroDeHorario('')
-    setErrosDosCampos({})
-    setEnviando(true)
-
-    try {
-      const criado = await cadastrarAgendamento({
-        cliente_id: cliente?.id,
-        veiculo_id: Number(veiculoId) || undefined,
-        servico_id: Number(servicoId) || undefined,
-        vaga_id: Number(vagaId) || undefined,
-        data_hora_agendada: montarHorarioParaEnviar(data, hora),
-        observacoes: observacoes.trim() || null,
-      })
-      aoSalvar(criado)
-    } catch (erro) {
-      tratarErro(erro)
-    } finally {
-      setEnviando(false)
-    }
-  }
-
-  function campoDeVeiculo() {
-    if (!cliente) {
-      return (
-        <CampoDeSelecao id="agendamento-veiculo" rotulo="Veículo" disabled>
-          <option value="">Selecione um cliente primeiro</option>
-        </CampoDeSelecao>
-      )
-    }
-
-    if (cliente.veiculos.length === 0) {
-      return (
-        <p className="formulario-aviso" role="status">
-          Este cliente não tem veículo. Cadastre na tela <Link to="/clientes">Clientes</Link>.
-        </p>
-      )
-    }
-
-    return (
-      <CampoDeSelecao
-        id="agendamento-veiculo"
-        rotulo="Veículo"
-        required
-        value={veiculoId}
-        erro={errosDosCampos.veiculo_id?.[0]}
-        onChange={(evento) => setVeiculoId(evento.target.value)}
-      >
-        <option value="">Selecione</option>
-        {cliente.veiculos.map((veiculo) => (
-          <option key={veiculo.id} value={veiculo.id}>
-            {veiculo.modelo} · {veiculo.placa}
-          </option>
-        ))}
-      </CampoDeSelecao>
-    )
+    envio.enviar(dadosParaEnviar(campos))
   }
 
   return (
     <form className="formulario formulario-agendamento" onSubmit={enviarFormulario}>
-      <SeletorDeCliente
-        cliente={cliente}
-        erro={errosDosCampos.cliente_id?.[0]}
-        aoSelecionar={escolherCliente}
-      />
-      {campoDeVeiculo()}
-
-      <CampoDeSelecao
-        id="agendamento-servico"
-        rotulo="Serviço"
-        required
-        value={servicoId}
-        erro={errosDosCampos.servico_id?.[0]}
-        onChange={(evento) => setServicoId(evento.target.value)}
-      >
-        <option value="">Selecione</option>
-        {servicos.map((servico) => (
-          <option key={servico.id} value={servico.id}>
-            {servico.nome} · {servico.duracao_minutos} min · {formatarMoeda(servico.preco)}
-          </option>
-        ))}
-      </CampoDeSelecao>
-
-      <CampoDeSelecao
-        id="agendamento-vaga"
-        rotulo="Vaga"
-        required
-        value={vagaId}
-        erro={errosDosCampos.vaga_id?.[0]}
-        aria-describedby={erroDeHorario ? ID_DO_ERRO_DE_HORARIO : undefined}
-        onChange={alterarCampoDeHorario(setVagaId)}
-      >
-        <option value="">Selecione</option>
-        {vagas.map((vaga) => (
-          <option key={vaga.id} value={vaga.id}>
-            {vaga.identificacao}
-          </option>
-        ))}
-      </CampoDeSelecao>
-
-      <div className="formulario-dupla">
-        <CampoDeTexto
-          id="agendamento-data"
-          rotulo="Data"
-          type="date"
-          required
-          value={data}
-          erro={errosDosCampos.data_hora_agendada?.[0]}
-          aria-describedby={erroDeHorario ? ID_DO_ERRO_DE_HORARIO : undefined}
-          onChange={alterarCampoDeHorario(setData)}
-        />
-        <CampoDeTexto
-          id="agendamento-hora"
-          rotulo="Horário"
-          type="time"
-          step={PASSO_DO_HORARIO_EM_SEGUNDOS}
-          required
-          value={hora}
-          aria-describedby={erroDeHorario ? ID_DO_ERRO_DE_HORARIO : undefined}
-          onChange={alterarCampoDeHorario(setHora)}
-        />
-      </div>
-
-      {erroDeHorario && (
-        <p className="formulario-erro" id={ID_DO_ERRO_DE_HORARIO} role="alert">
-          {erroDeHorario}
-        </p>
-      )}
-
-      <div className="campo">
-        <label className="campo-rotulo" htmlFor="agendamento-observacoes">
-          Observações
-        </label>
-        <textarea
-          id="agendamento-observacoes"
-          className="campo-entrada campo-area"
-          rows={3}
-          maxLength={500}
-          value={observacoes}
-          onChange={(evento) => setObservacoes(evento.target.value)}
-        />
-        {errosDosCampos.observacoes?.[0] && (
-          <p className="campo-erro">{errosDosCampos.observacoes[0]}</p>
-        )}
-      </div>
-
-      {mensagemDeErro && (
+      <SeletorDeCliente cliente={campos.cliente} erro={erros.cliente_id?.[0]} aoSelecionar={campos.escolherCliente} />
+      <CampoDeVeiculo cliente={campos.cliente} valor={campos.veiculoId} erro={erros.veiculo_id?.[0]} aoMudar={campos.alterar('veiculoId')} />
+      <CampoDeServicos servicos={servicos} escolhidos={campos.servicoIds} erro={erros.servico_ids?.[0]} aoAlternar={campos.alternarServico} />
+      <CamposDeVagaEHorario vagas={vagas} campos={campos} erros={erros} erroDeHorario={envio.erroDeHorario} />
+      <CampoDeObservacoes valor={campos.observacoes} erro={erros.observacoes?.[0]} aoMudar={campos.alterar('observacoes')} />
+      {envio.mensagemDeErro && (
         <p className="formulario-erro" role="alert">
-          {mensagemDeErro}
+          {envio.mensagemDeErro}
         </p>
       )}
-
-      <div className="formulario-acoes">
-        <button type="submit" className="botao-primario" disabled={enviando}>
-          {enviando ? 'Salvando' : 'Salvar'}
-        </button>
-        <Link to="/agenda" className="botao-secundario">
-          Cancelar
-        </Link>
-      </div>
+      <AcoesDoFormulario enviando={envio.enviando} />
     </form>
   )
 }

@@ -1,0 +1,78 @@
+.campo-de-servicos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.campo-de-servicos legend {
+  padding: 0;
+  margin-bottom: 6px;
+}
+
+.campo-de-servicos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.opcao-de-servico {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-superficie);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.opcao-de-servico:has(input:checked) {
+  border-color: var(--cor-marca);
+  background: var(--status-aguardando-fundo);
+  color: var(--status-aguardando-texto);
+}
+
+.opcao-de-servico:has(input:focus-visible) {
+  outline: 2px solid var(--cor-alerta);
+  outline-offset: 2px;
+}
+
+.opcao-de-servico:has(input:disabled) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.opcao-de-servico input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--cor-marca);
+}
+
+.opcao-de-servico-nome {
+  overflow-wrap: anywhere;
+}
+
+.opcao-de-servico-dados {
+  font-family: var(--fonte-mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.campo-de-servicos-limite {
+  margin: 0;
+  color: var(--status-em-andamento-texto);
+  font-size: 12px;
+  font-weight: 600;
+}

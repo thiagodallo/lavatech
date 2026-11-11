@@ -1,0 +1,18 @@
+.total-dos-servicos {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--cor-linha);
+  font-family: var(--fonte-mono);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.total-dos-servicos-rotulo {
+  margin-right: auto;
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-texto);
+  font-size: 12px;
+}

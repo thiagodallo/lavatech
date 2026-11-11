@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { rotulosDeStatus } from '../dominio/statusDoAgendamento.js'
 import { horaDoTexto } from '../formatacao/horario.js'
 import { formatarQuantidade } from '../formatacao/quantidade.js'
+import LinhaDeServicos from './LinhaDeServicos.jsx'
 import PilulaDeStatus from './PilulaDeStatus.jsx'
 import './ResumoDeHoje.css'
 
@@ -13,9 +14,12 @@ function ProximoAtendimento({ atendimento }) {
     <p className="proximo-atendimento">
       <span className="proximo-hora">{horaDoTexto(atendimento.data_hora_agendada)}</span>
       <span>{atendimento.cliente.nome}</span>
-      <span className="texto-apoio">
-        {atendimento.servico.nome} / {atendimento.vaga.identificacao}
-      </span>
+      <LinhaDeServicos
+        servicos={atendimento.servicos}
+        complemento={atendimento.vaga.identificacao}
+        separador="/"
+        className="texto-apoio"
+      />
     </p>
   )
 }

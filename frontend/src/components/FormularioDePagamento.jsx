@@ -1,46 +1,36 @@
 import { useState } from 'react'
 
-import { registrarPagamento } from '../api/pagamentos.js'
 import { formatarValorParaEditar } from '../formatacao/moeda.js'
 import { lerNumero } from '../formatacao/numero.js'
+import usarRegistroDePagamento from '../hooks/usarRegistroDePagamento.js'
 import CampoDeTexto from './CampoDeTexto.jsx'
 import SeletorDeFormaDePagamento from './SeletorDeFormaDePagamento.jsx'
 
+function AcoesDoPagamento({ mensagemDeErro, enviando }) {
+  return (
+    <>
+      {mensagemDeErro && (
+        <p className="formulario-erro" role="alert">
+          {mensagemDeErro}
+        </p>
+      )}
+      <div className="formulario-acoes">
+        <button type="submit" className="botao-primario" disabled={enviando}>
+          {enviando ? 'Registrando' : 'Registrar pagamento'}
+        </button>
+      </div>
+    </>
+  )
+}
+
 export default function FormularioDePagamento({ agendamento, aoRegistrar, aoEncontrarConflito }) {
-  const [valor, setValor] = useState(formatarValorParaEditar(agendamento.servico.preco))
+  const [valor, setValor] = useState(formatarValorParaEditar(agendamento.preco_total))
   const [forma, setForma] = useState('')
-  const [mensagemDeErro, setMensagemDeErro] = useState('')
-  const [errosDosCampos, setErrosDosCampos] = useState({})
-  const [enviando, setEnviando] = useState(false)
+  const registro = usarRegistroDePagamento(agendamento.id, aoRegistrar, aoEncontrarConflito)
 
-  async function enviarFormulario(evento) {
+  function enviarFormulario(evento) {
     evento.preventDefault()
-    setMensagemDeErro('')
-    setErrosDosCampos({})
-
-    if (!forma) {
-      setErrosDosCampos({ forma_pagamento: ['Escolha a forma de pagamento'] })
-      return
-    }
-
-    setEnviando(true)
-    try {
-      const registrado = await registrarPagamento(agendamento.id, {
-        valor: lerNumero(valor),
-        forma_pagamento: forma,
-      })
-      aoRegistrar(registrado)
-    } catch (erro) {
-      if (erro.status === 409) {
-        aoEncontrarConflito(erro.message)
-        return
-      }
-      const camposComErro = erro.campos ?? {}
-      setErrosDosCampos(camposComErro)
-      setMensagemDeErro(Object.keys(camposComErro).length > 0 ? '' : erro.message)
-    } finally {
-      setEnviando(false)
-    }
+    registro.registrar({ valor: lerNumero(valor), forma_pagamento: forma })
   }
 
   return (
@@ -51,26 +41,11 @@ export default function FormularioDePagamento({ agendamento, aoRegistrar, aoEnco
         inputMode="decimal"
         autoComplete="off"
         value={valor}
-        erro={errosDosCampos.valor?.[0]}
+        erro={registro.errosDosCampos.valor?.[0]}
         onChange={(evento) => setValor(evento.target.value)}
       />
-      <SeletorDeFormaDePagamento
-        valor={forma}
-        erro={errosDosCampos.forma_pagamento?.[0]}
-        aoEscolher={setForma}
-      />
-
-      {mensagemDeErro && (
-        <p className="formulario-erro" role="alert">
-          {mensagemDeErro}
-        </p>
-      )}
-
-      <div className="formulario-acoes">
-        <button type="submit" className="botao-primario" disabled={enviando}>
-          {enviando ? 'Registrando' : 'Registrar pagamento'}
-        </button>
-      </div>
+      <SeletorDeFormaDePagamento valor={forma} erro={registro.errosDosCampos.forma_pagamento?.[0]} aoEscolher={setForma} />
+      <AcoesDoPagamento mensagemDeErro={registro.mensagemDeErro} enviando={registro.enviando} />
     </form>
   )
 }

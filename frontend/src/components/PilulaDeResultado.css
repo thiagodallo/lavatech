@@ -1,0 +1,14 @@
+.pilula-resultado-aprovado {
+  background: var(--status-concluido-fundo);
+  color: var(--status-concluido-texto);
+}
+
+.pilula-resultado-aprovado-com-ressalva {
+  background: var(--status-em-andamento-fundo);
+  color: var(--status-em-andamento-texto);
+}
+
+.pilula-resultado-reprovado {
+  background: var(--status-cancelado-fundo);
+  color: var(--status-cancelado-texto);
+}

@@ -1,0 +1,76 @@
+.cartao-checklist {
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+}
+
+.cartao-checklist-corpo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px 16px;
+  width: 100%;
+  padding: 14px 16px;
+}
+
+.cartao-checklist-hora {
+  min-width: 64px;
+  font-family: var(--fonte-mono);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.cartao-checklist-dados {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cartao-checklist-dados .chips-de-itens {
+  margin-top: 6px;
+}
+
+.cartao-checklist-cliente {
+  font-weight: 600;
+}
+
+.cartao-checklist-veiculo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+}
+
+.cartao-checklist-servico {
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+}
+
+.cartao-checklist-selos {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.selo-retrabalho {
+  padding: 2px 8px;
+  border: 1px solid var(--cor-alerta-escura);
+  border-radius: 6px;
+  color: var(--cor-alerta-escura);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .cartao-checklist-selos {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+}

@@ -1,6 +1,8 @@
+import ErroDeAplicacao from '../errors/ErroDeAplicacao.js'
 import * as agendamentos from '../repositories/agendamento.repository.js'
 import * as vagas from '../repositories/vaga.repository.js'
 
+const AGENDAMENTO_NAO_ENCONTRADO = 'Agendamento não encontrado'
 const MS_POR_MINUTO = 60 * 1000
 const MS_POR_DIA = 24 * 60 * MS_POR_MINUTO
 const DESLOCAMENTO_DO_FUSO_MS = 3 * 60 * MS_POR_MINUTO
@@ -67,4 +69,16 @@ export async function listarAlertas({ minutos }) {
     ...formatarAgendamento(agendamento),
     minutos_restantes: minutosAte(agendamento.data_hora_agendada, agora),
   }))
+}
+
+async function exigirAgendamento(id) {
+  const agendamento = await agendamentos.buscarPorId(id)
+  if (!agendamento) {
+    throw new ErroDeAplicacao(404, AGENDAMENTO_NAO_ENCONTRADO)
+  }
+  return agendamento
+}
+
+export async function buscarAgendamento(id) {
+  return formatarAgendamento(await exigirAgendamento(id))
 }

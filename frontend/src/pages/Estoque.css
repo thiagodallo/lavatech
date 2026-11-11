@@ -37,16 +37,26 @@
   list-style: none;
 }
 
+.produto-item + .produto-item {
+  border-top: 1px solid var(--cor-linha);
+}
+
 .produto-linha {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 12px;
+  width: 100%;
   padding: 12px 16px;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
 }
 
-.produto-linha + .produto-linha {
-  border-top: 1px solid var(--cor-linha);
+.produto-linha:hover,
+.produto-linha[aria-current='true'] {
+  background: var(--cor-superficie);
 }
 
 .produto-dados {

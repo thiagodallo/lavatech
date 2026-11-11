@@ -1,7 +1,9 @@
-import { AlertTriangle } from 'lucide-react'
+import { AlertTriangle, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { listarProdutos } from '../api/produtos.js'
+import FormularioProduto from '../components/FormularioProduto.jsx'
+import PainelLateral from '../components/PainelLateral.jsx'
 import { formatarQuantidade } from '../formatacao/quantidade.js'
 import './Estoque.css'
 
@@ -10,6 +12,7 @@ export default function Estoque() {
   const [carregando, setCarregando] = useState(true)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [tentativa, setTentativa] = useState(0)
+  const [painel, setPainel] = useState(null)
 
   useEffect(() => {
     let atual = true
@@ -32,6 +35,11 @@ export default function Estoque() {
       atual = false
     }
   }, [tentativa])
+
+  function aoSalvarProduto(produto) {
+    setPainel({ produto })
+    setTentativa((anterior) => anterior + 1)
+  }
 
   function corpoDaLista() {
     if (mensagemDeErro) {
@@ -62,23 +70,30 @@ export default function Estoque() {
         {produtos.map((produto) => {
           const abaixoDoMinimo = produto.quantidade_atual < produto.quantidade_minima
           return (
-            <li key={produto.id} className="produto-linha">
-              <div className="produto-dados">
-                <span className="produto-nome">{produto.nome}</span>
-                {produto.categoria && <span className="produto-categoria">{produto.categoria}</span>}
-              </div>
-              <span className="produto-saldo">
-                {formatarQuantidade(produto.quantidade_atual)} / mín. {formatarQuantidade(produto.quantidade_minima)}
-                {produto.unidade_medida && ` ${produto.unidade_medida}`}
-              </span>
-              {abaixoDoMinimo ? (
-                <span className="selo-estoque selo-repor">
-                  <AlertTriangle size={12} aria-hidden="true" />
-                  Repor
+            <li key={produto.id} className="produto-item">
+              <button
+                type="button"
+                className="produto-linha"
+                aria-current={painel?.produto?.id === produto.id ? 'true' : undefined}
+                onClick={() => setPainel({ produto })}
+              >
+                <div className="produto-dados">
+                  <span className="produto-nome">{produto.nome}</span>
+                  {produto.categoria && <span className="produto-categoria">{produto.categoria}</span>}
+                </div>
+                <span className="produto-saldo">
+                  {formatarQuantidade(produto.quantidade_atual)} / mín. {formatarQuantidade(produto.quantidade_minima)}
+                  {produto.unidade_medida && ` ${produto.unidade_medida}`}
                 </span>
-              ) : (
-                <span className="selo-estoque selo-ok">OK</span>
-              )}
+                {abaixoDoMinimo ? (
+                  <span className="selo-estoque selo-repor">
+                    <AlertTriangle size={12} aria-hidden="true" />
+                    Repor
+                  </span>
+                ) : (
+                  <span className="selo-estoque selo-ok">OK</span>
+                )}
+              </button>
             </li>
           )
         })}
@@ -90,9 +105,28 @@ export default function Estoque() {
     <section>
       <header className="estoque-cabecalho">
         <h1 className="titulo-tela">Controle de estoque</h1>
+        <button type="button" className="botao-primario" onClick={() => setPainel({ produto: null })}>
+          <Plus size={16} aria-hidden="true" />
+          Novo produto
+        </button>
       </header>
 
-      <div className="estoque-lista">{corpoDaLista()}</div>
+      <div className={painel ? 'area-com-painel painel-aberto' : 'area-com-painel'}>
+        <div className="estoque-lista">{corpoDaLista()}</div>
+
+        {painel && (
+          <PainelLateral
+            titulo={painel.produto ? 'Editar produto' : 'Novo produto'}
+            aoFechar={() => setPainel(null)}
+          >
+            <FormularioProduto
+              key={painel.produto?.id ?? 'novo'}
+              produto={painel.produto}
+              aoSalvar={aoSalvarProduto}
+            />
+          </PainelLateral>
+        )}
+      </div>
     </section>
   )
 }

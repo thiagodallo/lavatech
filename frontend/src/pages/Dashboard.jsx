@@ -16,7 +16,7 @@ export default function Dashboard() {
         <h1 className="titulo-tela">Dashboard</h1>
         <SeletorDePeriodo periodo={periodo} hoje={hoje} aoMudar={setPeriodo} />
       </header>
-      <SecaoOperacional hoje={hoje} />
+      <SecaoOperacional hoje={hoje} periodo={periodo} />
       <SecaoFinanceira periodo={periodo} />
     </section>
   )

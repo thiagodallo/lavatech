@@ -7,3 +7,7 @@ export function buscarResumoDoDia(data) {
 export function buscarResumoDoPeriodo({ de, ate }) {
   return requisitar(`/dashboard/periodo?de=${de}&ate=${ate}`)
 }
+
+export function buscarOperacao({ de, ate }) {
+  return requisitar(`/dashboard/operacao?de=${de}&ate=${ate}`)
+}

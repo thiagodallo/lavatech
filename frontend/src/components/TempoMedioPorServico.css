@@ -1,0 +1,42 @@
+.tempo-medio-por-servico {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tempo-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.tempo-nome {
+  font-weight: 500;
+}
+
+.tempo-linha {
+  display: grid;
+  grid-template-columns: 64px 1fr 72px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.tempo-legenda {
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+}
+
+.tempo-valor {
+  font-family: var(--fonte-mono);
+  font-size: 12px;
+  text-align: right;
+}
+
+.tempo-previsto {
+  background: var(--cor-texto-suave);
+}

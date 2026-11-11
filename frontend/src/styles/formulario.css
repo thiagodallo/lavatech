@@ -56,3 +56,23 @@
   font-size: 13px;
   font-weight: 600;
 }
+
+.formulario-dupla {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.campo-caixa {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.campo-caixa input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--cor-marca);
+}

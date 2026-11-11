@@ -9,3 +9,7 @@ export function valorComDuasCasas(mensagemSeAusente) {
     .max(MAXIMO_DA_COLUNA, 'Valor muito alto')
     .refine((valor) => Number(valor.toFixed(2)) === valor, 'Use no máximo duas casas decimais')
 }
+
+export function valorPositivoComDuasCasas(mensagemSeAusente) {
+  return valorComDuasCasas(mensagemSeAusente).gt(0, 'Deve ser maior que zero')
+}

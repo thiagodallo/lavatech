@@ -19,3 +19,10 @@
   color: inherit;
   font-weight: 600;
 }
+
+.campo-entrada.campo-area {
+  height: auto;
+  padding: 10px 12px;
+  line-height: 1.5;
+  resize: vertical;
+}

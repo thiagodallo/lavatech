@@ -1,18 +1,24 @@
 import { Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 
 import { listarAgendamentosDoDia } from '../api/agendamentos.js'
 import CartaoDeAgendamento from '../components/CartaoDeAgendamento.jsx'
-import { dataDeHoje } from '../formatacao/horario.js'
+import SeletorDeDia from '../components/SeletorDeDia.jsx'
+import { dataDeHoje, ehDataValida } from '../formatacao/horario.js'
 import './Agenda.css'
 
 export default function Agenda() {
-  const data = dataDeHoje()
+  const [parametros, definirParametros] = useSearchParams()
+  const hoje = dataDeHoje()
+  const dataDaUrl = parametros.get('data')
+  const data = ehDataValida(dataDaUrl) ? dataDaUrl : hoje
   const [agendamentos, setAgendamentos] = useState([])
+  const [diaCarregado, setDiaCarregado] = useState(null)
   const [carregando, setCarregando] = useState(true)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [tentativa, setTentativa] = useState(0)
+  const agendamentosDoDia = diaCarregado === data ? agendamentos : []
 
   useEffect(() => {
     let atual = true
@@ -22,7 +28,9 @@ export default function Agenda() {
       setMensagemDeErro('')
       try {
         const encontrados = await listarAgendamentosDoDia(data)
-        if (atual) setAgendamentos(encontrados)
+        if (!atual) return
+        setAgendamentos(encontrados)
+        setDiaCarregado(data)
       } catch (erro) {
         if (atual) setMensagemDeErro(erro.message)
       } finally {
@@ -36,6 +44,10 @@ export default function Agenda() {
     }
   }, [data, tentativa])
 
+  function mudarDia(novaData) {
+    definirParametros(novaData === hoje ? {} : { data: novaData })
+  }
+
   function corpoDaLista() {
     if (mensagemDeErro) {
       return (
@@ -48,7 +60,7 @@ export default function Agenda() {
       )
     }
 
-    if (carregando && agendamentos.length === 0) {
+    if (carregando && agendamentosDoDia.length === 0) {
       return (
         <p className="agenda-estado texto-apoio" role="status">
           Carregando
@@ -56,13 +68,13 @@ export default function Agenda() {
       )
     }
 
-    if (agendamentos.length === 0) {
+    if (agendamentosDoDia.length === 0) {
       return <p className="agenda-estado texto-apoio">Nenhum agendamento neste dia</p>
     }
 
     return (
       <ul className="agenda-itens">
-        {agendamentos.map((agendamento) => (
+        {agendamentosDoDia.map((agendamento) => (
           <CartaoDeAgendamento key={agendamento.id} agendamento={agendamento} />
         ))}
       </ul>
@@ -74,6 +86,7 @@ export default function Agenda() {
       <header className="agenda-cabecalho">
         <h1 className="titulo-tela">Agenda</h1>
         <div className="agenda-acoes">
+          <SeletorDeDia data={data} hoje={hoje} aoMudar={mudarDia} />
           <Link to="/agenda/novo" className="botao-primario">
             <Plus size={16} aria-hidden="true" />
             Novo agendamento

@@ -1,0 +1,54 @@
+.area-com-painel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.area-com-painel.painel-aberto {
+  grid-template-columns: minmax(0, 1fr) 380px;
+}
+
+.painel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+}
+
+.painel-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.painel-titulo {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.painel-fechar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--raio-pequeno);
+  background: none;
+  color: var(--cor-texto-suave);
+}
+
+.painel-fechar:hover {
+  background: var(--cor-superficie);
+}
+
+@media (max-width: 1000px) {
+  .area-com-painel.painel-aberto {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

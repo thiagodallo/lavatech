@@ -1,12 +1,18 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import * as auth from '../api/auth.js'
+import { definirAoExpirarSessao } from '../api/clienteHttp.js'
 
 const SessaoContext = createContext(null)
 
 export function SessaoProvider({ children }) {
   const [funcionario, setFuncionario] = useState(null)
   const [carregando, setCarregando] = useState(true)
+
+  useEffect(() => {
+    definirAoExpirarSessao(() => setFuncionario(null))
+    return () => definirAoExpirarSessao(null)
+  }, [])
 
   useEffect(() => {
     auth

@@ -116,13 +116,21 @@ export function listarTempoMedioPorServico(de, ate) {
       s.nome,
       s.duracao_minutos AS duracao_prevista_minutos,
       COUNT(*)::int AS atendimentos,
-      AVG(EXTRACT(EPOCH FROM (a.data_hora_fim - a.data_hora_inicio)) / 60) AS tempo_medio_minutos
-    FROM agendamento a
-    JOIN servico s ON s.id = a.servico_id
-    WHERE a.status = 'concluido'
-      AND a.data_hora_inicio IS NOT NULL
-      AND a.data_hora_fim IS NOT NULL
-      AND a.data_hora_agendada >= ${de}::date AND a.data_hora_agendada < ${ate}::date + 1
+      AVG(parte.minutos_reais * parte.duracao_minutos / parte.minutos_previstos) AS tempo_medio_minutos
+    FROM (
+      SELECT
+        i.servico_id,
+        i.duracao_minutos,
+        EXTRACT(EPOCH FROM (a.data_hora_fim - a.data_hora_inicio)) / 60 AS minutos_reais,
+        SUM(i.duracao_minutos) OVER (PARTITION BY a.id) AS minutos_previstos
+      FROM agendamento a
+      JOIN agendamento_servico i ON i.agendamento_id = a.id
+      WHERE a.status = 'concluido'
+        AND a.data_hora_inicio IS NOT NULL
+        AND a.data_hora_fim IS NOT NULL
+        AND a.data_hora_agendada >= ${de}::date AND a.data_hora_agendada < ${ate}::date + 1
+    ) AS parte
+    JOIN servico s ON s.id = parte.servico_id
     GROUP BY s.id, s.nome, s.duracao_minutos
     ORDER BY s.nome, s.id`
 }

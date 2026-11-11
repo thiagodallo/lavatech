@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { listarHistoricoDoAgendamento } from '../api/agendamentos.js'
 import { dataEHoraDoTexto, horaDoTexto } from '../formatacao/horario.js'
+import BlocoDePagamento from './BlocoDePagamento.jsx'
 import PilulaDeStatus from './PilulaDeStatus.jsx'
 import './DetalhesDoAgendamento.css'
 
@@ -100,6 +101,8 @@ export default function DetalhesDoAgendamento({ agendamento }) {
           </div>
         )}
       </dl>
+
+      <BlocoDePagamento key={agendamento.id} agendamento={agendamento} />
 
       <section aria-labelledby="historico-titulo">
         <h3 className="detalhes-subtitulo" id="historico-titulo">

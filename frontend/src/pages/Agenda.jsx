@@ -2,7 +2,7 @@ import { Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 
-import { listarAgendamentosDoDia } from '../api/agendamentos.js'
+import { listarAgendamentosDoDia, mudarStatusDoAgendamento } from '../api/agendamentos.js'
 import CartaoDeAgendamento from '../components/CartaoDeAgendamento.jsx'
 import SeletorDeDia from '../components/SeletorDeDia.jsx'
 import { dataDeHoje, ehDataValida } from '../formatacao/horario.js'
@@ -18,6 +18,8 @@ export default function Agenda() {
   const [carregando, setCarregando] = useState(true)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [tentativa, setTentativa] = useState(0)
+  const [idEmAcao, setIdEmAcao] = useState(null)
+  const [errosPorId, setErrosPorId] = useState({})
   const agendamentosDoDia = diaCarregado === data ? agendamentos : []
 
   useEffect(() => {
@@ -43,6 +45,24 @@ export default function Agenda() {
       atual = false
     }
   }, [data, tentativa])
+
+  async function mudarStatus(agendamento, novoStatus) {
+    setIdEmAcao(agendamento.id)
+    definirErroDoAgendamento(agendamento.id, '')
+    try {
+      const atualizado = await mudarStatusDoAgendamento(agendamento.id, novoStatus)
+      setAgendamentos((lista) => lista.map((item) => (item.id === atualizado.id ? atualizado : item)))
+    } catch (erro) {
+      definirErroDoAgendamento(agendamento.id, erro.message)
+      if (erro.status === 409) setTentativa((anterior) => anterior + 1)
+    } finally {
+      setIdEmAcao(null)
+    }
+  }
+
+  function definirErroDoAgendamento(id, mensagem) {
+    setErrosPorId((erros) => ({ ...erros, [id]: mensagem }))
+  }
 
   function mudarDia(novaData) {
     definirParametros(novaData === hoje ? {} : { data: novaData })
@@ -75,7 +95,13 @@ export default function Agenda() {
     return (
       <ul className="agenda-itens">
         {agendamentosDoDia.map((agendamento) => (
-          <CartaoDeAgendamento key={agendamento.id} agendamento={agendamento} />
+          <CartaoDeAgendamento
+            key={agendamento.id}
+            agendamento={agendamento}
+            ocupado={idEmAcao === agendamento.id}
+            mensagemDeErro={errosPorId[agendamento.id]}
+            aoMudarStatus={(novoStatus) => mudarStatus(agendamento, novoStatus)}
+          />
         ))}
       </ul>
     )

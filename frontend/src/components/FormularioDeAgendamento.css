@@ -1,6 +1,6 @@
 .formulario-agendamento {
   max-width: 560px;
-  padding: 20px;
+  padding: var(--espaco-3);
   border: 1px solid var(--cor-linha);
   border-radius: var(--raio-medio);
   background: var(--cor-cartao);
@@ -8,7 +8,7 @@
 
 .formulario-aviso {
   margin: 0;
-  padding: 10px 12px;
+  padding: var(--espaco-1) var(--espaco-2);
   border-radius: var(--raio-pequeno);
   background: var(--status-em-andamento-fundo);
   color: var(--status-em-andamento-texto);
@@ -22,7 +22,7 @@
 
 .campo-entrada.campo-area {
   height: auto;
-  padding: 10px 12px;
+  padding: var(--espaco-1) var(--espaco-2);
   line-height: 1.5;
   resize: vertical;
 }

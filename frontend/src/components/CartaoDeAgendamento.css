@@ -12,9 +12,9 @@
   color: inherit;
   text-align: left;
   align-items: flex-start;
-  gap: 16px;
+  gap: var(--espaco-2);
   width: 100%;
-  padding: 14px 16px;
+  padding: var(--espaco-2) var(--espaco-2);
 }
 
 .cartao-horario {
@@ -51,7 +51,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: var(--espaco-1);
   color: var(--cor-texto-suave);
   font-size: 13px;
 }
@@ -64,14 +64,14 @@
 .cartao-rodape {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 10px 16px 14px;
+  gap: var(--espaco-1);
+  padding: var(--espaco-1) var(--espaco-2) var(--espaco-2);
   border-top: 1px solid var(--cor-linha);
 }
 
 .cartao-erro {
   margin: 0;
-  padding: 8px 10px;
+  padding: var(--espaco-1) var(--espaco-1);
   border-radius: var(--raio-pequeno);
   background: var(--status-cancelado-fundo);
   color: var(--status-cancelado-texto);

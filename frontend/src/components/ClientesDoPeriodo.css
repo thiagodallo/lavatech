@@ -1,12 +1,12 @@
 .clientes-do-periodo {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--espaco-2);
 }
 
 .clientes-numeros {
   display: flex;
-  gap: 40px;
+  gap: var(--espaco-5);
 }
 
 .clientes-proporcao {

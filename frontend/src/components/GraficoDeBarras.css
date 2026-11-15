@@ -1,13 +1,13 @@
 .grafico-barras {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--espaco-1);
 }
 
 .grafico-leitura {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--espaco-1);
   min-height: 24px;
   margin: 0;
   color: var(--cor-texto-suave);
@@ -89,7 +89,7 @@
 
 .tabela-rolagem {
   max-height: 240px;
-  margin-top: 8px;
+  margin-top: var(--espaco-1);
   overflow-y: auto;
 }
 
@@ -101,7 +101,7 @@
 
 .grafico-tabela th,
 .grafico-tabela td {
-  padding: 4px 8px;
+  padding: var(--espaco-meio) var(--espaco-1);
   border-bottom: 1px solid var(--cor-linha);
   text-align: left;
 }

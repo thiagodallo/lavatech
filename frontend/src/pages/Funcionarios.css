@@ -3,8 +3,8 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: var(--espaco-2);
+  margin-bottom: var(--espaco-3);
 }
 
 .funcionarios-cabecalho .titulo-tela {
@@ -22,9 +22,9 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--espaco-2);
   margin: 0;
-  padding: 16px;
+  padding: var(--espaco-2);
 }
 
 .funcionarios-estado p {
@@ -46,9 +46,9 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 4px 12px;
+  gap: var(--espaco-meio) var(--espaco-2);
   width: 100%;
-  padding: 12px 16px;
+  padding: var(--espaco-2) var(--espaco-2);
   border: 0;
   background: none;
   color: inherit;
@@ -68,12 +68,12 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 8px;
+  gap: var(--espaco-meio) var(--espaco-1);
   font-weight: 500;
 }
 
 .funcionario-selo {
-  padding: 1px 8px;
+  padding: 1px var(--espaco-1);
   border-radius: 999px;
   background: var(--status-agendado-fundo);
   color: var(--status-agendado-texto);

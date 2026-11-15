@@ -1,7 +1,7 @@
 .resumo-de-hoje {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  gap: 20px 32px;
+  gap: var(--espaco-3) var(--espaco-4);
   align-items: end;
 }
 
@@ -35,7 +35,7 @@
 .resumo-status {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 16px;
+  gap: var(--espaco-1) var(--espaco-2);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -44,7 +44,7 @@
 .resumo-status li {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--espaco-1);
 }
 
 .status-contagem {
@@ -55,7 +55,7 @@
 
 .resumo-proximo,
 .resumo-estoque {
-  padding-top: 16px;
+  padding-top: var(--espaco-2);
   border-top: 1px solid var(--cor-linha);
 }
 
@@ -69,7 +69,7 @@
 }
 
 .resumo-subtitulo {
-  margin: 0 0 8px;
+  margin: 0 0 var(--espaco-1);
   color: var(--cor-texto-suave);
   font-size: 12px;
   font-weight: 600;
@@ -79,7 +79,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 12px;
+  gap: var(--espaco-meio) var(--espaco-2);
   margin: 0;
 }
 
@@ -90,7 +90,7 @@
 }
 
 .estoque-baixo {
-  margin: 0 0 8px;
+  margin: 0 0 var(--espaco-1);
   padding: 0;
   list-style: none;
 }
@@ -98,7 +98,7 @@
 .estoque-baixo li {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--espaco-2);
   padding: 2px 0;
 }
 
@@ -116,7 +116,7 @@
 @media (max-width: 760px) {
   .resumo-de-hoje {
     grid-template-columns: auto 1fr;
-    gap: 16px 20px;
+    gap: var(--espaco-2) var(--espaco-3);
   }
 
   .resumo-status {

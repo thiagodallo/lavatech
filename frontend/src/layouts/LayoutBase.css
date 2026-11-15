@@ -8,16 +8,16 @@
   flex-direction: column;
   flex-shrink: 0;
   width: 224px;
-  padding: 24px 16px;
+  padding: var(--espaco-3) var(--espaco-2);
   background: var(--cor-menu);
 }
 
 .marca {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 32px;
-  padding: 0 8px;
+  gap: var(--espaco-1);
+  margin-bottom: var(--espaco-4);
+  padding: 0 var(--espaco-1);
   color: var(--cor-sobre-marca);
   font-family: var(--fonte-texto);
   font-size: 16px;
@@ -37,14 +37,14 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--espaco-meio);
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  gap: var(--espaco-1);
+  padding: var(--espaco-1) var(--espaco-2);
   border: 0;
   border-radius: var(--raio-pequeno);
   background: transparent;
@@ -82,8 +82,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 16px 32px;
+  gap: var(--espaco-2);
+  padding: var(--espaco-2) var(--espaco-4);
   border-bottom: 1px solid var(--cor-linha);
   background: var(--cor-cartao);
 }
@@ -98,7 +98,7 @@
 
 .conteudo {
   flex: 1;
-  padding: 32px;
+  padding: var(--espaco-4);
 }
 
 @media (max-width: 760px) {
@@ -109,9 +109,9 @@
   .menu-lateral {
     flex-flow: row wrap;
     align-items: center;
-    gap: 8px;
+    gap: var(--espaco-1);
     width: 100%;
-    padding: 12px 16px;
+    padding: var(--espaco-2) var(--espaco-2);
   }
 
   .marca {
@@ -126,11 +126,11 @@
   }
 
   .menu-item {
-    padding: 8px 10px;
+    padding: var(--espaco-1) var(--espaco-1);
   }
 
   .cabecalho,
   .conteudo {
-    padding: 16px;
+    padding: var(--espaco-2);
   }
 }

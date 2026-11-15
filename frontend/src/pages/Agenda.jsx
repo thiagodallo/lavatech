@@ -3,20 +3,26 @@ import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 
 import { listarAgendamentosDoDia, mudarStatusDoAgendamento } from '../api/agendamentos.js'
+import { listarVagas } from '../api/vagas.js'
 import AlertaDeProximoAtendimento from '../components/AlertaDeProximoAtendimento.jsx'
 import CartaoDeAgendamento from '../components/CartaoDeAgendamento.jsx'
 import DetalhesDoAgendamento from '../components/DetalhesDoAgendamento.jsx'
+import FaixaDeVaga from '../components/FaixaDeVaga.jsx'
 import ModalDeChecklist from '../components/ModalDeChecklist.jsx'
 import PainelLateral from '../components/PainelLateral.jsx'
 import SeletorDeDia from '../components/SeletorDeDia.jsx'
+import { agruparPorVaga, horaDeLiberacaoDaVaga } from '../dominio/agendaPorVaga.js'
 import { dataDeHoje, ehDataValida } from '../formatacao/horario.js'
+import usarAgora from '../hooks/usarAgora.js'
 import './Agenda.css'
 
 export default function Agenda() {
   const [parametros, definirParametros] = useSearchParams()
   const hoje = dataDeHoje()
+  const agora = usarAgora()
   const dataDaUrl = parametros.get('data')
   const data = ehDataValida(dataDaUrl) ? dataDaUrl : hoje
+  const [vagas, setVagas] = useState([])
   const [agendamentos, setAgendamentos] = useState([])
   const [diaCarregado, setDiaCarregado] = useState(null)
   const [carregando, setCarregando] = useState(true)
@@ -29,6 +35,12 @@ export default function Agenda() {
   const [agendamentoEmConclusao, setAgendamentoEmConclusao] = useState(null)
   const agendamentosDoDia = diaCarregado === data ? agendamentos : []
   const selecionado = agendamentosDoDia.find((agendamento) => agendamento.id === idSelecionado)
+
+  useEffect(() => {
+    listarVagas()
+      .then(setVagas)
+      .catch(() => setVagas([]))
+  }, [])
 
   useEffect(() => {
     let atual = true
@@ -123,19 +135,30 @@ export default function Agenda() {
     }
 
     return (
-      <ul className="agenda-itens">
-        {agendamentosDoDia.map((agendamento) => (
-          <CartaoDeAgendamento
-            key={agendamento.id}
-            agendamento={agendamento}
-            selecionado={selecionado?.id === agendamento.id}
-            ocupado={idEmAcao === agendamento.id}
-            mensagemDeErro={errosPorId[agendamento.id]}
-            aoAbrir={() => setIdSelecionado(agendamento.id)}
-            aoMudarStatus={(novoStatus) => escolherAcao(agendamento, novoStatus)}
-          />
+      <div className="agenda-faixas">
+        {agruparPorVaga(vagas, agendamentosDoDia).map((faixa) => (
+          <FaixaDeVaga
+            key={faixa.vaga.id}
+            vaga={faixa.vaga}
+            horaDeLiberacao={horaDeLiberacaoDaVaga(faixa.agendamentos)}
+            mostrarSituacao={data === hoje}
+          >
+            {faixa.agendamentos.map((agendamento) => (
+              <CartaoDeAgendamento
+                key={agendamento.id}
+                agendamento={agendamento}
+                agora={data === hoje ? agora : null}
+                mostrarVaga={false}
+                selecionado={selecionado?.id === agendamento.id}
+                ocupado={idEmAcao === agendamento.id}
+                mensagemDeErro={errosPorId[agendamento.id]}
+                aoAbrir={() => setIdSelecionado(agendamento.id)}
+                aoMudarStatus={(novoStatus) => escolherAcao(agendamento, novoStatus)}
+              />
+            ))}
+          </FaixaDeVaga>
         ))}
-      </ul>
+      </div>
     )
   }
 

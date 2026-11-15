@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { listarFuncionarios } from '../api/funcionarios.js'
 import FormularioFuncionario from '../components/FormularioFuncionario.jsx'
-import PainelLateral from '../components/PainelLateral.jsx'
+import Dialogo from '../components/Dialogo.jsx'
 import EsqueletoDeLista from '../components/EsqueletoDeLista.jsx'
 import { useSessao } from '../contexts/SessaoContext.jsx'
 import './Funcionarios.css'
@@ -40,7 +40,7 @@ export default function Funcionarios() {
 
   function aoSalvarFuncionario(funcionario) {
     if (funcionario.id === logado?.id) atualizarFuncionario(funcionario)
-    setPainel({ funcionario })
+    setPainel(null)
     setTentativa((anterior) => anterior + 1)
   }
 
@@ -99,23 +99,21 @@ export default function Funcionarios() {
         </button>
       </header>
 
-      <div className={painel ? 'area-com-painel painel-aberto' : 'area-com-painel'}>
-        <div className="funcionarios-lista">{corpoDaLista()}</div>
+      <div className="funcionarios-lista">{corpoDaLista()}</div>
 
-        {painel && (
-          <PainelLateral
-            titulo={painel.funcionario ? 'Editar funcionário' : 'Novo funcionário'}
-            aoFechar={() => setPainel(null)}
-          >
-            <FormularioFuncionario
-              key={painel.funcionario?.id ?? 'novo'}
-              funcionario={painel.funcionario}
-              contaPropria={painel.funcionario?.id === logado?.id}
-              aoSalvar={aoSalvarFuncionario}
-            />
-          </PainelLateral>
-        )}
-      </div>
+      {painel && (
+        <Dialogo
+          titulo={painel.funcionario ? 'Editar funcionário' : 'Novo funcionário'}
+          aoFechar={() => setPainel(null)}
+        >
+          <FormularioFuncionario
+            key={painel.funcionario?.id ?? 'novo'}
+            funcionario={painel.funcionario}
+            contaPropria={painel.funcionario?.id === logado?.id}
+            aoSalvar={aoSalvarFuncionario}
+          />
+        </Dialogo>
+      )}
     </section>
   )
 }

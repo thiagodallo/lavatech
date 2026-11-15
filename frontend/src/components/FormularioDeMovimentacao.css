@@ -1,7 +1,7 @@
 .movimentacao-quantidade {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--espaco-1);
 }
 
 .movimentacao-quantidade .campo-entrada {

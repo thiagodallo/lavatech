@@ -2,12 +2,12 @@
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 12px;
+  gap: var(--espaco-2);
 }
 
 .periodo-atalhos {
   display: flex;
-  gap: 6px;
+  gap: var(--espaco-1);
 }
 
 .periodo-atalhos [aria-pressed='true'] {

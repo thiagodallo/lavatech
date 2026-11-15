@@ -1,6 +1,6 @@
 .pagamento-situacao {
   display: inline-block;
-  padding: 2px 10px;
+  padding: 2px var(--espaco-1);
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
@@ -19,9 +19,9 @@
 .pagamento-dados {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--espaco-2);
 }
 
 .pagamento-aviso {
-  margin-bottom: 12px;
+  margin-bottom: var(--espaco-2);
 }

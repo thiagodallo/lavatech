@@ -1,7 +1,7 @@
 .faturamento-por-forma {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--espaco-2);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -10,13 +10,13 @@
 .forma-linha {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 4px;
+  gap: var(--espaco-2);
+  margin-bottom: var(--espaco-meio);
 }
 
 .forma-valores {
   display: flex;
-  gap: 12px;
+  gap: var(--espaco-2);
   font-family: var(--fonte-mono);
   font-size: 13px;
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { listarServicos } from '../api/servicos.js'
 import FormularioServico from '../components/FormularioServico.jsx'
 import PainelLateral from '../components/PainelLateral.jsx'
+import EsqueletoDeLista from '../components/EsqueletoDeLista.jsx'
 import { formatarMoeda } from '../formatacao/moeda.js'
 import { textoDeDuracao } from '../formatacao/duracao.js'
 import './Catalogo.css'
@@ -56,9 +57,7 @@ export default function Catalogo() {
 
     if (carregando && servicos.length === 0) {
       return (
-        <p className="catalogo-estado texto-apoio" role="status">
-          Carregando
-        </p>
+        <EsqueletoDeLista />
       )
     }
 

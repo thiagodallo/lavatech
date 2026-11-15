@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 
 import {
+  contarRespondidos,
   itensDoChecklist,
-  itensTodosConformes,
+  itensSemResposta,
   resultadoSugerido,
+  todosRespondidos,
   validarChecklist,
 } from '../dominio/checklistDeQualidade.js'
 import CampoDeAreaDeTexto from './CampoDeAreaDeTexto.jsx'
@@ -14,7 +16,7 @@ import './ModalDeChecklist.css'
 const MAIOR_DESCRICAO = 1000
 
 export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) {
-  const [itens, setItens] = useState(itensTodosConformes)
+  const [itens, setItens] = useState(itensSemResposta)
   const [resultadoEscolhido, setResultadoEscolhido] = useState(null)
   const [descricao, setDescricao] = useState('')
   const [precisaRetrabalho, setPrecisaRetrabalho] = useState(false)
@@ -27,7 +29,7 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
 
   const resultado = resultadoEscolhido ?? resultadoSugerido(itens)
   const reprovado = resultado === 'reprovado'
-  const comProblema = resultado !== 'aprovado'
+  const comProblema = Boolean(resultado) && resultado !== 'aprovado'
   const erros = validarChecklist({ itens, resultado, descricao })
 
   useEffect(() => {
@@ -141,7 +143,14 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
             </ul>
           )}
           <div className="formulario-acoes">
-            <button type="submit" className="botao-primario" disabled={enviando || houveConflito}>
+            <span className="modal-checklist-progresso">
+              {contarRespondidos(itens)} de {itensDoChecklist.length}
+            </span>
+            <button
+              type="submit"
+              className="botao-primario"
+              disabled={enviando || houveConflito || !todosRespondidos(itens) || !resultado}
+            >
               {enviando ? 'Concluindo' : 'Concluir atendimento'}
             </button>
             <button

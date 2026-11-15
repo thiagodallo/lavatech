@@ -38,7 +38,7 @@
 .barra {
   width: 100%;
   border-radius: 3px 3px 0 0;
-  background: var(--cor-marca);
+  background: var(--cor-marca-suave);
 }
 
 .barra-zero {
@@ -47,7 +47,7 @@
 }
 
 .barra-ativa {
-  background: var(--cor-alerta-escura);
+  background: var(--cor-marca);
 }
 
 .barra-zero.barra-ativa {

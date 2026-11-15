@@ -1,20 +1,20 @@
 :root {
-  --cor-superficie: #eef2f2;
-  --cor-cartao: #fbfcfc;
-  --cor-texto: #12222a;
-  --cor-texto-suave: #566970;
-  --cor-marca: #0a7184;
-  --cor-marca-escura: #075565;
-  --cor-marca-suave: #a9d3db;
+  --cor-superficie: #eef2f6;
+  --cor-cartao: #fbfcfd;
+  --cor-texto: #101f2e;
+  --cor-texto-suave: #55687a;
+  --cor-marca: #0b67c4;
+  --cor-marca-escura: #084f99;
+  --cor-marca-suave: #b8d7f5;
   --cor-sobre-marca: #f6fafa;
-  --cor-foco-no-escuro: #5fc1d1;
+  --cor-foco-no-escuro: #6cb2f0;
   --cor-alerta: #ff7a1a;
   --cor-alerta-escura: #b85400;
-  --cor-linha: #dce4e4;
-  --cor-menu: #0c2329;
-  --cor-menu-ativo: #17333a;
-  --cor-menu-texto: #9ba9ad;
-  --cor-menu-texto-suave: #8a9a9f;
+  --cor-linha: #dce4ec;
+  --cor-menu: #0a2239;
+  --cor-menu-ativo: #15324f;
+  --cor-menu-texto: #9fb0c2;
+  --cor-menu-texto-suave: #8fa1b5;
 
   --status-agendado-fundo: #e7eaec;
   --status-agendado-texto: #4b5b63;

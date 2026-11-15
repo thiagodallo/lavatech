@@ -23,7 +23,7 @@
 }
 
 .periodo-data {
-  height: 38px;
+  height: var(--altura-controle);
   font-family: var(--fonte-mono);
   font-size: 13px;
 }

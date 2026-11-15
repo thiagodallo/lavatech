@@ -39,7 +39,14 @@
   --espaco-4: 32px;
   --espaco-5: 40px;
   --espaco-6: 48px;
+  --altura-controle: 40px;
 
   --raio-pequeno: 8px;
   --raio-medio: 12px;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --altura-controle: 44px;
+  }
 }

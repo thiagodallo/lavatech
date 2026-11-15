@@ -8,7 +8,7 @@
 
 .veiculos-titulo {
   margin: 0;
-  font-family: var(--fonte-titulo);
+  font-family: var(--fonte-texto);
   font-size: 14px;
   font-weight: 700;
 }

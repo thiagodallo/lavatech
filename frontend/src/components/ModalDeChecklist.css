@@ -33,7 +33,7 @@
 
 .modal-checklist-titulo {
   margin: 0;
-  font-family: var(--fonte-titulo);
+  font-family: var(--fonte-texto);
   font-size: 18px;
   font-weight: 700;
 }

@@ -42,6 +42,9 @@
   color: var(--cor-menu-texto);
   text-decoration: none;
   text-align: left;
+  transition:
+    color 150ms var(--curva-suave),
+    background-color 150ms var(--curva-suave);
 }
 
 .menu-lateral :focus-visible {

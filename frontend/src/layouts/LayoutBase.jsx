@@ -1,5 +1,5 @@
 import { LogOut } from 'lucide-react'
-import { NavLink, Outlet } from 'react-router'
+import { NavLink, Outlet, useLocation } from 'react-router'
 
 import logoClara from '../assets/logo-lavatech-clara.png'
 import { useSessao } from '../contexts/SessaoContext.jsx'
@@ -8,6 +8,7 @@ import './LayoutBase.css'
 
 export default function LayoutBase() {
   const { funcionario, sair } = useSessao()
+  const { pathname } = useLocation()
   return (
     <div className="layout">
       <aside className="menu-lateral">
@@ -36,7 +37,9 @@ export default function LayoutBase() {
           {funcionario && <span className="cabecalho-usuario">{funcionario.nome}</span>}
         </header>
         <main className="conteudo">
-          <Outlet />
+          <div key={pathname} className="entrada-de-pagina">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

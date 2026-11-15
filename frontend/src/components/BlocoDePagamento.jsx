@@ -5,6 +5,7 @@ import { aceitaPagamento } from '../dominio/statusDoAgendamento.js'
 import { rotuloDaForma } from '../dominio/formasDePagamento.js'
 import { dataEHoraDoTexto } from '../formatacao/horario.js'
 import { formatarMoeda } from '../formatacao/moeda.js'
+import EsqueletoDeBloco from './EsqueletoDeBloco.jsx'
 import BotoesDeStatus from './BotoesDeStatus.jsx'
 import FormularioDePagamento from './FormularioDePagamento.jsx'
 import './BlocoDePagamento.css'
@@ -83,9 +84,7 @@ export default function BlocoDePagamento({ agendamento }) {
 
     if (carregando) {
       return (
-        <p className="detalhes-estado texto-apoio" role="status">
-          Carregando
-        </p>
+        <EsqueletoDeBloco />
       )
     }
 

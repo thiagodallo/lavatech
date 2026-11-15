@@ -46,10 +46,7 @@ async function gravarPagamento(dados) {
 export async function buscarPagamentoDoAgendamento(agendamentoId) {
   await exigirAgendamento(agendamentoId)
   const pagamento = await pagamentos.buscarPorAgendamento(agendamentoId)
-  if (!pagamento) {
-    throw new ErroDeAplicacao(404, PAGAMENTO_NAO_ENCONTRADO)
-  }
-  return formatarPagamento(pagamento)
+  return pagamento ? formatarPagamento(pagamento) : null
 }
 
 async function exigirPagamento(id) {

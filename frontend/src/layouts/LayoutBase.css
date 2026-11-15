@@ -43,6 +43,7 @@
 .menu-item {
   display: flex;
   align-items: center;
+  min-height: var(--altura-controle);
   gap: var(--espaco-1);
   padding: var(--espaco-1) var(--espaco-2);
   border: 0;

@@ -1,4 +1,4 @@
 select.filtro-de-resultado {
-  height: 38px;
+  height: var(--altura-controle);
   font-size: 13px;
 }

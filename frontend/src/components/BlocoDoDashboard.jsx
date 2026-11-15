@@ -1,3 +1,4 @@
+import EsqueletoDeBloco from './EsqueletoDeBloco.jsx'
 import './BlocoDoDashboard.css'
 
 function CorpoDoBloco({ rota, vazio, children }) {
@@ -14,9 +15,7 @@ function CorpoDoBloco({ rota, vazio, children }) {
 
   if (!rota.dados) {
     return (
-      <p className="bloco-estado texto-apoio" role="status">
-        Carregando
-      </p>
+      <EsqueletoDeBloco />
     )
   }
 

@@ -13,35 +13,17 @@
   background: var(--cor-cartao);
 }
 
-.esqueleto-linha {
-  display: block;
-  height: 16px;
-  border-radius: var(--raio-pequeno);
-  background: var(--cor-linha);
-  animation: esqueleto-pulso 1200ms ease-in-out infinite;
-}
-
-.esqueleto-horario {
+.esqueleto-hora-do-cartao {
   width: 40%;
   height: 24px;
 }
 
-.esqueleto-nome {
+.esqueleto-nome-do-cartao {
   width: 60%;
+  height: 16px;
 }
 
-.esqueleto-detalhe {
+.esqueleto-detalhe-do-cartao {
   width: 80%;
-}
-
-@keyframes esqueleto-pulso {
-  50% {
-    opacity: 0.5;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .esqueleto-linha {
-    animation: none;
-  }
+  height: 16px;
 }

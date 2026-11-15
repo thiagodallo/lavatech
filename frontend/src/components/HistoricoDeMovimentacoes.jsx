@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { listarMovimentacoesDoProduto } from '../api/movimentacoes.js'
 import { dataEHoraDoTexto } from '../formatacao/horario.js'
 import { formatarQuantidade } from '../formatacao/quantidade.js'
+import EsqueletoDeBloco from './EsqueletoDeBloco.jsx'
 import './HistoricoDeMovimentacoes.css'
 
 const tiposDaMovimentacao = {
@@ -56,9 +57,7 @@ export default function HistoricoDeMovimentacoes({ produtoId, versao }) {
 
     if (carregando) {
       return (
-        <p className="historico-estoque-estado texto-apoio" role="status">
-          Carregando
-        </p>
+        <EsqueletoDeBloco />
       )
     }
 

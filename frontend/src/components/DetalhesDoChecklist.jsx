@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { buscarChecklistDoAgendamento } from '../api/checklists.js'
 import { itensDoChecklist } from '../dominio/checklistDeQualidade.js'
 import { dataEHoraDoTexto } from '../formatacao/horario.js'
+import EsqueletoDeBloco from './EsqueletoDeBloco.jsx'
 import PilulaDeResultado from './PilulaDeResultado.jsx'
 import './DetalhesDoAgendamento.css'
 import './DetalhesDoChecklist.css'
@@ -49,9 +50,7 @@ export default function DetalhesDoChecklist({ agendamentoId }) {
 
   if (carregando) {
     return (
-      <p className="detalhes-estado texto-apoio" role="status">
-        Carregando
-      </p>
+      <EsqueletoDeBloco />
     )
   }
 

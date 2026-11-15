@@ -1,6 +1,7 @@
 import { listarHistoricoDoAgendamento } from '../api/agendamentos.js'
 import { dataEHoraDoTexto } from '../formatacao/horario.js'
 import usarDadosDaApi from '../hooks/usarDadosDaApi.js'
+import EsqueletoDeBloco from './EsqueletoDeBloco.jsx'
 import PilulaDeStatus from './PilulaDeStatus.jsx'
 
 function ItemDoHistorico({ registro }) {
@@ -31,9 +32,7 @@ function CorpoDoHistorico({ rota }) {
 
   if (rota.carregando && historico.length === 0) {
     return (
-      <p className="detalhes-estado texto-apoio" role="status">
-        Carregando
-      </p>
+      <EsqueletoDeBloco />
     )
   }
 

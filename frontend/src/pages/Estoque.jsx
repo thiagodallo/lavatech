@@ -5,6 +5,7 @@ import { listarProdutos } from '../api/produtos.js'
 import FormularioProduto from '../components/FormularioProduto.jsx'
 import PainelLateral from '../components/PainelLateral.jsx'
 import SecaoDeMovimentacao from '../components/SecaoDeMovimentacao.jsx'
+import EsqueletoDeLista from '../components/EsqueletoDeLista.jsx'
 import { formatarQuantidade } from '../formatacao/quantidade.js'
 import './Estoque.css'
 
@@ -64,9 +65,7 @@ export default function Estoque() {
 
     if (carregando && produtos.length === 0) {
       return (
-        <p className="estoque-estado texto-apoio" role="status">
-          Carregando
-        </p>
+        <EsqueletoDeLista />
       )
     }
 

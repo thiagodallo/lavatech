@@ -88,8 +88,9 @@
 
 .servico-preco {
   color: var(--cor-marca);
-  font-family: var(--fonte-titulo);
+  font-family: var(--fonte-texto);
   font-size: 18px;
   font-weight: 700;
+  letter-spacing: -0.02em;
   white-space: nowrap;
 }

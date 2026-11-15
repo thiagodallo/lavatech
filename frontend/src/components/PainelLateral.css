@@ -27,7 +27,7 @@
 
 .painel-titulo {
   margin: 0;
-  font-family: var(--fonte-titulo);
+  font-family: var(--fonte-texto);
   font-size: 16px;
   font-weight: 700;
 }

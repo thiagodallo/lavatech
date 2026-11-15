@@ -87,3 +87,10 @@
   font-family: var(--fonte-mono);
   font-size: 14px;
 }
+
+.formulario-secao {
+  margin: var(--espaco-1) 0 0;
+  font-family: var(--fonte-texto);
+  font-size: 13px;
+  font-weight: 700;
+}

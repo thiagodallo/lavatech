@@ -1,22 +1,31 @@
 import { useState } from 'react'
 
-import { cadastrarCliente, editarCliente } from '../api/clientes.js'
+import { cadastrarCliente, cadastrarVeiculo, editarCliente } from '../api/clientes.js'
+import { camposIniciaisDoVeiculo, dadosDoVeiculo, veiculoPreenchido } from '../dominio/camposDoVeiculo.js'
 import CampoDeTexto from './CampoDeTexto.jsx'
+import CamposDoVeiculo from './CamposDoVeiculo.jsx'
 
 export default function FormularioCliente({ cliente, aoSalvar }) {
   const [nome, setNome] = useState(cliente?.nome ?? '')
   const [telefone, setTelefone] = useState(cliente?.telefone ?? '')
-  const [email, setEmail] = useState(cliente?.email ?? '')
+  const [veiculo, setVeiculo] = useState(() => camposIniciaisDoVeiculo(null))
+  const [clienteCriado, setClienteCriado] = useState(null)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [errosDosCampos, setErrosDosCampos] = useState({})
   const [salvo, setSalvo] = useState(false)
   const [enviando, setEnviando] = useState(false)
+  const novoCliente = !cliente
 
   function alterarCampo(definirCampo) {
     return (evento) => {
       definirCampo(evento.target.value)
       setSalvo(false)
     }
+  }
+
+  async function salvarCliente() {
+    if (cliente) return editarCliente(cliente.id, { nome, telefone })
+    return clienteCriado ?? cadastrarCliente({ nome, telefone })
   }
 
   async function enviarFormulario(evento) {
@@ -26,11 +35,12 @@ export default function FormularioCliente({ cliente, aoSalvar }) {
     setSalvo(false)
     setEnviando(true)
 
-    const dados = { nome, telefone, email: email.trim() || null }
     try {
-      const clienteSalvo = cliente
-        ? await editarCliente(cliente.id, dados)
-        : await cadastrarCliente(dados)
+      const clienteSalvo = await salvarCliente()
+      if (novoCliente) setClienteCriado(clienteSalvo)
+      if (novoCliente && veiculoPreenchido(veiculo)) {
+        await cadastrarVeiculo(clienteSalvo.id, dadosDoVeiculo(veiculo))
+      }
       setSalvo(true)
       aoSalvar(clienteSalvo)
     } catch (erro) {
@@ -50,6 +60,7 @@ export default function FormularioCliente({ cliente, aoSalvar }) {
         required
         autoComplete="off"
         value={nome}
+        disabled={Boolean(clienteCriado)}
         erro={errosDosCampos.nome?.[0]}
         onChange={alterarCampo(setNome)}
       />
@@ -60,18 +71,22 @@ export default function FormularioCliente({ cliente, aoSalvar }) {
         required
         autoComplete="off"
         value={telefone}
+        disabled={Boolean(clienteCriado)}
         erro={errosDosCampos.telefone?.[0]}
         onChange={alterarCampo(setTelefone)}
       />
-      <CampoDeTexto
-        id="cliente-email"
-        rotulo="E-mail"
-        type="email"
-        autoComplete="off"
-        value={email}
-        erro={errosDosCampos.email?.[0]}
-        onChange={alterarCampo(setEmail)}
-      />
+
+      {novoCliente && (
+        <>
+          <h3 className="formulario-secao">Veículo</h3>
+          <CamposDoVeiculo
+            campos={veiculo}
+            aoMudar={(novos) => setVeiculo((atuais) => ({ ...atuais, ...novos }))}
+            erros={errosDosCampos}
+            placaObrigatoria={false}
+          />
+        </>
+      )}
 
       {mensagemDeErro && (
         <p className="formulario-erro" role="alert">

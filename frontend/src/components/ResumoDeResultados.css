@@ -10,7 +10,6 @@
   flex-direction: column;
   gap: 2px;
   padding: var(--espaco-2) var(--espaco-2);
-  border: 1px solid var(--cor-linha);
   border-radius: var(--raio-medio);
   background: var(--cor-cartao);
 }

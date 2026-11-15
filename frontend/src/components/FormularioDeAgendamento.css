@@ -1,7 +1,6 @@
 .formulario-agendamento {
   max-width: 560px;
   padding: var(--espaco-3);
-  border: 1px solid var(--cor-linha);
   border-radius: var(--raio-medio);
   background: var(--cor-cartao);
 }

@@ -1,0 +1,36 @@
+.faixa-de-vaga {
+  min-width: 0;
+}
+
+.faixa-cabecalho {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--espaco-1);
+  margin-bottom: var(--espaco-1);
+}
+
+.faixa-titulo {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.faixa-situacao {
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+}
+
+.faixa-livre {
+  color: var(--status-concluido-texto);
+  font-weight: 600;
+}
+
+.faixa-vazia {
+  margin: 0;
+  padding: var(--espaco-2);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+  color: var(--cor-texto-suave);
+}

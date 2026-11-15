@@ -33,6 +33,13 @@
   margin: 0;
 }
 
+.agenda-faixas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--espaco-3);
+  align-items: start;
+}
+
 .agenda-itens {
   display: flex;
   flex-direction: column;

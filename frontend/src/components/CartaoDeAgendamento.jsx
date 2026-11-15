@@ -1,21 +1,37 @@
 import { acoesDoStatus } from '../dominio/statusDoAgendamento.js'
 import { horaDoTexto } from '../formatacao/horario.js'
+import { minutosDeAtraso, minutosEmAtendimento, textoDeDuracao } from '../formatacao/situacaoNoTempo.js'
 import BotoesDeStatus from './BotoesDeStatus.jsx'
 import LinhaDeServicos from './LinhaDeServicos.jsx'
 import PilulaDeStatus from './PilulaDeStatus.jsx'
 import './CartaoDeAgendamento.css'
 
-function HorarioDoCartao({ agendamento }) {
+function SituacaoNoTempo({ agendamento, agora }) {
+  const atraso = minutosDeAtraso(agendamento, agora)
+  if (atraso > 0) return <span className="cartao-situacao cartao-atraso">Atrasado {textoDeDuracao(atraso)}</span>
+
+  const emAtendimento = minutosEmAtendimento(agendamento, agora)
+  if (emAtendimento > 0) return <span className="cartao-situacao cartao-duracao">Há {textoDeDuracao(emAtendimento)} em atendimento</span>
+
+  return null
+}
+
+function HorarioDoCartao({ agendamento, agora }) {
+  const inicio = horaDoTexto(agendamento.data_hora_agendada)
+  const fim = horaDoTexto(agendamento.data_hora_fim_prevista)
+
   return (
     <span className="cartao-horario">
-      <span className="cartao-hora">{horaDoTexto(agendamento.data_hora_agendada)}</span>
-      <span className="cartao-fim">até {horaDoTexto(agendamento.data_hora_fim_prevista)}</span>
-      <span className="cartao-fim">{agendamento.duracao_total_minutos} min</span>
+      <span className="cartao-hora">
+        {inicio}–{fim}
+      </span>
+      <span className="cartao-duracao">{textoDeDuracao(agendamento.duracao_total_minutos)}</span>
+      {agora && <SituacaoNoTempo agendamento={agendamento} agora={agora} />}
     </span>
   )
 }
 
-function DadosDoCartao({ agendamento }) {
+function DadosDoCartao({ agendamento, mostrarVaga }) {
   return (
     <span className="cartao-dados">
       <span className="cartao-cliente">{agendamento.cliente.nome}</span>
@@ -25,7 +41,7 @@ function DadosDoCartao({ agendamento }) {
       </span>
       <LinhaDeServicos
         servicos={agendamento.servicos}
-        complemento={agendamento.vaga.identificacao}
+        complemento={mostrarVaga ? agendamento.vaga.identificacao : undefined}
         className="cartao-servico"
       />
     </span>
@@ -45,15 +61,24 @@ function RodapeDoCartao({ acoes, ocupado, mensagemDeErro, aoMudarStatus }) {
   )
 }
 
-export default function CartaoDeAgendamento({ agendamento, selecionado, ocupado, mensagemDeErro, aoAbrir, aoMudarStatus }) {
+export default function CartaoDeAgendamento({
+  agendamento,
+  agora,
+  mostrarVaga = true,
+  selecionado,
+  ocupado,
+  mensagemDeErro,
+  aoAbrir,
+  aoMudarStatus,
+}) {
   const acoes = acoesDoStatus(agendamento.status)
 
   return (
     <li className="cartao-agendamento">
       <button type="button" className="cartao-corpo" aria-current={selecionado ? 'true' : undefined} onClick={aoAbrir}>
-        <HorarioDoCartao agendamento={agendamento} />
-        <DadosDoCartao agendamento={agendamento} />
+        <HorarioDoCartao agendamento={agendamento} agora={agora} />
         <PilulaDeStatus status={agendamento.status} />
+        <DadosDoCartao agendamento={agendamento} mostrarVaga={mostrarVaga} />
       </button>
       {(acoes.length > 0 || mensagemDeErro) && (
         <RodapeDoCartao acoes={acoes} ocupado={ocupado} mensagemDeErro={mensagemDeErro} aoMudarStatus={aoMudarStatus} />

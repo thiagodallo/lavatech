@@ -9,9 +9,11 @@ export default function LinhaDeServicos({ servicos, complemento, separador = '|'
       <span className="linha-de-servicos-nomes" title={nomes}>
         {nomes}
       </span>
-      <span className="linha-de-servicos-complemento">
-        {separador} {complemento}
-      </span>
+      {complemento && (
+        <span className="linha-de-servicos-complemento">
+          {separador} {complemento}
+        </span>
+      )}
     </span>
   )
 }

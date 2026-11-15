@@ -45,7 +45,6 @@
 }
 
 .clientes-lista {
-  border: 1px solid var(--cor-linha);
   border-radius: var(--raio-medio);
   background: var(--cor-cartao);
   overflow: hidden;

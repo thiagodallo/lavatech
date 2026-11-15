@@ -41,7 +41,6 @@ button {
 
 .placa {
   padding: 2px var(--espaco-1);
-  border: 1px solid var(--cor-linha);
   border-radius: 6px;
   background: var(--cor-superficie);
   font-family: var(--fonte-mono);

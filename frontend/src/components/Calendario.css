@@ -1,0 +1,122 @@
+.calendario {
+  width: 100%;
+}
+
+.calendario-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 var(--espaco-meio) var(--espaco-1);
+}
+
+.calendario-titulo {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.calendario-mes-botoes {
+  display: flex;
+  gap: var(--espaco-meio);
+}
+
+.calendario-mes-botao {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--cor-marca);
+  transition: background-color var(--tempo-rapido) var(--curva-suave);
+}
+
+.calendario-mes-botao:hover {
+  background: var(--cor-superficie);
+}
+
+.calendario-mes-botao:focus-visible,
+.calendario-dia:focus-visible,
+.calendario-hoje:focus-visible {
+  outline: 2px solid var(--cor-marca);
+  outline-offset: -2px;
+}
+
+.calendario-semana {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  text-align: center;
+}
+
+.calendario-dia-da-semana {
+  padding: var(--espaco-meio) 0 var(--espaco-1);
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.calendario-celula {
+  display: flex;
+  justify-content: center;
+}
+
+.calendario-dia {
+  width: 38px;
+  height: 38px;
+  margin: 1px 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--cor-texto);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  transition: background-color var(--tempo-rapido) var(--curva-suave);
+}
+
+.calendario-dia:hover {
+  background: var(--cor-superficie);
+}
+
+.calendario-dia-hoje {
+  color: var(--cor-marca);
+  font-weight: 600;
+}
+
+.calendario-dia-escolhido,
+.calendario-dia-escolhido:hover {
+  background: var(--cor-marca);
+  color: var(--cor-sobre-marca);
+  font-weight: 600;
+}
+
+.calendario-rodape {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--espaco-1);
+  padding-top: var(--espaco-1);
+  border-top: 1px solid var(--cor-linha);
+}
+
+.calendario-hoje {
+  height: 32px;
+  padding: 0 var(--espaco-1);
+  border: 0;
+  border-radius: var(--raio-pequeno);
+  background: none;
+  color: var(--cor-marca);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.calendario-hoje:hover {
+  background: var(--cor-superficie);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendario-dia,
+  .calendario-mes-botao {
+    transition: none;
+  }
+}

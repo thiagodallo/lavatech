@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { listarFuncionarios } from '../api/funcionarios.js'
 import FormularioFuncionario from '../components/FormularioFuncionario.jsx'
 import PainelLateral from '../components/PainelLateral.jsx'
+import EsqueletoDeLista from '../components/EsqueletoDeLista.jsx'
 import { useSessao } from '../contexts/SessaoContext.jsx'
 import './Funcionarios.css'
 
@@ -57,9 +58,7 @@ export default function Funcionarios() {
 
     if (carregando && funcionarios.length === 0) {
       return (
-        <p className="funcionarios-estado texto-apoio" role="status">
-          Carregando
-        </p>
+        <EsqueletoDeLista />
       )
     }
 

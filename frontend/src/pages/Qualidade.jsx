@@ -6,6 +6,7 @@ import FiltroDeResultado from '../components/FiltroDeResultado.jsx'
 import PainelDoChecklist from '../components/PainelDoChecklist.jsx'
 import ResumoDeResultados from '../components/ResumoDeResultados.jsx'
 import SeletorDeDia from '../components/SeletorDeDia.jsx'
+import EsqueletoDeLista from '../components/EsqueletoDeLista.jsx'
 import { contarPorResultado } from '../dominio/checklistDeQualidade.js'
 import usarDadosDaApi from '../hooks/usarDadosDaApi.js'
 import usarFiltrosDaQualidade from '../hooks/usarFiltrosDaQualidade.js'
@@ -31,7 +32,7 @@ function CorpoDaLista({ rota, doDia, filtrados, idSelecionado, aoAbrir }) {
     )
   }
 
-  if (rota.carregando && doDia.length === 0) return <MensagemDaLista role="status">Carregando</MensagemDaLista>
+  if (rota.carregando && doDia.length === 0) return <EsqueletoDeLista rotulo="Carregando checklists" />
   if (doDia.length === 0) return <MensagemDaLista>Nenhum checklist neste dia</MensagemDaLista>
   if (filtrados.length === 0) return <MensagemDaLista>Nenhum checklist com este resultado</MensagemDaLista>
 

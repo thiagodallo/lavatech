@@ -34,8 +34,8 @@
 .painel-fechar {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: var(--altura-controle);
+  height: var(--altura-controle);
   border: 0;
   border-radius: var(--raio-pequeno);
   background: none;

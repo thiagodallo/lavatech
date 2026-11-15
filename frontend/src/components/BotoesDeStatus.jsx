@@ -4,7 +4,7 @@ import './BotoesDeStatus.css'
 
 const ESPERA_DA_CONFIRMACAO_EM_MS = 4000
 
-export default function BotoesDeStatus({ acoes, desabilitado, aoEscolher }) {
+export default function BotoesDeStatus({ acoes, desabilitado, bloqueadas = [], aoEscolher }) {
   const [statusEmConfirmacao, setStatusEmConfirmacao] = useState(null)
   const recipiente = useRef(null)
 
@@ -53,7 +53,7 @@ export default function BotoesDeStatus({ acoes, desabilitado, aoEscolher }) {
             key={acao.status}
             type="button"
             className={classeDoBotao(acao, posicao)}
-            disabled={desabilitado}
+            disabled={desabilitado || bloqueadas.includes(acao.status)}
             aria-label={emConfirmacao ? acao.confirmacao : undefined}
             onClick={() => escolherAcao(acao)}
           >

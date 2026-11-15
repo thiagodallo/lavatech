@@ -165,6 +165,7 @@ export default function Agenda() {
                 mostrarVaga={false}
                 selecionado={selecionado?.id === agendamento.id}
                 ocupado={idEmAcao === agendamento.id}
+                vagaEmUso={horaDeLiberacaoDaVaga(faixa.agendamentos) !== null}
                 mensagemDeErro={errosPorId[agendamento.id]}
                 aoAbrir={() => setIdSelecionado(agendamento.id)}
                 aoMudarStatus={(novoStatus) => escolherAcao(agendamento, novoStatus)}

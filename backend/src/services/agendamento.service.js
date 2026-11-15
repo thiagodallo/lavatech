@@ -22,6 +22,7 @@ const SERVICO_INATIVO = 'Serviço inativo'
 const VAGA_NAO_ENCONTRADA = 'Vaga não encontrada'
 const VAGA_INATIVA = 'Vaga inativa'
 const VAGA_OCUPADA = 'Vaga ocupada nesse horário'
+const VAGA_EM_ATENDIMENTO = 'A vaga já tem um atendimento em andamento'
 const STATUS_INICIAL = 'agendado'
 const RESULTADO_APROVADO = 'aprovado'
 const MAIOR_DURACAO_EM_MINUTOS = MAXIMO_DE_SERVICOS * DURACAO_MAXIMA_EM_MINUTOS
@@ -221,6 +222,9 @@ export async function mudarStatusDoAgendamento(id, statusNovo, funcionarioId, ch
   const statusAnterior = agendamento.status
   if (!TRANSICOES_PERMITIDAS[statusAnterior].includes(statusNovo)) {
     throw new ErroDeAplicacao(409, `${TRANSICAO_NEGADA}: de ${statusAnterior} para ${statusNovo}`)
+  }
+  if (statusNovo === 'em_andamento' && (await agendamentos.existeEmAndamentoNaVaga(agendamento.vaga_id, id))) {
+    throw new ErroDeAplicacao(409, VAGA_EM_ATENDIMENTO)
   }
   const agora = relogioDoBanco(new Date())
   const atualizado = await agendamentos.mudarStatus({

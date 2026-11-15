@@ -67,3 +67,15 @@
     animation-name: aparecer;
   }
 }
+
+.dialogo-estado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--espaco-2);
+  margin: 0;
+}
+
+.dialogo-estado p {
+  margin: 0;
+}

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { listarProdutos } from '../api/produtos.js'
 import FormularioProduto from '../components/FormularioProduto.jsx'
-import PainelLateral from '../components/PainelLateral.jsx'
+import Dialogo from '../components/Dialogo.jsx'
 import SecaoDeMovimentacao from '../components/SecaoDeMovimentacao.jsx'
 import EsqueletoDeLista from '../components/EsqueletoDeLista.jsx'
 import { formatarQuantidade } from '../formatacao/quantidade.js'
@@ -119,29 +119,27 @@ export default function Estoque() {
         </button>
       </header>
 
-      <div className={painel ? 'area-com-painel painel-aberto' : 'area-com-painel'}>
-        <div className="estoque-lista">{corpoDaLista()}</div>
+      <div className="estoque-lista">{corpoDaLista()}</div>
 
-        {painel && (
-          <PainelLateral
-            titulo={painel.produto ? 'Editar produto' : 'Novo produto'}
-            aoFechar={() => setPainel(null)}
-          >
-            <FormularioProduto
-              key={painel.produto?.id ?? 'novo'}
+      {painel && (
+        <Dialogo
+          titulo={painel.produto ? 'Editar produto' : 'Novo produto'}
+          aoFechar={() => setPainel(null)}
+        >
+          <FormularioProduto
+            key={painel.produto?.id ?? 'novo'}
+            produto={painel.produto}
+            aoSalvar={aoSalvarProduto}
+          />
+          {painel.produto && (
+            <SecaoDeMovimentacao
+              key={`movimentacao-${painel.produto.id}`}
               produto={painel.produto}
-              aoSalvar={aoSalvarProduto}
+              aoRegistrar={aoRegistrarMovimentacao}
             />
-            {painel.produto && (
-              <SecaoDeMovimentacao
-                key={`movimentacao-${painel.produto.id}`}
-                produto={painel.produto}
-                aoRegistrar={aoRegistrarMovimentacao}
-              />
-            )}
-          </PainelLateral>
-        )}
-      </div>
+          )}
+        </Dialogo>
+      )}
     </section>
   )
 }

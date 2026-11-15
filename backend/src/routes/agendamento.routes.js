@@ -11,6 +11,7 @@ import { identificador } from '../schemas/identificador.schema.js'
 import {
   buscarAgendamento,
   cadastrarAgendamento,
+  editarAgendamento,
   listarAgendaDoDia,
   listarAlertas,
   listarHistoricoDoAgendamento,
@@ -36,6 +37,11 @@ agendamentoRoutes.get('/:id', async (req, res) => {
 
 agendamentoRoutes.post('/', validarCorpo(formatoDoAgendamento), async (req, res) => {
   res.status(201).json(await cadastrarAgendamento(req.body, req.session.funcionarioId))
+})
+
+agendamentoRoutes.put('/:id', validarCorpo(formatoDoAgendamento), async (req, res) => {
+  const id = identificador.parse(req.params.id)
+  res.json(await editarAgendamento(id, req.body))
 })
 
 agendamentoRoutes.patch('/:id/status', validarCorpo(formatoDaMudancaDeStatus), async (req, res) => {

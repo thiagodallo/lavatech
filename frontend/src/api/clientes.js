@@ -16,3 +16,11 @@ export function editarCliente(id, dados) {
 export function cadastrarVeiculo(clienteId, dados) {
   return requisitar(`/clientes/${clienteId}/veiculos`, { metodo: 'POST', corpo: dados })
 }
+
+export function editarVeiculo(clienteId, veiculoId, dados) {
+  return requisitar(`/clientes/${clienteId}/veiculos/${veiculoId}`, { metodo: 'PUT', corpo: dados })
+}
+
+export function removerVeiculo(clienteId, veiculoId) {
+  return requisitar(`/clientes/${clienteId}/veiculos/${veiculoId}`, { metodo: 'DELETE' })
+}

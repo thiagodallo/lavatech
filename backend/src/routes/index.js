@@ -6,6 +6,7 @@ import authRoutes from './auth.routes.js'
 import checklistRoutes from './checklist.routes.js'
 import clienteRoutes from './cliente.routes.js'
 import dashboardRoutes from './dashboard.routes.js'
+import expedienteRoutes from './expediente.routes.js'
 import funcionarioRoutes from './funcionario.routes.js'
 import healthRoutes from './health.routes.js'
 import movimentacaoRoutes from './movimentacao.routes.js'
@@ -19,6 +20,7 @@ const rotas = Router()
 rotas.use('/health', healthRoutes)
 rotas.use('/auth', authRoutes)
 rotas.use(exigirSessao)
+rotas.use('/expediente', expedienteRoutes)
 rotas.use('/clientes', clienteRoutes)
 rotas.use('/servicos', servicoRoutes)
 rotas.use('/produtos', produtoRoutes)

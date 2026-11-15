@@ -17,7 +17,7 @@ function OpcaoDeServico({ servico, marcado, bloqueado, aoAlternar }) {
         />
         <span className="opcao-de-servico-nome">{servico.nome}</span>
         <span className="opcao-de-servico-dados">
-          {servico.duracao_minutos} min · {formatarMoeda(servico.preco)}
+          {servico.duracao_minutos} min | {formatarMoeda(servico.preco)}
         </span>
       </label>
     </li>

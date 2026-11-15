@@ -34,7 +34,7 @@ export default function LayoutBase() {
 
       <div className="area-principal">
         <header className="cabecalho">
-          <span className="cabecalho-empresa">Eco Planet · Estética Automotiva</span>
+          <span className="cabecalho-empresa">Eco Planet | Estética Automotiva</span>
           {funcionario && <span className="cabecalho-usuario">{funcionario.nome}</span>}
         </header>
         <main className="conteudo">

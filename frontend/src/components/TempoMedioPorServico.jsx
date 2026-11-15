@@ -1,4 +1,5 @@
 import { formatarQuantidade } from '../formatacao/quantidade.js'
+import { textoDeDuracao } from '../formatacao/duracao.js'
 import BarraDeProporcao from './BarraDeProporcao.jsx'
 import './TempoMedioPorServico.css'
 
@@ -20,12 +21,12 @@ export default function TempoMedioPorServico({ servicos }) {
           <div className="tempo-linha">
             <span className="tempo-legenda">Previsto</span>
             <BarraDeProporcao percentual={(servico.duracao_prevista_minutos / escala) * 100} classe="tempo-previsto" />
-            <span className="tempo-valor">{formatarQuantidade(servico.duracao_prevista_minutos)} min</span>
+            <span className="tempo-valor">{textoDeDuracao(servico.duracao_prevista_minutos)}</span>
           </div>
           <div className="tempo-linha">
             <span className="tempo-legenda">Médio</span>
             <BarraDeProporcao percentual={(servico.tempo_medio_minutos / escala) * 100} />
-            <span className="tempo-valor">{formatarQuantidade(servico.tempo_medio_minutos)} min</span>
+            <span className="tempo-valor">{textoDeDuracao(servico.tempo_medio_minutos)}</span>
           </div>
         </li>
       ))}

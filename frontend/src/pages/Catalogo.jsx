@@ -5,6 +5,7 @@ import { listarServicos } from '../api/servicos.js'
 import FormularioServico from '../components/FormularioServico.jsx'
 import PainelLateral from '../components/PainelLateral.jsx'
 import { formatarMoeda } from '../formatacao/moeda.js'
+import { textoDeDuracao } from '../formatacao/duracao.js'
 import './Catalogo.css'
 
 export default function Catalogo() {
@@ -77,7 +78,7 @@ export default function Catalogo() {
             >
               <div className="servico-dados">
                 <span className="servico-nome">{servico.nome}</span>
-                <span className="servico-duracao">{servico.duracao_minutos} min</span>
+                <span className="servico-duracao">{textoDeDuracao(servico.duracao_minutos)}</span>
                 {!servico.ativo && <span className="servico-selo">Inativo</span>}
               </div>
               <span className="servico-preco">{formatarMoeda(servico.preco)}</span>

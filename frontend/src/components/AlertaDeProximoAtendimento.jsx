@@ -2,11 +2,12 @@ import { AlertTriangle } from 'lucide-react'
 
 import { horaDoTexto } from '../formatacao/horario.js'
 import usarAlertasDeProximoAtendimento from '../hooks/usarAlertasDeProximoAtendimento.js'
+import { textoDeDuracao } from '../formatacao/duracao.js'
 import LinhaDeServicos from './LinhaDeServicos.jsx'
 import './AlertaDeProximoAtendimento.css'
 
 function textoDoPrazo(minutosRestantes) {
-  return minutosRestantes > 0 ? `Começa em ${minutosRestantes} min` : 'Começa agora'
+  return minutosRestantes > 0 ? `Começa em ${textoDeDuracao(minutosRestantes)}` : 'Começa agora'
 }
 
 function ItemDoAlerta({ alerta }) {

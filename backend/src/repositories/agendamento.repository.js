@@ -1,8 +1,8 @@
 import prisma from '../database/prisma.js'
 
 const COM_DETALHES = {
-  cliente: { select: { id: true, nome: true } },
-  veiculo: { select: { id: true, modelo: true, placa: true } },
+  cliente: { select: { id: true, nome: true, telefone: true } },
+  veiculo: { select: { id: true, marca: true, modelo: true, placa: true, cor: true } },
   agendamento_servico: {
     select: {
       servico_id: true,
@@ -39,10 +39,11 @@ export function buscarPorId(id) {
 
 const STATUS_QUE_LIBERAM_A_VAGA = ['cancelado', 'no_show']
 
-export function listarNaVaga(vagaId, de, ate) {
+export function listarNaVaga(vagaId, de, ate, idIgnorado) {
   return prisma.agendamento.findMany({
     where: {
       vaga_id: vagaId,
+      id: { not: idIgnorado },
       status: { notIn: STATUS_QUE_LIBERAM_A_VAGA },
       data_hora_agendada: { gte: de, lt: ate },
     },
@@ -97,6 +98,25 @@ export function criar({ dados, itens, horario, status, funcionarioId, agora }) {
       agora,
     })
     return agendamento
+  })
+}
+
+export function atualizar({ id, dados, itens, horario, agora }) {
+  return prisma.$transaction(async (transacao) => {
+    await transacao.agendamento_servico.deleteMany({ where: { agendamento_id: id } })
+    return transacao.agendamento.update({
+      where: { id },
+      data: {
+        cliente_id: dados.cliente_id,
+        veiculo_id: dados.veiculo_id,
+        vaga_id: dados.vaga_id,
+        data_hora_agendada: horario,
+        observacoes: dados.observacoes || null,
+        atualizado_em: agora,
+        agendamento_servico: { create: itens },
+      },
+      include: COM_DETALHES,
+    })
   })
 }
 

@@ -128,7 +128,15 @@ export default function Agenda() {
     }
 
     if (agendamentosDoDia.length === 0) {
-      return <p className="agenda-estado texto-apoio">Nenhum agendamento neste dia</p>
+      return (
+        <div className="agenda-estado">
+          <p className="texto-apoio">Nenhum agendamento neste dia</p>
+          <Link to="/agenda/novo" className="botao-primario">
+            <Plus size={16} aria-hidden="true" />
+            Novo agendamento
+          </Link>
+        </div>
+      )
     }
 
     return (

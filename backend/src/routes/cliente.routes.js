@@ -8,8 +8,10 @@ import {
   cadastrarCliente,
   cadastrarVeiculo,
   editarCliente,
+  editarVeiculo,
   listarClientes,
   listarVeiculosDoCliente,
+  removerVeiculo,
 } from '../services/cliente.service.js'
 
 const clienteRoutes = Router()
@@ -36,6 +38,19 @@ clienteRoutes.get('/:id/veiculos', async (req, res) => {
 clienteRoutes.post('/:id/veiculos', validarCorpo(formatoDoVeiculo), async (req, res) => {
   const id = identificador.parse(req.params.id)
   res.status(201).json(await cadastrarVeiculo(id, req.body))
+})
+
+clienteRoutes.put('/:id/veiculos/:veiculoId', validarCorpo(formatoDoVeiculo), async (req, res) => {
+  const id = identificador.parse(req.params.id)
+  const veiculoId = identificador.parse(req.params.veiculoId)
+  res.json(await editarVeiculo(id, veiculoId, req.body))
+})
+
+clienteRoutes.delete('/:id/veiculos/:veiculoId', async (req, res) => {
+  const id = identificador.parse(req.params.id)
+  const veiculoId = identificador.parse(req.params.veiculoId)
+  await removerVeiculo(id, veiculoId)
+  res.status(204).end()
 })
 
 export default clienteRoutes

@@ -53,6 +53,10 @@
   text-align: left;
 }
 
+.menu-lateral :focus-visible {
+  outline-color: var(--cor-foco-no-escuro);
+}
+
 .menu-item:hover {
   color: var(--cor-sobre-marca);
 }

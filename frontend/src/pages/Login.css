@@ -35,7 +35,7 @@
   height: 36px;
   border-radius: var(--raio-pequeno);
   background: var(--cor-marca);
-  color: #ffffff;
+  color: var(--cor-sobre-marca);
 }
 
 .login-rotulo {
@@ -71,7 +71,7 @@
   border: 0;
   border-radius: var(--raio-pequeno);
   background: var(--cor-marca);
-  color: #ffffff;
+  color: var(--cor-sobre-marca);
   font-weight: 600;
   transition: background-color 150ms cubic-bezier(0.23, 1, 0.32, 1);
 }

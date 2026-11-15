@@ -3,8 +3,8 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: var(--espaco-2);
+  margin-bottom: var(--espaco-3);
 }
 
 .catalogo-cabecalho .titulo-tela {
@@ -15,9 +15,9 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--espaco-2);
   margin: 0;
-  padding: 16px;
+  padding: var(--espaco-2);
   border: 1px solid var(--cor-linha);
   border-radius: var(--raio-medio);
   background: var(--cor-cartao);
@@ -30,7 +30,7 @@
 .catalogo-itens {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 12px;
+  gap: var(--espaco-2);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -40,9 +40,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--espaco-2);
   width: 100%;
-  padding: 16px;
+  padding: var(--espaco-2);
   border: 1px solid var(--cor-linha);
   border-radius: var(--raio-medio);
   background: var(--cor-cartao);
@@ -63,7 +63,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2px 8px;
+  gap: 2px var(--espaco-1);
   min-width: 0;
 }
 
@@ -78,7 +78,7 @@
 }
 
 .servico-selo {
-  padding: 1px 8px;
+  padding: 1px var(--espaco-1);
   border-radius: 999px;
   background: var(--status-agendado-fundo);
   color: var(--status-agendado-texto);

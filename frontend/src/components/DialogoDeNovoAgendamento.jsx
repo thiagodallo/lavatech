@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { listarServicosAtivos } from '../api/servicos.js'
 import { listarVagas } from '../api/vagas.js'
 import Dialogo from './Dialogo.jsx'
+import EsqueletoDeBloco from './EsqueletoDeBloco.jsx'
 import FormularioDeAgendamento from './FormularioDeAgendamento.jsx'
 
 export default function DialogoDeNovoAgendamento({ aoSalvar, aoFechar }) {
@@ -43,9 +44,7 @@ export default function DialogoDeNovoAgendamento({ aoSalvar, aoFechar }) {
 
     if (!opcoes) {
       return (
-        <p className="dialogo-estado texto-apoio" role="status">
-          Carregando
-        </p>
+        <EsqueletoDeBloco linhas={4} rotulo="Carregando o formulário" />
       )
     }
 

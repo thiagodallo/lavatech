@@ -5,6 +5,7 @@ import { listarClientes } from '../api/clientes.js'
 import FormularioCliente from '../components/FormularioCliente.jsx'
 import PainelLateral from '../components/PainelLateral.jsx'
 import VeiculosDoCliente from '../components/VeiculosDoCliente.jsx'
+import EsqueletoDeLista from '../components/EsqueletoDeLista.jsx'
 import './Clientes.css'
 
 const ESPERA_DA_BUSCA_EM_MS = 300
@@ -64,9 +65,7 @@ export default function Clientes() {
 
     if (carregando && clientes.length === 0) {
       return (
-        <p className="clientes-estado texto-apoio" role="status">
-          Carregando
-        </p>
+        <EsqueletoDeLista />
       )
     }
 

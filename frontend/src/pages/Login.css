@@ -2,7 +2,7 @@
   display: grid;
   place-items: center;
   min-height: 100vh;
-  padding: 16px;
+  padding: var(--espaco-2);
   background: var(--cor-menu);
 }
 
@@ -11,7 +11,7 @@
   flex-direction: column;
   width: 100%;
   max-width: 384px;
-  padding: 32px;
+  padding: var(--espaco-4);
   border-radius: var(--raio-medio);
   background: var(--cor-cartao);
 }
@@ -19,8 +19,8 @@
 .login-marca {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 32px;
+  gap: var(--espaco-1);
+  margin-bottom: var(--espaco-4);
   color: var(--cor-texto);
   font-family: var(--fonte-texto);
   font-size: 18px;
@@ -39,7 +39,7 @@
 }
 
 .login-rotulo {
-  margin-bottom: 6px;
+  margin-bottom: var(--espaco-1);
   color: var(--cor-texto-suave);
   font-size: 12px;
   font-weight: 600;
@@ -47,8 +47,8 @@
 
 .login-campo {
   height: 42px;
-  margin-bottom: 16px;
-  padding: 0 12px;
+  margin-bottom: var(--espaco-2);
+  padding: 0 var(--espaco-2);
   border: 1px solid var(--cor-linha);
   border-radius: var(--raio-pequeno);
   background: var(--cor-superficie);
@@ -57,8 +57,8 @@
 }
 
 .login-erro {
-  margin: 0 0 16px;
-  padding: 10px 12px;
+  margin: 0 0 var(--espaco-2);
+  padding: var(--espaco-1) var(--espaco-2);
   border-radius: var(--raio-pequeno);
   background: var(--status-cancelado-fundo);
   color: var(--status-cancelado-texto);
@@ -66,8 +66,8 @@
 }
 
 .login-entrar {
-  margin-top: 8px;
-  padding: 12px;
+  margin-top: var(--espaco-1);
+  padding: var(--espaco-2);
   border: 0;
   border-radius: var(--raio-pequeno);
   background: var(--cor-marca);

@@ -1,7 +1,7 @@
 .area-com-painel {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 16px;
+  gap: var(--espaco-2);
   align-items: start;
 }
 
@@ -12,8 +12,8 @@
 .painel {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 20px;
+  gap: var(--espaco-3);
+  padding: var(--espaco-3);
   border: 1px solid var(--cor-linha);
   border-radius: var(--raio-medio);
   background: var(--cor-cartao);

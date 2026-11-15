@@ -13,9 +13,9 @@
   text-align: left;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: 8px 16px;
+  gap: var(--espaco-1) var(--espaco-2);
   width: 100%;
-  padding: 14px 16px;
+  padding: var(--espaco-2) var(--espaco-2);
 }
 
 .cartao-checklist-corpo:hover,
@@ -40,7 +40,7 @@
 }
 
 .cartao-checklist-dados .chips-de-itens {
-  margin-top: 6px;
+  margin-top: var(--espaco-1);
 }
 
 .cartao-checklist-cliente {
@@ -51,7 +51,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: var(--espaco-1);
   color: var(--cor-texto-suave);
   font-size: 13px;
 }
@@ -65,11 +65,11 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 6px;
+  gap: var(--espaco-1);
 }
 
 .selo-retrabalho {
-  padding: 2px 8px;
+  padding: 2px var(--espaco-1);
   border: 1px solid var(--cor-alerta-escura);
   border-radius: 6px;
   color: var(--cor-alerta-escura);

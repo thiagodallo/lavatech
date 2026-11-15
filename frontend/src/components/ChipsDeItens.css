@@ -1,14 +1,14 @@
 .chips-de-itens {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--espaco-1);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .chip-de-item {
-  padding: 2px 8px;
+  padding: 2px var(--espaco-1);
   border-radius: 6px;
   background: var(--status-cancelado-fundo);
   color: var(--status-cancelado-texto);

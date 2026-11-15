@@ -1,8 +1,10 @@
 import { useState } from 'react'
 
 import { cadastrarProduto, editarProduto } from '../api/produtos.js'
+import { unidadesComAtual } from '../dominio/unidadesDeMedida.js'
 import { lerNumero } from '../formatacao/numero.js'
 import { formatarQuantidade } from '../formatacao/quantidade.js'
+import CampoDeSelecao from './CampoDeSelecao.jsx'
 import CampoDeTexto from './CampoDeTexto.jsx'
 
 export default function FormularioProduto({ produto, aoSalvar }) {
@@ -70,14 +72,20 @@ export default function FormularioProduto({ produto, aoSalvar }) {
           erro={errosDosCampos.categoria?.[0]}
           onChange={alterarCampo(setCategoria)}
         />
-        <CampoDeTexto
+        <CampoDeSelecao
           id="produto-unidade"
           rotulo="Unidade"
-          autoComplete="off"
           value={unidade}
           erro={errosDosCampos.unidade_medida?.[0]}
           onChange={alterarCampo(setUnidade)}
-        />
+        >
+          <option value="">Selecione</option>
+          {unidadesComAtual(produto?.unidade_medida).map((opcao) => (
+            <option key={opcao.valor} value={opcao.valor}>
+              {opcao.rotulo}
+            </option>
+          ))}
+        </CampoDeSelecao>
       </div>
       <CampoDeTexto
         id="produto-minimo"

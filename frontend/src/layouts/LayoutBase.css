@@ -13,24 +13,14 @@
 }
 
 .marca {
-  display: flex;
-  align-items: center;
-  gap: var(--espaco-1);
   margin-bottom: var(--espaco-4);
   padding: 0 var(--espaco-1);
-  color: var(--cor-sobre-marca);
-  font-family: var(--fonte-texto);
-  font-size: 16px;
-  font-weight: 700;
 }
 
-.marca-icone {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--raio-pequeno);
-  background: var(--cor-marca);
+.marca-logo {
+  display: block;
+  width: 160px;
+  height: auto;
 }
 
 .menu-itens {
@@ -118,6 +108,10 @@
   .marca {
     flex: 1;
     margin: 0;
+  }
+
+  .marca-logo {
+    width: 128px;
   }
 
   .menu-itens {

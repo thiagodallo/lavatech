@@ -1,6 +1,7 @@
-import { Droplets, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router'
 
+import logoClara from '../assets/logo-lavatech-clara.png'
 import { useSessao } from '../contexts/SessaoContext.jsx'
 import { itensDoMenu } from '../navegacao.js'
 import './LayoutBase.css'
@@ -11,10 +12,7 @@ export default function LayoutBase() {
     <div className="layout">
       <aside className="menu-lateral">
         <div className="marca">
-          <span className="marca-icone">
-            <Droplets size={16} />
-          </span>
-          LavaTech
+          <img src={logoClara} alt="LavaTech" className="marca-logo" />
         </div>
 
         <nav className="menu-itens" aria-label="Menu principal">

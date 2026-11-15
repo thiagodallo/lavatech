@@ -49,7 +49,7 @@ function DadosDoCartao({ agendamento, mostrarVaga }) {
   )
 }
 
-function RodapeDoCartao({ acoes, ocupado, mensagemDeErro, aoMudarStatus }) {
+function RodapeDoCartao({ acoes, ocupado, bloqueadas, mensagemDeErro, aoMudarStatus }) {
   return (
     <div className="cartao-rodape">
       {mensagemDeErro && (
@@ -57,7 +57,7 @@ function RodapeDoCartao({ acoes, ocupado, mensagemDeErro, aoMudarStatus }) {
           {mensagemDeErro}
         </p>
       )}
-      {acoes.length > 0 && <BotoesDeStatus acoes={acoes} desabilitado={ocupado} aoEscolher={aoMudarStatus} />}
+      {acoes.length > 0 && <BotoesDeStatus acoes={acoes} desabilitado={ocupado} bloqueadas={bloqueadas} aoEscolher={aoMudarStatus} />}
     </div>
   )
 }
@@ -68,6 +68,7 @@ export default function CartaoDeAgendamento({
   mostrarVaga = true,
   selecionado,
   ocupado,
+  vagaEmUso = false,
   mensagemDeErro,
   aoAbrir,
   aoMudarStatus,
@@ -82,7 +83,13 @@ export default function CartaoDeAgendamento({
         <DadosDoCartao agendamento={agendamento} mostrarVaga={mostrarVaga} />
       </button>
       {(acoes.length > 0 || mensagemDeErro) && (
-        <RodapeDoCartao acoes={acoes} ocupado={ocupado} mensagemDeErro={mensagemDeErro} aoMudarStatus={aoMudarStatus} />
+        <RodapeDoCartao
+          acoes={acoes}
+          ocupado={ocupado}
+          bloqueadas={vagaEmUso ? ['em_andamento'] : []}
+          mensagemDeErro={mensagemDeErro}
+          aoMudarStatus={aoMudarStatus}
+        />
       )}
     </li>
   )

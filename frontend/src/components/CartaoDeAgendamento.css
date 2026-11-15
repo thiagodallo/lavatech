@@ -4,22 +4,24 @@
 }
 
 .cartao-corpo {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--espaco-1) var(--espaco-2);
+  align-items: start;
+  width: 100%;
+  padding: var(--espaco-2);
   border: 0;
   border-radius: var(--raio-medio);
   background: none;
   color: inherit;
   text-align: left;
-  align-items: flex-start;
-  gap: var(--espaco-2);
-  width: 100%;
-  padding: var(--espaco-2) var(--espaco-2);
 }
 
 .cartao-horario {
   display: flex;
-  flex-direction: column;
-  min-width: 64px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--espaco-1);
 }
 
 .cartao-hora {
@@ -28,15 +30,28 @@
   font-weight: 600;
 }
 
-.cartao-fim {
-  color: var(--cor-texto-suave);
+.cartao-situacao {
+  flex-basis: 100%;
+}
+
+.cartao-duracao,
+.cartao-atraso {
   font-family: var(--fonte-mono);
-  font-size: 11px;
+  font-size: 12px;
+}
+
+.cartao-duracao {
+  color: var(--cor-texto-suave);
+}
+
+.cartao-atraso {
+  color: var(--status-cancelado-texto);
+  font-weight: 500;
 }
 
 .cartao-dados {
   display: flex;
-  flex: 1;
+  grid-column: 1 / -1;
   flex-direction: column;
   gap: 2px;
   min-width: 0;

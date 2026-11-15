@@ -1,7 +1,7 @@
-import { Droplets } from 'lucide-react'
 import { useState } from 'react'
 import { Navigate } from 'react-router'
 
+import logo from '../assets/logo-lavatech.png'
 import { useSessao } from '../contexts/SessaoContext.jsx'
 import './Login.css'
 
@@ -31,12 +31,7 @@ export default function Login() {
   return (
     <main className="login">
       <form className="login-cartao" onSubmit={enviarFormulario}>
-        <div className="login-marca">
-          <span className="login-marca-icone">
-            <Droplets size={18} aria-hidden="true" />
-          </span>
-          LavaTech
-        </div>
+        <img src={logo} alt="LavaTech" className="login-logo" />
 
         <label className="login-rotulo" htmlFor="login-email">
           E-mail

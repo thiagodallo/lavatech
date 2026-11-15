@@ -16,26 +16,11 @@
   background: var(--cor-cartao);
 }
 
-.login-marca {
-  display: flex;
-  align-items: center;
-  gap: var(--espaco-1);
+.login-logo {
+  display: block;
+  width: 208px;
+  height: auto;
   margin-bottom: var(--espaco-4);
-  color: var(--cor-texto);
-  font-family: var(--fonte-texto);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.login-marca-icone {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--raio-pequeno);
-  background: var(--cor-marca);
-  color: var(--cor-sobre-marca);
 }
 
 .login-rotulo {

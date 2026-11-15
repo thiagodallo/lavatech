@@ -1,0 +1,88 @@
+.esqueleto {
+  display: block;
+  border-radius: var(--raio-pequeno);
+  background: linear-gradient(
+    90deg,
+    var(--cor-linha) 0%,
+    color-mix(in oklab, var(--cor-linha) 45%, var(--cor-cartao)) 50%,
+    var(--cor-linha) 100%
+  );
+  background-size: 200% 100%;
+  animation: esqueleto-brilho 1600ms linear infinite;
+}
+
+.esqueleto-lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-2);
+  padding: var(--espaco-2);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+}
+
+.esqueleto-lista-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-2);
+}
+
+.esqueleto-lista-textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--espaco-1);
+}
+
+.esqueleto-titulo {
+  width: 40%;
+  height: 16px;
+}
+
+.esqueleto-subtitulo {
+  width: 25%;
+  height: 12px;
+}
+
+.esqueleto-valor {
+  width: 80px;
+  height: 20px;
+}
+
+.esqueleto-bloco {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-1);
+}
+
+.esqueleto-bloco .esqueleto {
+  height: 16px;
+}
+
+.esqueleto-bloco .esqueleto:nth-child(3n + 1) {
+  width: 100%;
+}
+
+.esqueleto-bloco .esqueleto:nth-child(3n + 2) {
+  width: 70%;
+}
+
+.esqueleto-bloco .esqueleto:nth-child(3n) {
+  width: 85%;
+}
+
+@keyframes esqueleto-brilho {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esqueleto {
+    animation: none;
+  }
+}

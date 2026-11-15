@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 import {
+  contarRespondidos,
   itensDoChecklist,
   itensSemResposta,
   resultadoSugerido,
@@ -142,6 +143,9 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
             </ul>
           )}
           <div className="formulario-acoes">
+            <span className="modal-checklist-progresso">
+              {contarRespondidos(itens)} de {itensDoChecklist.length}
+            </span>
             <button
               type="submit"
               className="botao-primario"

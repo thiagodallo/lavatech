@@ -13,7 +13,12 @@ const pagamentoRoutes = Router()
 
 pagamentoRoutes.get('/agendamentos/:id/pagamento', async (req, res) => {
   const agendamentoId = identificador.parse(req.params.id)
-  res.json(await buscarPagamentoDoAgendamento(agendamentoId))
+  const pagamento = await buscarPagamentoDoAgendamento(agendamentoId)
+  if (!pagamento) {
+    res.status(204).end()
+    return
+  }
+  res.json(pagamento)
 })
 
 pagamentoRoutes.post('/agendamentos/:id/pagamento', validarCorpo(formatoDoPagamento), async (req, res) => {

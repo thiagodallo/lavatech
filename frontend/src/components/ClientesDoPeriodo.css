@@ -24,10 +24,10 @@
 
 .clientes-novos {
   border-radius: 4px 0 0 4px;
-  background: var(--cor-alerta-escura);
+  background: var(--cor-marca);
 }
 
 .clientes-recorrentes {
   border-radius: 0 4px 4px 0;
-  background: var(--cor-marca);
+  background: var(--cor-marca-suave);
 }

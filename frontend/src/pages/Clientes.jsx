@@ -51,6 +51,20 @@ export default function Clientes() {
     setTentativa((anterior) => anterior + 1)
   }
 
+  function aoEditarVeiculo(veiculo) {
+    setPainel(({ cliente }) => ({
+      cliente: { ...cliente, veiculos: cliente.veiculos.map((atual) => (atual.id === veiculo.id ? veiculo : atual)) },
+    }))
+    setTentativa((anterior) => anterior + 1)
+  }
+
+  function aoRemoverVeiculo(veiculoId) {
+    setPainel(({ cliente }) => ({
+      cliente: { ...cliente, veiculos: cliente.veiculos.filter((atual) => atual.id !== veiculoId) },
+    }))
+    setTentativa((anterior) => anterior + 1)
+  }
+
   function corpoDaLista() {
     if (mensagemDeErro) {
       return (
@@ -143,6 +157,8 @@ export default function Clientes() {
               clienteId={painel.cliente.id}
               veiculos={painel.cliente.veiculos}
               aoCadastrar={aoCadastrarVeiculo}
+              aoEditar={aoEditarVeiculo}
+              aoRemover={aoRemoverVeiculo}
             />
           )}
         </Dialogo>

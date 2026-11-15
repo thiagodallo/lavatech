@@ -1,13 +1,10 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { somarDias } from '../formatacao/horario.js'
+import CampoDeData from './CampoDeData.jsx'
 import './SeletorDeDia.css'
 
 export default function SeletorDeDia({ data, hoje, aoMudar }) {
-  function aoEscolherData(evento) {
-    if (evento.target.value) aoMudar(evento.target.value)
-  }
-
   return (
     <div className="seletor-de-dia" role="group" aria-label="Dia da agenda">
       <button
@@ -34,13 +31,7 @@ export default function SeletorDeDia({ data, hoje, aoMudar }) {
       >
         <ChevronRight size={20} aria-hidden="true" />
       </button>
-      <input
-        type="date"
-        className="campo-entrada seletor-data"
-        aria-label="Data da agenda"
-        value={data}
-        onChange={aoEscolherData}
-      />
+      <CampoDeData classe="seletor-data" rotulo="Data da agenda" valor={data} aoEscolher={aoMudar} />
     </div>
   )
 }

@@ -40,7 +40,7 @@
 }
 
 .seletor-de-forma-opcao:has(input:focus-visible) {
-  outline: 2px solid var(--cor-alerta);
+  outline: 2px solid var(--cor-marca);
   outline-offset: 2px;
 }
 

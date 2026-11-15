@@ -13,10 +13,3 @@ export function minutosEmAtendimento(agendamento, agora) {
   if (agendamento.status !== 'em_andamento' || !agendamento.data_hora_inicio) return 0
   return Math.max(0, minutosDesde(agendamento.data_hora_inicio, agora))
 }
-
-export function textoDeDuracao(minutos) {
-  if (minutos < 60) return `${minutos} min`
-  const horas = Math.floor(minutos / 60)
-  const resto = minutos % 60
-  return resto === 0 ? `${horas} h` : `${horas} h ${resto} min`
-}

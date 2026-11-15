@@ -1,6 +1,7 @@
 import { acoesDoStatus } from '../dominio/statusDoAgendamento.js'
+import { textoDeDuracao } from '../formatacao/duracao.js'
 import { horaDoTexto } from '../formatacao/horario.js'
-import { minutosDeAtraso, minutosEmAtendimento, textoDeDuracao } from '../formatacao/situacaoNoTempo.js'
+import { minutosDeAtraso, minutosEmAtendimento } from '../formatacao/situacaoNoTempo.js'
 import BotoesDeStatus from './BotoesDeStatus.jsx'
 import LinhaDeServicos from './LinhaDeServicos.jsx'
 import PilulaDeStatus from './PilulaDeStatus.jsx'

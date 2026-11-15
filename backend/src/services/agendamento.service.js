@@ -1,3 +1,4 @@
+import { ABERTURA, DIAS_ABERTOS, FECHAMENTO, minutosDoRelogio } from '../config/expediente.js'
 import ErroDeAplicacao from '../errors/ErroDeAplicacao.js'
 import {
   diaDeHoje,
@@ -23,6 +24,12 @@ const VAGA_NAO_ENCONTRADA = 'Vaga não encontrada'
 const VAGA_INATIVA = 'Vaga inativa'
 const VAGA_OCUPADA = 'Vaga ocupada nesse horário'
 const VAGA_EM_ATENDIMENTO = 'A vaga já tem um atendimento em andamento'
+const ANTES_DA_ABERTURA = `O atendimento precisa começar a partir das ${ABERTURA}`
+const DEPOIS_DO_FECHAMENTO = `O atendimento precisa terminar até as ${FECHAMENTO}`
+const DIA_FECHADO = 'A empresa não funciona aos domingos'
+const INICIO_ANTECIPADO = 'Só é possível iniciar o atendimento no dia do agendamento'
+const EDICAO_NEGADA = 'Só é possível editar agendamentos agendados ou aguardando'
+const STATUS_EDITAVEIS = ['agendado', 'aguardando']
 const STATUS_INICIAL = 'agendado'
 const RESULTADO_APROVADO = 'aprovado'
 const MAIOR_DURACAO_EM_MINUTOS = MAXIMO_DE_SERVICOS * DURACAO_MAXIMA_EM_MINUTOS
@@ -153,10 +160,27 @@ async function exigirReferenciasValidas({ cliente_id, veiculo_id, servico_ids, v
   return servicosValidos
 }
 
-async function exigirVagaLivre(vagaId, inicio, duracaoEmMinutos) {
+function minutosDoDia(horario) {
+  return horario.getUTCHours() * 60 + horario.getUTCMinutes()
+}
+
+function exigirDentroDoExpediente(inicio, duracaoEmMinutos) {
+  if (!DIAS_ABERTOS.includes(inicio.getUTCDay())) {
+    throw new ErroDeAplicacao(400, DIA_FECHADO)
+  }
+  const minutoInicial = minutosDoDia(inicio)
+  if (minutoInicial < minutosDoRelogio(ABERTURA)) {
+    throw new ErroDeAplicacao(400, ANTES_DA_ABERTURA)
+  }
+  if (minutoInicial + duracaoEmMinutos > minutosDoRelogio(FECHAMENTO)) {
+    throw new ErroDeAplicacao(400, DEPOIS_DO_FECHAMENTO)
+  }
+}
+
+async function exigirVagaLivre(vagaId, inicio, duracaoEmMinutos, idIgnorado) {
   const fim = somarMinutos(inicio, duracaoEmMinutos)
   const desde = somarMinutos(inicio, -MAIOR_DURACAO_EM_MINUTOS)
-  const candidatos = await agendamentos.listarNaVaga(vagaId, desde, fim)
+  const candidatos = await agendamentos.listarNaVaga(vagaId, desde, fim, idIgnorado)
   const sobrepoe = candidatos.some(
     (existente) =>
       somarMinutos(existente.data_hora_agendada, somarDuracoes(existente.agendamento_servico)) > inicio,
@@ -189,6 +213,7 @@ export async function cadastrarAgendamento(dados, funcionarioId) {
   const servicosValidos = await exigirReferenciasValidas(dados)
   const itens = servicosValidos.map(montarItem)
   const horario = relogioDoBanco(dados.data_hora_agendada)
+  exigirDentroDoExpediente(horario, somarDuracoes(itens))
   await exigirVagaLivre(dados.vaga_id, horario, somarDuracoes(itens))
   const criado = await gravarAgendamento({
     dados,
@@ -199,6 +224,33 @@ export async function cadastrarAgendamento(dados, funcionarioId) {
     agora: relogioDoBanco(new Date()),
   })
   return formatarAgendamento(criado)
+}
+
+export async function editarAgendamento(id, dados) {
+  const agendamento = await exigirAgendamento(id)
+  if (!STATUS_EDITAVEIS.includes(agendamento.status)) {
+    throw new ErroDeAplicacao(409, EDICAO_NEGADA)
+  }
+  const servicosValidos = await exigirReferenciasValidas(dados)
+  const itens = servicosValidos.map(montarItem)
+  const horario = relogioDoBanco(dados.data_hora_agendada)
+  exigirDentroDoExpediente(horario, somarDuracoes(itens))
+  await exigirVagaLivre(dados.vaga_id, horario, somarDuracoes(itens), id)
+  const editado = await agendamentos.atualizar({
+    id,
+    dados,
+    itens,
+    horario,
+    agora: relogioDoBanco(new Date()),
+  })
+  return formatarAgendamento(editado)
+}
+
+function exigirInicioNoDia(agendamento) {
+  const diaAgendado = formatarHorario(agendamento.data_hora_agendada).slice(0, 10)
+  if (diaAgendado > diaDeHoje()) {
+    throw new ErroDeAplicacao(409, INICIO_ANTECIPADO)
+  }
 }
 
 function montarChecklist(checklist, agendamento, agora) {
@@ -222,6 +274,9 @@ export async function mudarStatusDoAgendamento(id, statusNovo, funcionarioId, ch
   const statusAnterior = agendamento.status
   if (!TRANSICOES_PERMITIDAS[statusAnterior].includes(statusNovo)) {
     throw new ErroDeAplicacao(409, `${TRANSICAO_NEGADA}: de ${statusAnterior} para ${statusNovo}`)
+  }
+  if (statusNovo === 'em_andamento') {
+    exigirInicioNoDia(agendamento)
   }
   if (statusNovo === 'em_andamento' && (await agendamentos.existeEmAndamentoNaVaga(agendamento.vaga_id, id))) {
     throw new ErroDeAplicacao(409, VAGA_EM_ATENDIMENTO)

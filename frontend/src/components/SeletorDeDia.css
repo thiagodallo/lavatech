@@ -5,7 +5,7 @@
 }
 
 .seletor-seta {
-  width: 38px;
+  width: var(--altura-controle);
   padding: 0;
 }
 
@@ -14,7 +14,7 @@
 }
 
 .seletor-data {
-  height: 38px;
+  height: var(--altura-controle);
   font-family: var(--fonte-mono);
   font-size: 13px;
 }

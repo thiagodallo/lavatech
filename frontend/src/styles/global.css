@@ -53,7 +53,7 @@ button {
   align-items: center;
   justify-content: center;
   gap: var(--espaco-1);
-  height: 38px;
+  height: var(--altura-controle);
   padding: 0 var(--espaco-2);
   border-radius: var(--raio-pequeno);
   font-size: 13px;

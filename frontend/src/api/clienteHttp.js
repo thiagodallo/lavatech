@@ -13,11 +13,16 @@ export class ErroDaApi extends Error {
 }
 
 export async function requisitar(caminho, { metodo = 'GET', corpo } = {}) {
-  const resposta = await fetch(`/api${caminho}`, {
-    method: metodo,
-    headers: corpo ? { 'Content-Type': 'application/json' } : undefined,
-    body: corpo ? JSON.stringify(corpo) : undefined,
-  })
+  let resposta
+  try {
+    resposta = await fetch(`/api${caminho}`, {
+      method: metodo,
+      headers: corpo ? { 'Content-Type': 'application/json' } : undefined,
+      body: corpo ? JSON.stringify(corpo) : undefined,
+    })
+  } catch {
+    throw new ErroDaApi(0, 'Sem conexão com o servidor')
+  }
 
   if (resposta.status === 204) {
     return null

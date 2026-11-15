@@ -106,6 +106,10 @@
     flex-direction: column;
   }
 
+  .menu-item {
+    min-height: var(--altura-controle);
+  }
+
   .menu-lateral {
     flex-flow: row wrap;
     align-items: center;

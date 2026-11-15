@@ -16,7 +16,7 @@ export default function SeletorDeDia({ data, hoje, aoMudar }) {
         aria-label="Dia anterior"
         onClick={() => aoMudar(somarDias(data, -1))}
       >
-        <ChevronLeft size={16} aria-hidden="true" />
+        <ChevronLeft size={20} aria-hidden="true" />
       </button>
       <button
         type="button"
@@ -32,7 +32,7 @@ export default function SeletorDeDia({ data, hoje, aoMudar }) {
         aria-label="Próximo dia"
         onClick={() => aoMudar(somarDias(data, 1))}
       >
-        <ChevronRight size={16} aria-hidden="true" />
+        <ChevronRight size={20} aria-hidden="true" />
       </button>
       <input
         type="date"

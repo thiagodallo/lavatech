@@ -11,12 +11,6 @@ export default function CancelamentosDoPeriodo({ cancelamentos }) {
         </span>
       </div>
       <div className="numero-destaque">
-        <span className="numero-medio">{cancelamentos.no_shows}</span>
-        <span className="numero-rotulo">
-          não compareceram ({formatarPercentual(cancelamentos.percentual_no_shows)})
-        </span>
-      </div>
-      <div className="numero-destaque">
         <span className="numero-medio">{cancelamentos.total_agendamentos}</span>
         <span className="numero-rotulo">agendamentos</span>
       </div>

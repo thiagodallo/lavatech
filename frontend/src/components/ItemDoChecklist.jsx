@@ -13,7 +13,7 @@ export default function ItemDoChecklist({ item, conforme, aoEscolher }) {
           <input
             type="radio"
             name={item.campo}
-            checked={conforme}
+            checked={conforme === true}
             onChange={() => aoEscolher(true)}
           />
           Conforme
@@ -22,7 +22,7 @@ export default function ItemDoChecklist({ item, conforme, aoEscolher }) {
           <input
             type="radio"
             name={item.campo}
-            checked={!conforme}
+            checked={conforme === false}
             onChange={() => aoEscolher(false)}
           />
           Não conforme

@@ -84,3 +84,10 @@
     animation: none;
   }
 }
+
+.modal-checklist-progresso {
+  margin-right: auto;
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-mono);
+  font-size: 12px;
+}

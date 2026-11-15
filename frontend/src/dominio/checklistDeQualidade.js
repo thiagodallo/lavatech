@@ -73,11 +73,20 @@ export function contarPorResultado(checklists) {
   )
 }
 
-export function itensTodosConformes() {
-  return Object.fromEntries(itensDoChecklist.map((item) => [item.campo, true]))
+export function itensSemResposta() {
+  return Object.fromEntries(itensDoChecklist.map((item) => [item.campo, null]))
+}
+
+export function contarRespondidos(itens) {
+  return itensDoChecklist.filter((item) => typeof itens[item.campo] === 'boolean').length
+}
+
+export function todosRespondidos(itens) {
+  return contarRespondidos(itens) === itensDoChecklist.length
 }
 
 export function resultadoSugerido(itens) {
+  if (!todosRespondidos(itens)) return null
   const todosConformes = itensDoChecklist.every((item) => itens[item.campo])
   return todosConformes ? 'aprovado' : 'aprovado_com_ressalva'
 }
@@ -85,10 +94,10 @@ export function resultadoSugerido(itens) {
 export function validarChecklist({ itens, resultado, descricao }) {
   const erros = {}
   const todosConformes = itensDoChecklist.every((item) => itens[item.campo])
-  if (resultado === 'aprovado' && !todosConformes) {
+  if (resultado === 'aprovado' && todosRespondidos(itens) && !todosConformes) {
     erros.resultado = 'Resultado aprovado exige todos os itens conformes'
   }
-  if (resultado !== 'aprovado' && !descricao.trim()) {
+  if (resultado && resultado !== 'aprovado' && !descricao.trim()) {
     erros.descricao_problema = 'Descreva o problema quando o resultado não for aprovado'
   }
   return erros

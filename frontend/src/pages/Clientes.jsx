@@ -42,7 +42,7 @@ export default function Clientes() {
   }, [busca, tentativa])
 
   function aoSalvarCliente(cliente) {
-    setPainel({ cliente })
+    setPainel((atual) => (atual.cliente ? { cliente } : null))
     setTentativa((anterior) => anterior + 1)
   }
 

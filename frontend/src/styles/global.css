@@ -21,7 +21,7 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--cor-alerta);
+  outline: 2px solid var(--cor-marca);
   outline-offset: 2px;
 }
 
@@ -65,7 +65,7 @@ button {
 .botao-primario {
   border: 0;
   background: var(--cor-marca);
-  color: #ffffff;
+  color: var(--cor-sobre-marca);
 }
 
 .botao-primario:hover:not(:disabled) {

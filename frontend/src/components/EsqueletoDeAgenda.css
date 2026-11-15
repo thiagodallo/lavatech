@@ -1,0 +1,47 @@
+.esqueleto-agenda {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--espaco-3);
+}
+
+.esqueleto-cartao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-1);
+  padding: var(--espaco-2);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+}
+
+.esqueleto-linha {
+  display: block;
+  height: 16px;
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-linha);
+  animation: esqueleto-pulso 1200ms ease-in-out infinite;
+}
+
+.esqueleto-horario {
+  width: 40%;
+  height: 24px;
+}
+
+.esqueleto-nome {
+  width: 60%;
+}
+
+.esqueleto-detalhe {
+  width: 80%;
+}
+
+@keyframes esqueleto-pulso {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esqueleto-linha {
+    animation: none;
+  }
+}

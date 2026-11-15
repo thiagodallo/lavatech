@@ -1,19 +1,20 @@
 import { Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 
 import { listarAgendamentosDoDia, mudarStatusDoAgendamento } from '../api/agendamentos.js'
 import { listarVagas } from '../api/vagas.js'
 import AlertaDeProximoAtendimento from '../components/AlertaDeProximoAtendimento.jsx'
 import CartaoDeAgendamento from '../components/CartaoDeAgendamento.jsx'
 import DetalhesDoAgendamento from '../components/DetalhesDoAgendamento.jsx'
+import DialogoDeNovoAgendamento from '../components/DialogoDeNovoAgendamento.jsx'
 import EsqueletoDeAgenda from '../components/EsqueletoDeAgenda.jsx'
 import FaixaDeVaga from '../components/FaixaDeVaga.jsx'
 import ModalDeChecklist from '../components/ModalDeChecklist.jsx'
 import PainelLateral from '../components/PainelLateral.jsx'
 import SeletorDeDia from '../components/SeletorDeDia.jsx'
 import { agruparPorVaga, horaDeLiberacaoDaVaga } from '../dominio/agendaPorVaga.js'
-import { dataDeHoje, ehDataValida } from '../formatacao/horario.js'
+import { dataDeHoje, dataDoTexto, ehDataValida } from '../formatacao/horario.js'
 import usarAgora from '../hooks/usarAgora.js'
 import './Agenda.css'
 
@@ -33,6 +34,7 @@ export default function Agenda() {
   const [errosPorId, setErrosPorId] = useState({})
   const [versaoDosAlertas, setVersaoDosAlertas] = useState(0)
   const [idSelecionado, setIdSelecionado] = useState(null)
+  const [criandoAgendamento, setCriandoAgendamento] = useState(false)
   const [agendamentoEmConclusao, setAgendamentoEmConclusao] = useState(null)
   const agendamentosDoDia = diaCarregado === data ? agendamentos : []
   const selecionado = agendamentosDoDia.find((agendamento) => agendamento.id === idSelecionado)
@@ -107,6 +109,13 @@ export default function Agenda() {
     setErrosPorId((erros) => ({ ...erros, [id]: mensagem }))
   }
 
+  function aoSalvarNovoAgendamento(agendamento) {
+    setCriandoAgendamento(false)
+    mudarDia(dataDoTexto(agendamento.data_hora_agendada))
+    setTentativa((anterior) => anterior + 1)
+    setVersaoDosAlertas((anterior) => anterior + 1)
+  }
+
   function mudarDia(novaData) {
     definirParametros(novaData === hoje ? {} : { data: novaData })
   }
@@ -131,10 +140,10 @@ export default function Agenda() {
       return (
         <div className="agenda-estado">
           <p className="texto-apoio">Nenhum agendamento neste dia</p>
-          <Link to="/agenda/novo" className="botao-primario">
+          <button type="button" className="botao-primario" onClick={() => setCriandoAgendamento(true)}>
             <Plus size={16} aria-hidden="true" />
             Novo agendamento
-          </Link>
+          </button>
         </div>
       )
     }
@@ -173,10 +182,10 @@ export default function Agenda() {
         <h1 className="titulo-tela">Agenda</h1>
         <div className="agenda-acoes">
           <SeletorDeDia data={data} hoje={hoje} aoMudar={mudarDia} />
-          <Link to="/agenda/novo" className="botao-primario">
+          <button type="button" className="botao-primario" onClick={() => setCriandoAgendamento(true)}>
             <Plus size={16} aria-hidden="true" />
             Novo agendamento
-          </Link>
+          </button>
         </div>
       </header>
 
@@ -191,6 +200,13 @@ export default function Agenda() {
           </PainelLateral>
         )}
       </div>
+
+      {criandoAgendamento && (
+        <DialogoDeNovoAgendamento
+          aoSalvar={aoSalvarNovoAgendamento}
+          aoFechar={() => setCriandoAgendamento(false)}
+        />
+      )}
 
       {agendamentoEmConclusao && (
         <ModalDeChecklist

@@ -10,7 +10,6 @@ import Dashboard from './pages/Dashboard.jsx'
 import Estoque from './pages/Estoque.jsx'
 import Funcionarios from './pages/Funcionarios.jsx'
 import Login from './pages/Login.jsx'
-import NovoAgendamento from './pages/NovoAgendamento.jsx'
 import Qualidade from './pages/Qualidade.jsx'
 
 export default function App() {
@@ -22,7 +21,6 @@ export default function App() {
           <Route element={<RotaProtegida />}>
             <Route element={<LayoutBase />}>
               <Route path="/agenda" element={<Agenda />} />
-              <Route path="/agenda/novo" element={<NovoAgendamento />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/clientes" element={<Clientes />} />
               <Route path="/catalogo" element={<Catalogo />} />

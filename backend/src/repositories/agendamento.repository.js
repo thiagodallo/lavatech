@@ -53,6 +53,14 @@ export function listarNaVaga(vagaId, de, ate) {
   })
 }
 
+export async function existeEmAndamentoNaVaga(vagaId, idIgnorado) {
+  const encontrado = await prisma.agendamento.findFirst({
+    where: { vaga_id: vagaId, status: 'em_andamento', id: { not: idIgnorado } },
+    select: { id: true },
+  })
+  return encontrado !== null
+}
+
 function registrarHistorico(transacao, dados) {
   return transacao.historico_status.create({
     data: {

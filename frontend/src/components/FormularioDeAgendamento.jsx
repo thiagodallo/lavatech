@@ -1,3 +1,4 @@
+import { totaisDosServicos } from '../dominio/servicosDoAgendamento.js'
 import { montarHorarioParaEnviar } from '../formatacao/horario.js'
 import usarCamposDoAgendamento from '../hooks/usarCamposDoAgendamento.js'
 import usarEnvioDoAgendamento from '../hooks/usarEnvioDoAgendamento.js'
@@ -36,6 +37,8 @@ export default function FormularioDeAgendamento({ servicos, vagas, aoSalvar, aoC
   const envio = usarEnvioDoAgendamento(aoSalvar)
   const campos = usarCamposDoAgendamento(envio.limparErroDeHorario)
   const erros = envio.errosDosCampos
+  const escolhidos = servicos.filter((servico) => campos.servicoIds.includes(servico.id))
+  const duracaoMinutos = totaisDosServicos(escolhidos).duracao_minutos
 
   function enviarFormulario(evento) {
     evento.preventDefault()
@@ -47,7 +50,13 @@ export default function FormularioDeAgendamento({ servicos, vagas, aoSalvar, aoC
       <SeletorDeCliente cliente={campos.cliente} erro={erros.cliente_id?.[0]} aoSelecionar={campos.escolherCliente} />
       <CampoDeVeiculo cliente={campos.cliente} valor={campos.veiculoId} erro={erros.veiculo_id?.[0]} aoMudar={campos.alterar('veiculoId')} />
       <CampoDeServicos servicos={servicos} escolhidos={campos.servicoIds} erro={erros.servico_ids?.[0]} aoAlternar={campos.alternarServico} />
-      <CamposDeVagaEHorario vagas={vagas} campos={campos} erros={erros} erroDeHorario={envio.erroDeHorario} />
+      <CamposDeVagaEHorario
+        vagas={vagas}
+        campos={campos}
+        erros={erros}
+        erroDeHorario={envio.erroDeHorario}
+        duracaoMinutos={duracaoMinutos}
+      />
       <CampoDeObservacoes valor={campos.observacoes} erro={erros.observacoes?.[0]} aoMudar={campos.alterar('observacoes')} />
       {envio.mensagemDeErro && (
         <p className="formulario-erro" role="alert">

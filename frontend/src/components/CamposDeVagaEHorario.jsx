@@ -1,7 +1,7 @@
 import CampoDeSelecao from './CampoDeSelecao.jsx'
-import CampoDeTexto from './CampoDeTexto.jsx'
+import CampoDeData from './CampoDeData.jsx'
+import SeletorDeHorario from './SeletorDeHorario.jsx'
 
-const PASSO_DO_HORARIO_EM_SEGUNDOS = 300
 const ID_DO_ERRO_DE_HORARIO = 'agendamento-erro-horario'
 
 function CampoDeVaga({ vagas, valor, erro, descritoPor, aoMudar }) {
@@ -25,34 +25,19 @@ function CampoDeVaga({ vagas, valor, erro, descritoPor, aoMudar }) {
   )
 }
 
-function CampoDeDataEHora({ data, hora, erroDaData, descritoPor, aoMudarData, aoMudarHora }) {
+function CampoDeDataDoAgendamento({ data, erro, descritoPor, aoMudar }) {
   return (
-    <div className="formulario-dupla">
-      <CampoDeTexto
-        id="agendamento-data"
-        rotulo="Data"
-        type="date"
-        required
-        value={data}
-        erro={erroDaData}
-        aria-describedby={descritoPor}
-        onChange={(evento) => aoMudarData(evento.target.value)}
-      />
-      <CampoDeTexto
-        id="agendamento-hora"
-        rotulo="Horário"
-        type="time"
-        step={PASSO_DO_HORARIO_EM_SEGUNDOS}
-        required
-        value={hora}
-        aria-describedby={descritoPor}
-        onChange={(evento) => aoMudarHora(evento.target.value)}
-      />
+    <div className="campo">
+      <label className="campo-rotulo" htmlFor="agendamento-data">
+        Data
+      </label>
+      <CampoDeData id="agendamento-data" classe="campo-de-data-cheio" valor={data} descritoPor={descritoPor} aoEscolher={aoMudar} />
+      {erro && <p className="campo-erro">{erro}</p>}
     </div>
   )
 }
 
-export default function CamposDeVagaEHorario({ vagas, campos, erros, erroDeHorario }) {
+export default function CamposDeVagaEHorario({ vagas, campos, erros, erroDeHorario, duracaoMinutos }) {
   const descritoPor = erroDeHorario ? ID_DO_ERRO_DE_HORARIO : undefined
 
   return (
@@ -64,13 +49,18 @@ export default function CamposDeVagaEHorario({ vagas, campos, erros, erroDeHorar
         descritoPor={descritoPor}
         aoMudar={campos.alterar('vagaId')}
       />
-      <CampoDeDataEHora
+      <CampoDeDataDoAgendamento
         data={campos.data}
-        hora={campos.hora}
-        erroDaData={erros.data_hora_agendada?.[0]}
+        erro={erros.data_hora_agendada?.[0]}
         descritoPor={descritoPor}
-        aoMudarData={campos.alterar('data')}
-        aoMudarHora={campos.alterar('hora')}
+        aoMudar={campos.alterar('data')}
+      />
+      <SeletorDeHorario
+        vagaId={campos.vagaId}
+        data={campos.data}
+        duracaoMinutos={duracaoMinutos}
+        hora={campos.hora}
+        aoEscolher={campos.alterar('hora')}
       />
       {erroDeHorario && (
         <p className="formulario-erro" id={ID_DO_ERRO_DE_HORARIO} role="alert">

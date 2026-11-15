@@ -1,7 +1,7 @@
 .tempo-medio-por-servico {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--espaco-2);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -10,8 +10,8 @@
 .tempo-cabecalho {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 4px;
+  gap: var(--espaco-2);
+  margin-bottom: var(--espaco-meio);
 }
 
 .tempo-nome {
@@ -22,8 +22,8 @@
   display: grid;
   grid-template-columns: 64px 1fr 72px;
   align-items: center;
-  gap: 8px;
-  margin-top: 4px;
+  gap: var(--espaco-1);
+  margin-top: var(--espaco-meio);
 }
 
 .tempo-legenda {

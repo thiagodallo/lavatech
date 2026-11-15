@@ -1,5 +1,5 @@
 .secao-estoque-titulo {
-  margin: 0 0 8px;
+  margin: 0 0 var(--espaco-1);
   color: var(--cor-texto-suave);
   font-size: 12px;
   font-weight: 600;
@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--espaco-2);
   margin: 0;
 }
 
@@ -20,7 +20,7 @@
 .historico-estoque-itens {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--espaco-2);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -30,7 +30,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2px 10px;
+  gap: 2px var(--espaco-1);
 }
 
 .historico-estoque-data {
@@ -39,7 +39,7 @@
 }
 
 .historico-estoque-tipo {
-  padding: 1px 8px;
+  padding: 1px var(--espaco-1);
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;

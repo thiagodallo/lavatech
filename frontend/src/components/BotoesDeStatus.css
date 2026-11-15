@@ -1,7 +1,7 @@
 .botoes-de-status {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--espaco-1);
 }
 
 .botao-pequeno {
@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: center;
   height: 32px;
-  padding: 0 12px;
+  padding: 0 var(--espaco-2);
   border-radius: var(--raio-pequeno);
   font-size: 13px;
   font-weight: 600;

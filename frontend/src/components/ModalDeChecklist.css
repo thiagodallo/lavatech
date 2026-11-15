@@ -27,8 +27,8 @@
 .modal-checklist-cabecalho {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 20px 20px 12px;
+  gap: var(--espaco-meio);
+  padding: var(--espaco-3) var(--espaco-3) var(--espaco-2);
 }
 
 .modal-checklist-titulo {
@@ -43,7 +43,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: var(--espaco-1);
   margin: 0;
   color: var(--cor-texto-suave);
   font-size: 13px;
@@ -52,24 +52,24 @@
 .modal-checklist-corpo {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--espaco-2);
   min-height: 0;
-  padding: 8px 20px 16px;
+  padding: var(--espaco-1) var(--espaco-3) var(--espaco-2);
   overflow-y: auto;
 }
 
 .modal-checklist-rodape {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px 20px;
+  gap: var(--espaco-2);
+  padding: var(--espaco-2) var(--espaco-3);
   border-top: 1px solid var(--cor-linha);
 }
 
 .modal-checklist-erros {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--espaco-meio);
   list-style: none;
 }
 

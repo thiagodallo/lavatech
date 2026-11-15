@@ -3,7 +3,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 8px 16px;
+  gap: var(--espaco-1) var(--espaco-2);
 }
 
 .item-do-formulario-rotulo {
@@ -15,15 +15,15 @@
 .item-do-formulario-opcoes {
   display: grid;
   grid-template-columns: repeat(2, auto);
-  gap: 6px;
+  gap: var(--espaco-1);
 }
 
 .item-do-formulario-opcao {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--espaco-1);
   min-height: 40px;
-  padding: 0 12px;
+  padding: 0 var(--espaco-2);
   border: 1px solid var(--cor-linha);
   border-radius: var(--raio-pequeno);
   background: var(--cor-superficie);

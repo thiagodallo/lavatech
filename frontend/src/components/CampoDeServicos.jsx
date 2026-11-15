@@ -1,5 +1,6 @@
 import { LIMITE_DE_SERVICOS_POR_AGENDAMENTO, totaisDosServicos } from '../dominio/servicosDoAgendamento.js'
 import { formatarMoeda } from '../formatacao/moeda.js'
+import { textoDeDuracao } from '../formatacao/duracao.js'
 import TotalDosServicos from './TotalDosServicos.jsx'
 import './CampoDeServicos.css'
 
@@ -17,7 +18,7 @@ function OpcaoDeServico({ servico, marcado, bloqueado, aoAlternar }) {
         />
         <span className="opcao-de-servico-nome">{servico.nome}</span>
         <span className="opcao-de-servico-dados">
-          {servico.duracao_minutos} min | {formatarMoeda(servico.preco)}
+          {textoDeDuracao(servico.duracao_minutos)} | {formatarMoeda(servico.preco)}
         </span>
       </label>
     </li>

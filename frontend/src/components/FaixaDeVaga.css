@@ -27,6 +27,11 @@
   font-weight: 600;
 }
 
+.faixa-ocupada {
+  color: var(--status-cancelado-texto);
+  font-weight: 600;
+}
+
 .faixa-vazia {
   margin: 0;
   padding: var(--espaco-2);

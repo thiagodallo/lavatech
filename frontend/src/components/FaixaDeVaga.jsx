@@ -2,7 +2,7 @@ import './FaixaDeVaga.css'
 
 function SituacaoDaVaga({ horaDeLiberacao }) {
   if (!horaDeLiberacao) return <span className="faixa-situacao faixa-livre">Livre</span>
-  return <span className="faixa-situacao">Ocupada até {horaDeLiberacao}</span>
+  return <span className="faixa-situacao faixa-ocupada">Ocupada até {horaDeLiberacao}</span>
 }
 
 export default function FaixaDeVaga({ vaga, horaDeLiberacao, mostrarSituacao, children }) {

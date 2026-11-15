@@ -1,7 +1,7 @@
 import { nomesDosServicos } from '../dominio/servicosDoAgendamento.js'
 import './LinhaDeServicos.css'
 
-export default function LinhaDeServicos({ servicos, complemento, separador = '·', className = '' }) {
+export default function LinhaDeServicos({ servicos, complemento, separador = '|', className = '' }) {
   const nomes = nomesDosServicos(servicos)
 
   return (

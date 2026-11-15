@@ -12,7 +12,7 @@ export default function ServicosDoAgendamento({ agendamento }) {
             <li key={servico.id}>
               <span className="servico-do-agendamento-nome">{servico.nome}</span>
               <span className="servico-do-agendamento-dados">
-                {servico.duracao_minutos} min · {formatarMoeda(servico.preco)}
+                {servico.duracao_minutos} min | {formatarMoeda(servico.preco)}
               </span>
             </li>
           ))}

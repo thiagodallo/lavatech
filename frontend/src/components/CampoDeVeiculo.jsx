@@ -34,7 +34,7 @@ export default function CampoDeVeiculo({ cliente, valor, erro, aoMudar }) {
       <option value="">Selecione</option>
       {cliente.veiculos.map((veiculo) => (
         <option key={veiculo.id} value={veiculo.id}>
-          {veiculo.modelo} · {veiculo.placa}
+          {veiculo.modelo} | {veiculo.placa}
         </option>
       ))}
     </CampoDeSelecao>

@@ -46,10 +46,12 @@ function EstoqueAbaixoDoMinimo({ itens }) {
   )
 }
 
+const statusDoResumo = Object.keys(rotulosDeStatus).filter((status) => status !== 'no_show')
+
 function ContagemPorStatus({ porStatus }) {
   return (
     <ul className="resumo-status" aria-label="Agendamentos de hoje por status">
-      {Object.keys(rotulosDeStatus).map((status) => (
+      {statusDoResumo.map((status) => (
         <li key={status}>
           <span className="status-contagem">{porStatus[status] ?? 0}</span>
           <PilulaDeStatus status={status} />

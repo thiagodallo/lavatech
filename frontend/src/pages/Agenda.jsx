@@ -7,6 +7,7 @@ import { listarVagas } from '../api/vagas.js'
 import AlertaDeProximoAtendimento from '../components/AlertaDeProximoAtendimento.jsx'
 import CartaoDeAgendamento from '../components/CartaoDeAgendamento.jsx'
 import DetalhesDoAgendamento from '../components/DetalhesDoAgendamento.jsx'
+import EsqueletoDeAgenda from '../components/EsqueletoDeAgenda.jsx'
 import FaixaDeVaga from '../components/FaixaDeVaga.jsx'
 import ModalDeChecklist from '../components/ModalDeChecklist.jsx'
 import PainelLateral from '../components/PainelLateral.jsx'
@@ -123,11 +124,7 @@ export default function Agenda() {
     }
 
     if (carregando && agendamentosDoDia.length === 0) {
-      return (
-        <p className="agenda-estado texto-apoio" role="status">
-          Carregando
-        </p>
-      )
+      return <EsqueletoDeAgenda />
     }
 
     if (agendamentosDoDia.length === 0) {

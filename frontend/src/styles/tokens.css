@@ -41,6 +41,10 @@
   --espaco-6: 48px;
   --altura-controle: 40px;
 
+  --curva-suave: cubic-bezier(0.23, 1, 0.32, 1);
+  --tempo-rapido: 120ms;
+  --tempo-entrada: 200ms;
+
   --raio-pequeno: 8px;
   --raio-medio: 12px;
 }

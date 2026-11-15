@@ -19,7 +19,6 @@
   max-width: 560px;
   margin: 0;
   padding: var(--espaco-2);
-  border: 1px solid var(--cor-linha);
   border-radius: var(--raio-medio);
   background: var(--cor-cartao);
 }

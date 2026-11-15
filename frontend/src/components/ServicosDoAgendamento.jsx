@@ -1,4 +1,5 @@
 import { formatarMoeda } from '../formatacao/moeda.js'
+import { textoDeDuracao } from '../formatacao/duracao.js'
 import TotalDosServicos from './TotalDosServicos.jsx'
 import './ServicosDoAgendamento.css'
 
@@ -12,7 +13,7 @@ export default function ServicosDoAgendamento({ agendamento }) {
             <li key={servico.id}>
               <span className="servico-do-agendamento-nome">{servico.nome}</span>
               <span className="servico-do-agendamento-dados">
-                {servico.duracao_minutos} min | {formatarMoeda(servico.preco)}
+                {textoDeDuracao(servico.duracao_minutos)} | {formatarMoeda(servico.preco)}
               </span>
             </li>
           ))}

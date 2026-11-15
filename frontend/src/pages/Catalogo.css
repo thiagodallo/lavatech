@@ -42,6 +42,7 @@
   gap: var(--espaco-2);
   width: 100%;
   padding: var(--espaco-2);
+  border: 0;
   border-radius: var(--raio-medio);
   background: var(--cor-cartao);
   color: inherit;
@@ -50,7 +51,7 @@
 
 .servico:hover,
 .servico[aria-current='true'] {
-  border-color: var(--cor-marca);
+  box-shadow: inset 0 0 0 1px var(--cor-marca);
 }
 
 .servico-inativo {

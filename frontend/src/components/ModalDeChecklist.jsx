@@ -88,7 +88,7 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
             Checklist de qualidade
           </h2>
           <p className="modal-checklist-contexto">
-            {agendamento.cliente.nome} · {agendamento.veiculo.modelo}
+            {agendamento.cliente.nome} | {agendamento.veiculo.modelo}
             <span className="placa">{agendamento.veiculo.placa}</span>
           </p>
         </header>

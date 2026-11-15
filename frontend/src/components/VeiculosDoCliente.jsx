@@ -6,7 +6,7 @@ import './VeiculosDoCliente.css'
 
 function descreverVeiculo({ marca, modelo, cor }) {
   const nomeDoCarro = [marca, modelo].filter(Boolean).join(' ')
-  return [nomeDoCarro, cor].filter(Boolean).join(' · ')
+  return [nomeDoCarro, cor].filter(Boolean).join(' | ')
 }
 
 export default function VeiculosDoCliente({ clienteId, veiculos, aoCadastrar }) {

@@ -22,9 +22,10 @@
   gap: 8px;
   margin-bottom: 32px;
   color: var(--cor-texto);
-  font-family: var(--fonte-titulo);
+  font-family: var(--fonte-texto);
   font-size: 18px;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .login-marca-icone {

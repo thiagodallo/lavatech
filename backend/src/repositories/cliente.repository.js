@@ -7,6 +7,8 @@ function filtroDaBusca(busca) {
   const condicoes = [
     { nome: { contains: busca, mode: 'insensitive' } },
     { telefone: { contains: busca } },
+    { veiculo: { some: { marca: { contains: busca, mode: 'insensitive' } } } },
+    { veiculo: { some: { modelo: { contains: busca, mode: 'insensitive' } } } },
   ]
   if (placa) {
     condicoes.push({ veiculo: { some: { placa: { contains: placa } } } })

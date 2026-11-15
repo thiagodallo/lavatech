@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { listarClientes } from '../api/clientes.js'
 import FormularioCliente from '../components/FormularioCliente.jsx'
-import PainelLateral from '../components/PainelLateral.jsx'
+import Dialogo from '../components/Dialogo.jsx'
 import VeiculosDoCliente from '../components/VeiculosDoCliente.jsx'
 import EsqueletoDeLista from '../components/EsqueletoDeLista.jsx'
 import './Clientes.css'
@@ -125,30 +125,28 @@ export default function Clientes() {
         </div>
       </header>
 
-      <div className={painel ? 'area-com-painel painel-aberto' : 'area-com-painel'}>
-        <div className="clientes-lista">{corpoDaLista()}</div>
+      <div className="clientes-lista">{corpoDaLista()}</div>
 
-        {painel && (
-          <PainelLateral
-            titulo={painel.cliente ? 'Editar cliente' : 'Novo cliente'}
-            aoFechar={() => setPainel(null)}
-          >
-            <FormularioCliente
-              key={`formulario-${painel.cliente?.id ?? 'novo'}`}
-              cliente={painel.cliente}
-              aoSalvar={aoSalvarCliente}
+      {painel && (
+        <Dialogo
+          titulo={painel.cliente ? 'Editar cliente' : 'Novo cliente'}
+          aoFechar={() => setPainel(null)}
+        >
+          <FormularioCliente
+            key={`formulario-${painel.cliente?.id ?? 'novo'}`}
+            cliente={painel.cliente}
+            aoSalvar={aoSalvarCliente}
+          />
+          {painel.cliente && (
+            <VeiculosDoCliente
+              key={`veiculos-${painel.cliente.id}`}
+              clienteId={painel.cliente.id}
+              veiculos={painel.cliente.veiculos}
+              aoCadastrar={aoCadastrarVeiculo}
             />
-            {painel.cliente && (
-              <VeiculosDoCliente
-                key={`veiculos-${painel.cliente.id}`}
-                clienteId={painel.cliente.id}
-                veiculos={painel.cliente.veiculos}
-                aoCadastrar={aoCadastrarVeiculo}
-              />
-            )}
-          </PainelLateral>
-        )}
-      </div>
+          )}
+        </Dialogo>
+      )}
     </section>
   )
 }

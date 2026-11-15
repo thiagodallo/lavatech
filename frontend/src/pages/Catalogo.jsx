@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { listarServicos } from '../api/servicos.js'
 import FormularioServico from '../components/FormularioServico.jsx'
-import PainelLateral from '../components/PainelLateral.jsx'
+import Dialogo from '../components/Dialogo.jsx'
 import EsqueletoDeLista from '../components/EsqueletoDeLista.jsx'
 import { formatarMoeda } from '../formatacao/moeda.js'
 import { textoDeDuracao } from '../formatacao/duracao.js'
@@ -38,8 +38,8 @@ export default function Catalogo() {
     }
   }, [tentativa])
 
-  function aoSalvarServico(servico) {
-    setPainel({ servico })
+  function aoSalvarServico() {
+    setPainel(null)
     setTentativa((anterior) => anterior + 1)
   }
 
@@ -98,22 +98,20 @@ export default function Catalogo() {
         </button>
       </header>
 
-      <div className={painel ? 'area-com-painel painel-aberto' : 'area-com-painel'}>
-        <div>{corpoDaLista()}</div>
+      <div>{corpoDaLista()}</div>
 
-        {painel && (
-          <PainelLateral
-            titulo={painel.servico ? 'Editar serviço' : 'Novo serviço'}
-            aoFechar={() => setPainel(null)}
-          >
-            <FormularioServico
-              key={painel.servico?.id ?? 'novo'}
-              servico={painel.servico}
-              aoSalvar={aoSalvarServico}
-            />
-          </PainelLateral>
-        )}
-      </div>
+      {painel && (
+        <Dialogo
+          titulo={painel.servico ? 'Editar serviço' : 'Novo serviço'}
+          aoFechar={() => setPainel(null)}
+        >
+          <FormularioServico
+            key={painel.servico?.id ?? 'novo'}
+            servico={painel.servico}
+            aoSalvar={aoSalvarServico}
+          />
+        </Dialogo>
+      )}
     </section>
   )
 }

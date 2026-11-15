@@ -98,3 +98,26 @@ a.botao-primario,
 a.botao-secundario {
   text-decoration: none;
 }
+
+.entrada-de-pagina {
+  animation: pagina-entrar var(--tempo-entrada) var(--curva-suave) both;
+}
+
+@keyframes pagina-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entrada-de-pagina {
+    animation-name: aparecer;
+  }
+}

@@ -1,4 +1,5 @@
 import { primeiroDiaDoMes, somarDias } from '../formatacao/horario.js'
+import CampoDeData from './CampoDeData.jsx'
 import './SeletorDePeriodo.css'
 
 function atalhosDePeriodo(hoje) {
@@ -9,16 +10,12 @@ function atalhosDePeriodo(hoje) {
   ]
 }
 
-function CampoDeData({ rotulo, valor, aoEscolher }) {
-  function aoMudarValor(evento) {
-    if (evento.target.value) aoEscolher(evento.target.value)
-  }
-
+function CampoDoPeriodo({ rotulo, valor, aoEscolher }) {
   return (
-    <label className="periodo-campo">
+    <div className="periodo-campo">
       <span className="campo-rotulo">{rotulo}</span>
-      <input type="date" className="campo-entrada periodo-data" value={valor} onChange={aoMudarValor} />
-    </label>
+      <CampoDeData classe="periodo-data" rotulo={rotulo} valor={valor} aoEscolher={aoEscolher} />
+    </div>
   )
 }
 
@@ -38,8 +35,8 @@ export default function SeletorDePeriodo({ periodo, hoje, aoMudar }) {
           </button>
         ))}
       </div>
-      <CampoDeData rotulo="De" valor={periodo.de} aoEscolher={(de) => aoMudar({ ...periodo, de })} />
-      <CampoDeData rotulo="Até" valor={periodo.ate} aoEscolher={(ate) => aoMudar({ ...periodo, ate })} />
+      <CampoDoPeriodo rotulo="De" valor={periodo.de} aoEscolher={(de) => aoMudar({ ...periodo, de })} />
+      <CampoDoPeriodo rotulo="Até" valor={periodo.ate} aoEscolher={(ate) => aoMudar({ ...periodo, ate })} />
     </div>
   )
 }

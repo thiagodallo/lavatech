@@ -1,5 +1,3 @@
-import { Link } from 'react-router'
-
 import { montarHorarioParaEnviar } from '../formatacao/horario.js'
 import usarCamposDoAgendamento from '../hooks/usarCamposDoAgendamento.js'
 import usarEnvioDoAgendamento from '../hooks/usarEnvioDoAgendamento.js'
@@ -21,20 +19,20 @@ function dadosParaEnviar(campos) {
   }
 }
 
-function AcoesDoFormulario({ enviando }) {
+function AcoesDoFormulario({ enviando, aoCancelar }) {
   return (
     <div className="formulario-acoes">
       <button type="submit" className="botao-primario" disabled={enviando}>
         {enviando ? 'Salvando' : 'Salvar'}
       </button>
-      <Link to="/agenda" className="botao-secundario">
+      <button type="button" className="botao-secundario" onClick={aoCancelar}>
         Cancelar
-      </Link>
+      </button>
     </div>
   )
 }
 
-export default function FormularioDeAgendamento({ servicos, vagas, aoSalvar }) {
+export default function FormularioDeAgendamento({ servicos, vagas, aoSalvar, aoCancelar }) {
   const envio = usarEnvioDoAgendamento(aoSalvar)
   const campos = usarCamposDoAgendamento(envio.limparErroDeHorario)
   const erros = envio.errosDosCampos
@@ -56,7 +54,7 @@ export default function FormularioDeAgendamento({ servicos, vagas, aoSalvar }) {
           {envio.mensagemDeErro}
         </p>
       )}
-      <AcoesDoFormulario enviando={envio.enviando} />
+      <AcoesDoFormulario enviando={envio.enviando} aoCancelar={aoCancelar} />
     </form>
   )
 }

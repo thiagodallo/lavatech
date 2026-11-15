@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
 
 import { listarServicosAtivos } from '../api/servicos.js'
 import { listarVagas } from '../api/vagas.js'
-import FormularioDeAgendamento from '../components/FormularioDeAgendamento.jsx'
-import { dataDoTexto } from '../formatacao/horario.js'
-import './NovoAgendamento.css'
+import Dialogo from './Dialogo.jsx'
+import FormularioDeAgendamento from './FormularioDeAgendamento.jsx'
 
-export default function NovoAgendamento() {
-  const navegar = useNavigate()
+export default function DialogoDeNovoAgendamento({ aoSalvar, aoFechar }) {
   const [opcoes, setOpcoes] = useState(null)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [tentativa, setTentativa] = useState(0)
@@ -32,14 +29,10 @@ export default function NovoAgendamento() {
     }
   }, [tentativa])
 
-  function aoSalvarAgendamento(agendamento) {
-    navegar(`/agenda?data=${dataDoTexto(agendamento.data_hora_agendada)}`)
-  }
-
-  function corpoDaTela() {
+  function corpoDoDialogo() {
     if (mensagemDeErro) {
       return (
-        <div className="novo-agendamento-estado" role="alert">
+        <div className="dialogo-estado" role="alert">
           <p>{mensagemDeErro}</p>
           <button type="button" className="botao-secundario" onClick={() => setTentativa(tentativa + 1)}>
             Tentar de novo
@@ -50,7 +43,7 @@ export default function NovoAgendamento() {
 
     if (!opcoes) {
       return (
-        <p className="novo-agendamento-estado texto-apoio" role="status">
+        <p className="dialogo-estado texto-apoio" role="status">
           Carregando
         </p>
       )
@@ -60,17 +53,15 @@ export default function NovoAgendamento() {
       <FormularioDeAgendamento
         servicos={opcoes.servicos}
         vagas={opcoes.vagas}
-        aoSalvar={aoSalvarAgendamento}
+        aoSalvar={aoSalvar}
+        aoCancelar={aoFechar}
       />
     )
   }
 
   return (
-    <section>
-      <header className="novo-agendamento-cabecalho">
-        <h1 className="titulo-tela">Novo agendamento</h1>
-      </header>
-      {corpoDaTela()}
-    </section>
+    <Dialogo titulo="Novo agendamento" aoFechar={aoFechar}>
+      {corpoDoDialogo()}
+    </Dialogo>
   )
 }

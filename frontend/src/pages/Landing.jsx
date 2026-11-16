@@ -6,6 +6,7 @@ import AgendaDeDemonstracao from '../components/AgendaDeDemonstracao.jsx'
 import ArquiteturaDoSistema from '../components/ArquiteturaDoSistema.jsx'
 import CenaDoFluxo from '../components/CenaDoFluxo.jsx'
 import IndicadorDeSecoes from '../components/IndicadorDeSecoes.jsx'
+import LogoAnimada from '../components/LogoAnimada.jsx'
 import PainelDemonstrativo from '../components/PainelDemonstrativo.jsx'
 import { etapasDoFluxo } from '../dominio/etapasDoFluxo.js'
 import usarNavegacaoPorSecoes from '../hooks/usarNavegacaoPorSecoes.js'
@@ -50,7 +51,7 @@ export default function Landing() {
 
       <section id="agenda" className="landing-secao landing-abertura" data-secao>
         <header className="landing-topo">
-          <img src={logoClara} alt="LavaTech" className="landing-logo" />
+          <LogoAnimada className="landing-logo" />
           <Link to="/login" className="landing-entrar">
             Entrar
           </Link>

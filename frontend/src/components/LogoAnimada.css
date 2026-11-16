@@ -1,0 +1,111 @@
+.logo-anim {
+  --curva-de-entrada: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: relative;
+  width: 100%;
+}
+
+.logo-grupo {
+  position: absolute;
+  inset: 0;
+}
+
+.logo-recorte {
+  position: absolute;
+}
+
+.logo-grupo-lava .logo-recorte,
+.logo-grupo-tech .logo-recorte {
+  overflow: hidden;
+}
+
+.logo-peca {
+  position: absolute;
+  inset: 0;
+  background: var(--cor-da-peca);
+  -webkit-mask: var(--mascara) center / 100% 100% no-repeat;
+  mask: var(--mascara) center / 100% 100% no-repeat;
+}
+
+.logo-cor-branco {
+  --cor-da-peca: oklch(97% 0.01 250);
+}
+
+.logo-cor-azul {
+  --cor-da-peca: var(--cor-foco-no-escuro);
+}
+
+.logo-peca-bloco {
+  animation: logo-desce-curto 600ms var(--curva-de-entrada) both;
+}
+
+.logo-peca-onda-alta {
+  animation: logo-entra-pela-esquerda 600ms var(--curva-de-entrada) 100ms both;
+}
+
+.logo-peca-onda-baixa {
+  animation: logo-entra-pela-esquerda 600ms var(--curva-de-entrada) 200ms both;
+}
+
+.logo-grupo-lava .logo-peca,
+.logo-grupo-tech .logo-peca {
+  animation: logo-sobe-da-linha 650ms var(--curva-de-entrada) var(--atraso) both;
+}
+
+.logo-peca-lava-l {
+  --atraso: 500ms;
+}
+
+.logo-peca-lava-a1 {
+  --atraso: 540ms;
+}
+
+.logo-peca-lava-v {
+  --atraso: 580ms;
+}
+
+.logo-peca-lava-a2 {
+  --atraso: 620ms;
+}
+
+.logo-peca-tech-t {
+  --atraso: 800ms;
+}
+
+.logo-peca-tech-e {
+  --atraso: 840ms;
+}
+
+.logo-peca-tech-c {
+  --atraso: 880ms;
+}
+
+.logo-peca-tech-h {
+  --atraso: 920ms;
+}
+
+@keyframes logo-desce-curto {
+  from {
+    opacity: 0;
+    transform: translateY(-14%);
+  }
+}
+
+@keyframes logo-entra-pela-esquerda {
+  from {
+    opacity: 0;
+    transform: translateX(-12%);
+  }
+}
+
+@keyframes logo-sobe-da-linha {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-peca {
+    animation: none;
+  }
+}

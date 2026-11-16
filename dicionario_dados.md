@@ -1,7 +1,7 @@
 # Dicionário de Dados — Sistema Lavatech
 
 Banco: PostgreSQL | Schema: `public`
-Arquivos relacionados: `V1__init_schema.sql` (estrutura), `V2__unique_vaga_horario.sql` (índice único de vaga e horário), `V3__checklist_itens_rf10.sql` (itens do checklist), `V4__sessao.sql` (sessões de login), `00_setup_role_grants.sql` (acesso)
+Arquivos relacionados: `V1__init_schema.sql` (estrutura), `V2__unique_vaga_horario.sql` (índice único de vaga e horário), `V3__checklist_itens_rf10.sql` (itens do checklist), `V4__sessao.sql` (sessões de login), `V5__agendamento_servico.sql` (serviços do agendamento), `V6__remover_estoque.sql` (remove produto e movimentacao_estoque), `V7__remover_no_show.sql` (remove o status no_show), `00_setup_role_grants.sql` (acesso)
 
 ---
 
@@ -63,39 +63,6 @@ Catálogo de serviços oferecidos (lavagem simples, completa, enceramento etc.).
 
 ---
 
-## produto
-
-Itens de estoque (shampoo, cera, pano etc.).
-
-| Coluna            | Tipo          | Regras              | Descrição                                                               |
-| ----------------- | ------------- | ------------------- | ----------------------------------------------------------------------- |
-| id                | SERIAL        | PK                  |                                                                         |
-| nome              | VARCHAR(100)  | NOT NULL            |                                                                         |
-| categoria         | VARCHAR(50)   | aceita NULL         |                                                                         |
-| unidade_medida    | VARCHAR(10)   | aceita NULL         | `un` \| `litro` \| `kg` etc. — não validado por CHECK, convenção livre  |
-| quantidade_atual  | DECIMAL(10,2) | NOT NULL, default 0 | Saldo atual — atualizado via `movimentacao_estoque`, não editado direto |
-| quantidade_minima | DECIMAL(10,2) | NOT NULL, default 0 | Gatilho para alerta de reposição                                        |
-
----
-
-## movimentacao_estoque
-
-Log de entrada/saída de produtos.
-
-| Coluna         | Tipo          | Regras                        | Descrição                     |
-| -------------- | ------------- | ----------------------------- | ----------------------------- |
-| id             | SERIAL        | PK                            |                               |
-| produto_id     | INT           | FK → produto.id, NOT NULL     |                               |
-| tipo           | VARCHAR(10)   | NOT NULL, CHECK               | `entrada` \| `saida`          |
-| quantidade     | DECIMAL(10,2) | NOT NULL                      |                               |
-| data           | TIMESTAMP     | default `now()`               |                               |
-| funcionario_id | INT           | FK → funcionario.id, NOT NULL | Quem registrou a movimentação |
-| observacao     | TEXT          | aceita NULL                   |                               |
-
-**Nota para o backend:** esta tabela é um log append-only. `produto.quantidade_atual` deve ser recalculado/atualizado a cada INSERT aqui (via trigger no banco ou lógica na aplicação — decisão de arquitetura em aberto).
-
----
-
 ## vaga_lavagem
 
 Vagas físicas disponíveis para lavagem simultânea.
@@ -123,7 +90,7 @@ Tabela central do sistema.
 | data_hora_agendada | TIMESTAMP   | NOT NULL                                    | Horário marcado                                                                         |
 | data_hora_inicio   | TIMESTAMP   | aceita NULL                                 | Preenchido quando o serviço realmente começa                                            |
 | data_hora_fim      | TIMESTAMP   | aceita NULL                                 | Preenchido quando o serviço termina                                                     |
-| status             | VARCHAR(20) | NOT NULL, CHECK                             | `agendado` \| `aguardando` \| `em_andamento` \| `concluido` \| `cancelado` \| `no_show` |
+| status             | VARCHAR(20) | NOT NULL, CHECK                             | `agendado` \| `aguardando` \| `em_andamento` \| `concluido` \| `cancelado` |
 | observacoes        | TEXT        | aceita NULL                                 |                                                                                         |
 | criado_em          | TIMESTAMP   | default `now()`                             |                                                                                         |
 | atualizado_em      | TIMESTAMP   | aceita NULL                                 | Backend deve atualizar manualmente a cada mudança (sem trigger automático definido)     |
@@ -148,7 +115,7 @@ Itens de serviço de um agendamento (N:N entre `agendamento` e `servico`). Um ag
 
 **Regra de negócio:** `preco` e `duracao_minutos` são copiados de `servico` quando o item é criado. Mudar o preço ou a duração no catálogo depois não altera agendamentos já feitos. O total de um agendamento é a soma dos seus itens. Na V5, cada agendamento existente ganhou um item com os valores atuais do serviço.
 
-**Nota sobre `agendamento.servico_id`:** a coluna continua existindo, mas ficou nullable e em desuso desde a V5. O sistema novo não a lê nem a preenche. Ela será removida numa migration futura (V6), depois que todo o código deixar de usá-la.
+**Nota sobre `agendamento.servico_id`:** a coluna continua existindo, mas ficou nullable e em desuso desde a V5. O sistema novo não a lê nem a preenche. Ela será removida numa migration futura, depois que todo o código deixar de usá-la.
 
 ---
 

@@ -46,9 +46,7 @@ html.pagina-da-landing {
 }
 
 .landing-logo {
-  display: block;
-  width: 168px;
-  height: auto;
+  width: clamp(240px, 16vw, 336px);
 }
 
 .landing-titulo {

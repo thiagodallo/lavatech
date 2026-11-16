@@ -35,24 +35,13 @@ function formatarProximoAtendimento(proximo) {
   }
 }
 
-function formatarProduto(produto) {
-  return {
-    id: produto.id,
-    nome: produto.nome,
-    quantidade_atual: Number(produto.quantidade_atual),
-    quantidade_minima: Number(produto.quantidade_minima),
-    unidade_medida: produto.unidade_medida,
-  }
-}
-
 export async function resumirDia({ data }) {
   const dia = data ?? diaDeHoje()
   const inicio = new Date(`${dia}T00:00:00.000Z`)
   const fim = new Date(inicio.getTime() + MS_POR_DIA)
-  const [grupos, proximo, produtos, vagas] = await Promise.all([
+  const [grupos, proximo, vagas] = await Promise.all([
     dashboard.contarPorStatus(inicio, fim),
     dashboard.buscarProximoAtendimento(agoraNoBanco()),
-    dashboard.listarProdutosAbaixoDoMinimo(),
     dashboard.contarVagasEmUso(),
   ])
   const porStatus = contagemPorStatus(grupos)
@@ -61,7 +50,6 @@ export async function resumirDia({ data }) {
     total: Object.values(porStatus).reduce((soma, quantidade) => soma + quantidade, 0),
     por_status: porStatus,
     proximo_atendimento: formatarProximoAtendimento(proximo),
-    estoque_abaixo_do_minimo: produtos.map(formatarProduto),
     ocupacao_vagas: vagas,
   }
 }
@@ -111,13 +99,11 @@ function percentualDe(parte, total) {
   return total ? arredondar((parte / total) * 100, 1) : 0
 }
 
-function formatarCancelamentos({ total, cancelados, no_shows }) {
+function formatarCancelamentos({ total, cancelados }) {
   return {
     total_agendamentos: total,
     cancelados,
-    no_shows,
     percentual_cancelados: percentualDe(cancelados, total),
-    percentual_no_shows: percentualDe(no_shows, total),
   }
 }
 

@@ -7,7 +7,6 @@ import Agenda from './pages/Agenda.jsx'
 import Catalogo from './pages/Catalogo.jsx'
 import Clientes from './pages/Clientes.jsx'
 import Dashboard from './pages/Dashboard.jsx'
-import Estoque from './pages/Estoque.jsx'
 import Funcionarios from './pages/Funcionarios.jsx'
 import Login from './pages/Login.jsx'
 import Qualidade from './pages/Qualidade.jsx'
@@ -24,7 +23,6 @@ export default function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/clientes" element={<Clientes />} />
               <Route path="/catalogo" element={<Catalogo />} />
-              <Route path="/estoque" element={<Estoque />} />
               <Route path="/qualidade" element={<Qualidade />} />
               <Route path="/funcionarios" element={<Funcionarios />} />
             </Route>

@@ -32,8 +32,3 @@
   background: var(--status-cancelado-fundo);
   color: var(--status-cancelado-texto);
 }
-
-.pilula-no-show {
-  background: var(--status-no-show-fundo);
-  color: var(--status-no-show-texto);
-}

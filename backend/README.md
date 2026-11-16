@@ -108,7 +108,7 @@ Toda rota registrada depois do `exigirSessao` em `routes/index.js` responde 401 
 
 Todas as rotas ficam sob `/api`, recebem e devolvem JSON. Os nomes dos campos seguem as colunas do banco, em `snake_case`. Com exceção de `/health` e `/auth/login`, todas vão exigir sessão.
 
-Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/produtos`, `/funcionarios`, `/vagas`, `/agendamentos`, `/checklists`, `/pagamentos`, `/movimentacoes` e `/dashboard`.
+Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `/servicos`, `/funcionarios`, `/vagas`, `/agendamentos`, `/checklists`, `/pagamentos` e `/dashboard`.
 
 | Método | Rota | Requisito | Para que serve |
 |---|---|---|---|
@@ -123,8 +123,6 @@ Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `
 | GET, POST | `/clientes/:id/veiculos` | RF02 | Lista e cadastra veículos do cliente |
 | GET, POST | `/servicos` | RF03 | Lista e cadastra serviços |
 | PUT | `/servicos/:id` | RF03 | Edita um serviço |
-| GET, POST | `/produtos` | RF03 | Lista e cadastra produtos |
-| PUT | `/produtos/:id` | RF03 | Edita um produto |
 | GET | `/vagas` | RF04 | Lista as vagas de lavagem |
 | GET | `/agendamentos?data=AAAA-MM-DD` | RF04, RF08 | Agenda do dia |
 | GET | `/agendamentos/alertas?minutos=15` | RF08 | Agendamentos que começam nos próximos minutos |
@@ -137,9 +135,7 @@ Estão implementadas `/health`, as três rotas de `/auth` e as de `/clientes`, `
 | PATCH | `/pagamentos/:id/estorno` | RF06 | Estorna um pagamento pago |
 | GET | `/agendamentos/:id/checklist` | RF10 | Consulta o checklist de um atendimento concluído |
 | GET | `/checklists?data=&resultado=` | RF10 | Lista os checklists preenchidos, os mais recentes primeiro |
-| POST | `/movimentacoes` | RF09 | Registra entrada ou saída e atualiza o saldo do produto |
-| GET | `/movimentacoes?produto_id=&limite=50` | RF09 | Lista as movimentações, as mais recentes primeiro |
-| GET | `/dashboard/dia?data=` | RF11 | Resumo do dia: agendamentos por status, próximo atendimento, estoque baixo e vagas |
+| GET | `/dashboard/dia?data=` | RF11 | Resumo do dia: agendamentos por status, próximo atendimento e vagas |
 | GET | `/dashboard/periodo?de=&ate=` | RF11 | Faturamento, ranking de serviços, clientes novos e recorrentes, cancelamentos |
 | GET | `/dashboard/operacao?de=&ate=` | RF11 | Tempo médio por serviço e horários de pico |
 
@@ -194,7 +190,7 @@ Erros próprios destas rotas, além do 400 de corpo inválido e do 401 sem sess�
 
 Não existe rota para excluir cliente nem para editar um veículo.
 
-## Serviços e produtos (RF03)
+## Serviços (RF03)
 
 ### Serviços
 
@@ -220,32 +216,9 @@ Não existe rota para excluir cliente nem para editar um veículo.
 
 O `POST` responde 201 e o `PUT` responde 200, os dois com o serviço no formato acima. Para tirar um serviço do catálogo, edite com `"ativo": false`. Não existe rota de exclusão, porque os agendamentos dependem do serviço.
 
-### Produtos
-
-`GET /api/produtos` lista os produtos por ordem de nome.
-
-```json
-[
-  { "id": 1, "nome": "Shampoo automotivo", "categoria": "limpeza", "unidade_medida": "litro", "quantidade_atual": 8, "quantidade_minima": 5 }
-]
-```
-
-`POST /api/produtos` e `PUT /api/produtos/:id` recebem o mesmo corpo.
-
-```json
-{ "nome": "Flanela", "categoria": "acessorio", "unidade_medida": "un", "quantidade_minima": 5 }
-```
-
-- `nome`: de 2 a 100 caracteres.
-- `categoria`: opcional, até 50 caracteres.
-- `unidade_medida`: opcional, até 10 caracteres (`un`, `litro`, `kg`, convenção livre).
-- `quantidade_minima`: número de 0 a 99999999.99 com até duas casas, e o padrão é 0. É o saldo abaixo do qual o produto vira alerta de reposição.
-
-O `quantidade_atual` não é aceito: se vier no corpo, é ignorado. O produto nasce com saldo 0 e o saldo só muda pelas movimentações de estoque (RF09), que ficam registradas. O `POST` responde 201 e o `PUT` responde 200. Não existe rota de exclusão nem de desativação de produto.
-
 ### Erros
 
-Além do 400 de corpo inválido, com os `campos`, e do 401 sem sessão, o `PUT` responde 404 com `Serviço não encontrado` ou `Produto não encontrado` quando o `id` não existe.
+Além do 400 de corpo inválido, com os `campos`, e do 401 sem sessão, o `PUT` responde 404 com `Serviço não encontrado` quando o `id` não existe.
 
 ## Funcionários (RF01)
 
@@ -337,7 +310,7 @@ Todas as rotas abaixo devolvem o agendamento neste formato (a lista é um array 
 
 ### Agenda do dia (RF04)
 
-`GET /api/agendamentos?data=2026-11-10&status=agendado` lista os agendamentos do dia por horário. `data` e `status` são opcionais. O `status` vale um destes: `agendado`, `aguardando`, `em_andamento`, `concluido`, `cancelado`, `no_show`.
+`GET /api/agendamentos?data=2026-11-10&status=agendado` lista os agendamentos do dia por horário. `data` e `status` são opcionais. O `status` vale um destes: `agendado`, `aguardando`, `em_andamento`, `concluido`, `cancelado`.
 
 `GET /api/agendamentos/:id` devolve um agendamento, ou 404 `Agendamento não encontrado`.
 
@@ -360,7 +333,7 @@ Todas as rotas abaixo devolvem o agendamento neste formato (a lista é um array 
 
 O agendamento, um item por serviço (com o preço e a duração copiados do catálogo naquele momento) e a primeira linha do histórico (`status_anterior` nulo, `status_novo` `agendado`) são gravados na mesma transação. Se qualquer passo falhar, nada é salvo. A coluna antiga `agendamento.servico_id` fica nula e não é mais lida.
 
-Conflito de horário: cada agendamento ocupa a vaga de `data_hora_agendada` até o fim previsto, que usa a duração total de todos os serviços. Para achar os agendamentos que podem cruzar, a API olha os que começaram até 7200 minutos antes (10 serviços de até 720 minutos cada, o maior possível pelas regras do catálogo). Se o intervalo cruzar com o de outro agendamento da mesma vaga, responde 409 `Vaga ocupada nesse horário`. Agendamentos `cancelado` e `no_show` não ocupam a vaga. Dois pedidos simultâneos para o mesmo horário exato também terminam em um 201 e um 409, porque o índice único do banco recusa o segundo.
+Conflito de horário: cada agendamento ocupa a vaga de `data_hora_agendada` até o fim previsto, que usa a duração total de todos os serviços. Para achar os agendamentos que podem cruzar, a API olha os que começaram até 7200 minutos antes (10 serviços de até 720 minutos cada, o maior possível pelas regras do catálogo). Se o intervalo cruzar com o de outro agendamento da mesma vaga, responde 409 `Vaga ocupada nesse horário`. Agendamentos `cancelado` não ocupam a vaga. Dois pedidos simultâneos para o mesmo horário exato também terminam em um 201 e um 409, porque o índice único do banco recusa o segundo.
 
 | Status | Quando |
 |---|---|
@@ -374,10 +347,10 @@ Conflito de horário: cada agendamento ocupa a vaga de `data_hora_agendada` até
 
 | De | Para |
 |---|---|
-| `agendado` | `aguardando`, `em_andamento`, `cancelado`, `no_show` |
-| `aguardando` | `em_andamento`, `cancelado`, `no_show` |
+| `agendado` | `aguardando`, `em_andamento`, `cancelado` |
+| `aguardando` | `em_andamento`, `cancelado` |
 | `em_andamento` | `concluido`, `cancelado` |
-| `concluido`, `cancelado`, `no_show` | nenhuma |
+| `concluido`, `cancelado` | nenhuma |
 
 Qualquer outra transição responde 409 `Transição de status não permitida: de concluido para cancelado`. Marcar `aguardando` é manual (a atendente avisa que o cliente chegou). A transição para `concluido` exige o checklist de qualidade, descrito na seção Checklist de qualidade (RF10). Os outros status continuam sem checklist.
 
@@ -427,47 +400,6 @@ Erros do `POST`:
 `PATCH /api/pagamentos/:id/estorno`, sem corpo, muda o pagamento de `pago` para `estornado` e mantém o `pago_em`. Só pagamento `pago` pode ser estornado: outro status devolve 409 `Somente pagamento pago pode ser estornado`, e um id inexistente devolve 404 `Pagamento não encontrado`.
 
 Não existe rota para editar o valor nem para excluir o pagamento. Como cada agendamento aceita um pagamento só, um agendamento estornado não pode ser pago de novo. Isso é um limite conhecido desta versão.
-
-## Estoque (RF09)
-
-Todas as rotas desta seção exigem sessão. O saldo de cada produto é o campo `quantidade_atual` de `GET /api/produtos`. Ele não é editado à mão: só muda por movimentação (o `PUT /produtos/:id` ignora o campo). Não existe rota separada de saldo.
-
-`POST /api/movimentacoes` registra uma entrada ou uma saída:
-
-```json
-{ "produto_id": 2, "tipo": "saida", "quantidade": 1.5, "observacao": "Uso na lavagem do Gol" }
-```
-
-`tipo` vale `entrada` ou `saida`. `quantidade` é maior que zero, com no máximo duas casas decimais. `observacao` é opcional e vai até 500 caracteres. O funcionário gravado é o que está logado, e a `data` é gerada pela API no relógio de São Paulo, como nos horários do agendamento.
-
-A resposta é 201 com a movimentação e o saldo do produto depois da operação:
-
-```json
-{
-  "id": 7,
-  "produto": { "id": 2, "nome": "Cera líquida", "unidade_medida": "litro" },
-  "tipo": "saida",
-  "quantidade": 1.5,
-  "data": "2026-11-10T14:05:30-03:00",
-  "funcionario": { "id": 1, "nome": "Administrador" },
-  "observacao": "Uso na lavagem do Gol",
-  "saldo_atual": 0.5
-}
-```
-
-O registro da movimentação e a mudança do saldo acontecem na mesma transação: se um dos dois falhar, nenhum é salvo. A saída é descontada com uma condição no próprio `UPDATE` (o saldo precisa ser maior ou igual à quantidade), então duas saídas simultâneas nunca deixam o saldo negativo.
-
-Erros do `POST`:
-
-| Status | Quando |
-|---|---|
-| 400 | Quantidade zero, negativa ou com mais de duas casas, tipo inválido, observação longa, `produto_id` ausente |
-| 404 | `Produto não encontrado` |
-| 409 | `Saldo insuficiente`: a saída é maior que o saldo e nada muda |
-
-`GET /api/movimentacoes?produto_id=2&limite=50` lista as movimentações da mais recente para a mais antiga, no mesmo formato do item acima (sem `saldo_atual`). `produto_id` é opcional e `limite` vale de 1 a 200, com padrão 50. Um `produto_id` sem movimentações devolve `[]`.
-
-Limite conhecido: uma entrada que faria o saldo passar de 99.999.999,99 (o máximo da coluna `DECIMAL(10,2)`) devolve 500.
 
 ## Checklist de qualidade (RF10)
 
@@ -569,7 +501,7 @@ Todas as rotas desta seção exigem sessão e só leem dados: nada é gravado. O
 {
   "data": "2026-11-10",
   "total": 6,
-  "por_status": { "agendado": 2, "aguardando": 1, "em_andamento": 2, "concluido": 1, "cancelado": 0, "no_show": 0 },
+  "por_status": { "agendado": 2, "aguardando": 1, "em_andamento": 2, "concluido": 1, "cancelado": 0 },
   "proximo_atendimento": {
     "id": 14,
     "data_hora_agendada": "2026-11-10T14:00:00-03:00",
@@ -579,14 +511,11 @@ Todas as rotas desta seção exigem sessão e só leem dados: nada é gravado. O
     "servicos": [{ "id": 1, "nome": "Lavagem Simples" }],
     "vaga": { "id": 1, "identificacao": "Vaga 1" }
   },
-  "estoque_abaixo_do_minimo": [
-    { "id": 2, "nome": "Cera líquida", "quantidade_atual": 2, "quantidade_minima": 6, "unidade_medida": "litro" }
-  ],
   "ocupacao_vagas": { "em_uso": 2, "total": 2 }
 }
 ```
 
-`por_status` conta os agendamentos do dia (pelo horário agendado) e `total` é a soma. O `proximo_atendimento` é o primeiro agendamento `agendado` ou `aguardando` a partir de agora, mesmo que seja de outro dia, ou `null`, e traz `servicos` com todos os serviços dele. O estoque baixo usa a mesma regra da tela de Estoque: `quantidade_atual` menor que `quantidade_minima`. `ocupacao_vagas` é a foto de agora: vagas ativas com um agendamento `em_andamento` sobre o total de vagas ativas.
+`por_status` conta os agendamentos do dia (pelo horário agendado) e `total` é a soma. O `proximo_atendimento` é o primeiro agendamento `agendado` ou `aguardando` a partir de agora, mesmo que seja de outro dia, ou `null`, e traz `servicos` com todos os serviços dele. `ocupacao_vagas` é a foto de agora: vagas ativas com um agendamento `em_andamento` sobre o total de vagas ativas.
 
 ### Período
 
@@ -610,9 +539,7 @@ Todas as rotas desta seção exigem sessão e só leem dados: nada é gravado. O
   "cancelamentos": {
     "total_agendamentos": 40,
     "cancelados": 3,
-    "no_shows": 2,
-    "percentual_cancelados": 7.5,
-    "percentual_no_shows": 5
+    "percentual_cancelados": 7.5
   }
 }
 ```
@@ -620,7 +547,7 @@ Todas as rotas desta seção exigem sessão e só leem dados: nada é gravado. O
 - **Faturamento**: soma dos pagamentos com status `pago`, pela data de `pago_em`. Pagamento `estornado` e `pendente` não entram. `ticket_medio` é o faturamento dividido pela quantidade de pagamentos pagos, ou 0 se não houve nenhum.
 - **Por forma de pagamento**: sempre as quatro formas, com zero quando não houve. **Por dia**: um item para cada dia do período, com zero nos dias sem pagamento. Um pagamento feito depois da meia-noite conta no dia seguinte ao do atendimento.
 - **Serviços mais vendidos**: agendamentos `concluido` com horário agendado dentro do período, agrupados por serviço, os 5 primeiros por quantidade (empate vai para a maior receita). Um agendamento com vários serviços conta uma vez em cada um deles, e a `quantidade` é o número de agendamentos em que o serviço aparece. A `receita` soma o preço do serviço gravado no agendamento (valor de tabela), não o que foi pago. Por isso ela pode diferir do `faturamento`, que continua somando só os pagamentos `pago`.
-- **Clientes**: considera quem tem agendamento não cancelado no período. É novo quem tem o primeiro agendamento não cancelado dentro do período, e recorrente quem já tinha algum antes do início. Agendamento `no_show` conta, o `cancelado` não.
+- **Clientes**: considera quem tem agendamento não cancelado no período. É novo quem tem o primeiro agendamento não cancelado dentro do período, e recorrente quem já tinha algum antes do início. Agendamento `cancelado` não conta.
 - **Cancelamentos**: contagens e percentual (uma casa decimal) sobre todos os agendamentos do período, de qualquer status.
 
 ### Operação

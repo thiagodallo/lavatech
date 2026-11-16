@@ -8,7 +8,7 @@ const PAGAMENTO_JA_REGISTRADO = 'Pagamento já registrado para este agendamento'
 const PAGAMENTO_NAO_ENCONTRADO = 'Pagamento não encontrado'
 const AGENDAMENTO_SEM_PAGAMENTO =
   'Não é possível registrar pagamento de agendamento cancelado ou não compareceu'
-const STATUS_SEM_PAGAMENTO = ['cancelado', 'no_show']
+const STATUS_SEM_PAGAMENTO = ['cancelado']
 const PAGAMENTO_NAO_ESTORNAVEL = 'Somente pagamento pago pode ser estornado'
 const STATUS_PAGO = 'pago'
 const REGISTRO_DUPLICADO = 'P2002'

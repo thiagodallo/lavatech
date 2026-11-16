@@ -3,7 +3,7 @@ import { minutosDeAgora, minutosDoTexto } from './expediente.js'
 
 const PASSO_EM_MINUTOS = 30
 const DURACAO_MINIMA_EM_MINUTOS = 30
-const STATUS_QUE_LIBERAM_A_VAGA = ['cancelado', 'no_show']
+const STATUS_QUE_LIBERAM_A_VAGA = ['cancelado']
 
 function textoDosMinutos(minutos) {
   const horas = String(Math.floor(minutos / 60)).padStart(2, '0')

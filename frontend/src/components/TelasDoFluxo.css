@@ -1,0 +1,212 @@
+.tela-fluxo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-3);
+  height: 100%;
+  padding: var(--espaco-4);
+  border-radius: var(--raio-medio);
+  background: var(--cor-cartao);
+  color: var(--cor-texto);
+  font-size: clamp(15px, 1vw, 20px);
+}
+
+.tela-fluxo-titulo {
+  margin: 0;
+  font-size: clamp(18px, 1.3vw, 26px);
+  letter-spacing: -0.02em;
+}
+
+.tela-fluxo-dados {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-2) var(--espaco-3);
+  margin: 0;
+}
+
+.tela-fluxo-dados dt {
+  color: var(--cor-texto-suave);
+  font-size: 0.8em;
+}
+
+.tela-fluxo-dados dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.tela-fluxo-horarios {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--espaco-1);
+}
+
+.tela-fluxo-horario {
+  display: grid;
+  place-items: center;
+  height: var(--espaco-6);
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-superficie);
+  font-family: var(--fonte-mono);
+  font-size: 0.9em;
+}
+
+.tela-fluxo-horario-ocupado {
+  color: var(--cor-texto-suave);
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.tela-fluxo-horario-escolhido {
+  border-color: var(--cor-marca);
+  background: var(--cor-marca);
+  color: var(--cor-sobre-marca);
+}
+
+.tela-fluxo-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tela-fluxo-placa {
+  font-family: var(--fonte-mono);
+  font-size: 1.4em;
+  font-weight: 500;
+}
+
+.tela-fluxo-servicos {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: var(--espaco-3);
+  padding: var(--espaco-2);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-superficie);
+  font-weight: 600;
+}
+
+.tela-fluxo-servicos span:not(:first-child) {
+  font-family: var(--fonte-mono);
+  font-weight: 500;
+}
+
+.tela-fluxo-historico {
+  display: grid;
+  gap: var(--espaco-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tela-fluxo-historico li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tela-fluxo-historico span:last-child {
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-mono);
+}
+
+.tela-fluxo-acoes {
+  display: flex;
+  gap: var(--espaco-1);
+  margin-top: auto;
+}
+
+.tela-fluxo-botao {
+  display: inline-grid;
+  place-items: center;
+  height: var(--altura-controle);
+  padding: 0 var(--espaco-3);
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-pequeno);
+  font-weight: 600;
+}
+
+.tela-fluxo-botao-principal {
+  border-color: var(--cor-marca);
+  background: var(--cor-marca);
+  color: var(--cor-sobre-marca);
+}
+
+.tela-fluxo-itens {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-4) var(--espaco-3);
+  font-size: 1.1em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tela-fluxo-itens li {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-1);
+}
+
+.tela-fluxo-marca {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--espaco-3);
+  height: var(--espaco-3);
+  border-radius: 999px;
+  background: var(--status-concluido-fundo);
+  color: var(--status-concluido-texto);
+}
+
+.tela-fluxo-resumo {
+  margin: auto 0 0;
+  color: var(--status-concluido-texto);
+  font-weight: 600;
+}
+
+.tela-fluxo-total {
+  margin: 0;
+  font-family: var(--fonte-mono);
+  font-size: clamp(32px, 3vw, 56px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.tela-fluxo-formas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-1);
+}
+
+.tela-fluxo-forma {
+  display: grid;
+  place-items: center;
+  height: var(--altura-controle);
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-superficie);
+}
+
+.tela-fluxo-forma-escolhida {
+  border-color: var(--cor-marca);
+  background: var(--cor-marca-suave);
+  color: var(--cor-marca-escura);
+  font-weight: 600;
+}
+
+.cena-tela-ativa .tela-fluxo-marca {
+  animation: tela-fluxo-marcar 240ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  animation-delay: calc(var(--ordem) * 30ms + 160ms);
+}
+
+@keyframes tela-fluxo-marcar {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cena-tela-ativa .tela-fluxo-marca {
+    animation: none;
+  }
+}

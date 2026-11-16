@@ -45,6 +45,10 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
     setItens((atuais) => ({ ...atuais, [campo]: conforme }))
   }
 
+  function marcarTudoComoConforme() {
+    setItens(Object.fromEntries(itensDoChecklist.map((item) => [item.campo, true])))
+  }
+
   function impedirFechamentoEnviando(evento) {
     if (enviando) evento.preventDefault()
   }
@@ -96,6 +100,15 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
         </header>
 
         <div className="modal-checklist-corpo">
+          <button
+            type="button"
+            className="botao-secundario"
+            disabled={enviando}
+            onClick={marcarTudoComoConforme}
+          >
+            Marcar tudo como conforme
+          </button>
+
           {itensDoChecklist.map((item) => (
             <ItemDoChecklist
               key={item.campo}

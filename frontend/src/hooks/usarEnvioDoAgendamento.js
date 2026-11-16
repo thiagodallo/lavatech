@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { cadastrarAgendamento } from '../api/agendamentos.js'
+import { cadastrarAgendamento, editarAgendamento } from '../api/agendamentos.js'
 
 const MENSAGEM_SEM_SERVICO = 'Escolha ao menos um serviço'
 const estadoSemErros = { mensagemDeErro: '', erroDeHorario: '', errosDosCampos: {} }
@@ -12,7 +12,7 @@ function estadoDoErro(erro) {
   return { ...estadoSemErros, errosDosCampos, mensagemDeErro: semCampos ? erro.message : '' }
 }
 
-export default function usarEnvioDoAgendamento(aoSalvar) {
+export default function usarEnvioDoAgendamento(aoSalvar, agendamentoId) {
   const [estado, setEstado] = useState(estadoSemErros)
   const [enviando, setEnviando] = useState(false)
 
@@ -24,7 +24,7 @@ export default function usarEnvioDoAgendamento(aoSalvar) {
     setEstado(estadoSemErros)
     setEnviando(true)
     try {
-      aoSalvar(await cadastrarAgendamento(dados))
+      aoSalvar(agendamentoId ? await editarAgendamento(agendamentoId, dados) : await cadastrarAgendamento(dados))
     } catch (erro) {
       setEstado(estadoDoErro(erro))
     } finally {

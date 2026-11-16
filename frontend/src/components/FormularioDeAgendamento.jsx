@@ -1,5 +1,5 @@
 import { totaisDosServicos } from '../dominio/servicosDoAgendamento.js'
-import { montarHorarioParaEnviar } from '../formatacao/horario.js'
+import { dataDoTexto, horaDoTexto, montarHorarioParaEnviar } from '../formatacao/horario.js'
 import usarCamposDoAgendamento from '../hooks/usarCamposDoAgendamento.js'
 import usarEnvioDoAgendamento from '../hooks/usarEnvioDoAgendamento.js'
 import CampoDeObservacoes from './CampoDeObservacoes.jsx'
@@ -20,6 +20,18 @@ function dadosParaEnviar(campos) {
   }
 }
 
+function valoresDoAgendamento(agendamento, cliente) {
+  return {
+    cliente,
+    veiculoId: String(agendamento.veiculo.id),
+    servicoIds: agendamento.servicos.map((servico) => servico.id),
+    vagaId: String(agendamento.vaga.id),
+    data: dataDoTexto(agendamento.data_hora_agendada),
+    hora: horaDoTexto(agendamento.data_hora_agendada),
+    observacoes: agendamento.observacoes ?? '',
+  }
+}
+
 function AcoesDoFormulario({ enviando, aoCancelar }) {
   return (
     <div className="formulario-acoes">
@@ -33,9 +45,10 @@ function AcoesDoFormulario({ enviando, aoCancelar }) {
   )
 }
 
-export default function FormularioDeAgendamento({ servicos, vagas, aoSalvar, aoCancelar }) {
-  const envio = usarEnvioDoAgendamento(aoSalvar)
-  const campos = usarCamposDoAgendamento(envio.limparErroDeHorario)
+export default function FormularioDeAgendamento({ servicos, vagas, expediente, agendamento, clienteDoAgendamento, aoSalvar, aoCancelar }) {
+  const envio = usarEnvioDoAgendamento(aoSalvar, agendamento?.id)
+  const valoresIniciais = agendamento && valoresDoAgendamento(agendamento, clienteDoAgendamento)
+  const campos = usarCamposDoAgendamento(envio.limparErroDeHorario, valoresIniciais, expediente)
   const erros = envio.errosDosCampos
   const escolhidos = servicos.filter((servico) => campos.servicoIds.includes(servico.id))
   const duracaoMinutos = totaisDosServicos(escolhidos).duracao_minutos
@@ -56,6 +69,8 @@ export default function FormularioDeAgendamento({ servicos, vagas, aoSalvar, aoC
         erros={erros}
         erroDeHorario={envio.erroDeHorario}
         duracaoMinutos={duracaoMinutos}
+        expediente={expediente}
+        agendamentoIgnoradoId={agendamento?.id}
       />
       <CampoDeObservacoes valor={campos.observacoes} erro={erros.observacoes?.[0]} aoMudar={campos.alterar('observacoes')} />
       {envio.mensagemDeErro && (

@@ -4,7 +4,9 @@
   gap: var(--espaco-1);
 }
 
-.seletor-seta {
+.botao-secundario.seletor-seta {
+  display: grid;
+  place-items: center;
   width: var(--altura-controle);
   padding: 0;
 }
@@ -14,5 +16,5 @@
 }
 
 .seletor-data {
-  min-width: 200px;
+  min-width: 160px;
 }

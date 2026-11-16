@@ -119,12 +119,20 @@
 
   .menu-itens {
     flex: 1 1 100%;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
     order: 3;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .menu-itens::-webkit-scrollbar {
+    display: none;
   }
 
   .menu-item {
+    flex-shrink: 0;
     padding: var(--espaco-1) var(--espaco-1);
+    white-space: nowrap;
   }
 
   .cabecalho,

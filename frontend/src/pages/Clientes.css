@@ -99,7 +99,22 @@
 
 .cliente-placas {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espaco-1) var(--espaco-2);
+}
+
+.cliente-veiculo {
+  display: inline-flex;
+  align-items: center;
   gap: var(--espaco-1);
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+}
+
+.cliente-veiculos-extra {
+  color: var(--cor-texto-suave);
+  font-size: 12px;
 }
 
 .cliente-telefone {

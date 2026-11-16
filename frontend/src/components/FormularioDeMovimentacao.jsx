@@ -98,7 +98,7 @@ export default function FormularioDeMovimentacao({ produto, aoRegistrar }) {
 
       <div className="formulario-acoes">
         <button type="submit" className="botao-primario" disabled={enviando}>
-          {enviando ? 'Registrando' : 'Registrar'}
+          {enviando ? 'Registrando' : 'Registrar movimentação'}
         </button>
         {registrado && (
           <span className="formulario-salvo" role="status">

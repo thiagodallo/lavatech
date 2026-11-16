@@ -4,7 +4,6 @@ export const rotulosDeStatus = {
   em_andamento: 'Em andamento',
   concluido: 'Concluído',
   cancelado: 'Cancelado',
-  no_show: 'Não compareceu',
 }
 
 const iniciar = { status: 'em_andamento', rotulo: 'Iniciar' }

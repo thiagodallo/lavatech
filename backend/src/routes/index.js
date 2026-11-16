@@ -9,9 +9,7 @@ import dashboardRoutes from './dashboard.routes.js'
 import expedienteRoutes from './expediente.routes.js'
 import funcionarioRoutes from './funcionario.routes.js'
 import healthRoutes from './health.routes.js'
-import movimentacaoRoutes from './movimentacao.routes.js'
 import pagamentoRoutes from './pagamento.routes.js'
-import produtoRoutes from './produto.routes.js'
 import servicoRoutes from './servico.routes.js'
 import vagaRoutes from './vaga.routes.js'
 
@@ -23,13 +21,11 @@ rotas.use(exigirSessao)
 rotas.use('/expediente', expedienteRoutes)
 rotas.use('/clientes', clienteRoutes)
 rotas.use('/servicos', servicoRoutes)
-rotas.use('/produtos', produtoRoutes)
 rotas.use('/funcionarios', funcionarioRoutes)
 rotas.use('/vagas', vagaRoutes)
 rotas.use('/agendamentos', agendamentoRoutes)
 rotas.use(pagamentoRoutes)
 rotas.use(checklistRoutes)
-rotas.use('/movimentacoes', movimentacaoRoutes)
 rotas.use('/dashboard', dashboardRoutes)
 
 export default rotas

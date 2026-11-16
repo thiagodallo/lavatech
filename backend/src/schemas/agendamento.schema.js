@@ -8,7 +8,6 @@ export const STATUS_DO_AGENDAMENTO = [
   'em_andamento',
   'concluido',
   'cancelado',
-  'no_show',
 ]
 
 const statusValido = z.enum(STATUS_DO_AGENDAMENTO, 'Status inválido')

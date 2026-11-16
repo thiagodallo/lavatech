@@ -32,7 +32,7 @@ model agendamento {
   historico_status    historico_status[]
   pagamento           pagamento?
 
-  @@unique([vaga_id, data_hora_agendada], map: "uq_agendamento_vaga_horario", where: raw("((status)::text <> ALL ((ARRAY['cancelado'::character varying, 'no_show'::character varying])::text[]))"))
+  @@unique([vaga_id, data_hora_agendada], map: "uq_agendamento_vaga_horario", where: raw("((status)::text <> ALL ((ARRAY['cancelado'::character varying])::text[]))"))
   @@index([cliente_id], map: "idx_agendamento_cliente_id")
   @@index([data_hora_agendada], map: "idx_agendamento_data_hora_agendada")
   @@index([funcionario_id], map: "idx_agendamento_funcionario_id")
@@ -101,7 +101,6 @@ model funcionario {
   agendamento          agendamento[]
   checklist_qualidade  checklist_qualidade[]
   historico_status     historico_status[]
-  movimentacao_estoque movimentacao_estoque[]
 }
 
 model historico_status {
@@ -118,22 +117,6 @@ model historico_status {
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model movimentacao_estoque {
-  id             Int         @id @default(autoincrement())
-  produto_id     Int
-  tipo           String      @db.VarChar(10)
-  quantidade     Decimal     @db.Decimal(10, 2)
-  data           DateTime    @default(now()) @db.Timestamp(6)
-  funcionario_id Int
-  observacao     String?
-  funcionario    funcionario @relation(fields: [funcionario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  produto        produto     @relation(fields: [produto_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([funcionario_id], map: "idx_movimentacao_funcionario_id")
-  @@index([produto_id], map: "idx_movimentacao_produto_id")
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model pagamento {
   id              Int         @id @default(autoincrement())
   agendamento_id  Int         @unique
@@ -142,16 +125,6 @@ model pagamento {
   status          String      @db.VarChar(20)
   pago_em         DateTime?   @db.Timestamp(6)
   agendamento     agendamento @relation(fields: [agendamento_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model produto {
-  id                   Int                    @id @default(autoincrement())
-  nome                 String                 @db.VarChar(100)
-  categoria            String?                @db.VarChar(50)
-  unidade_medida       String?                @db.VarChar(10)
-  quantidade_atual     Decimal                @default(0) @db.Decimal(10, 2)
-  quantidade_minima    Decimal                @default(0) @db.Decimal(10, 2)
-  movimentacao_estoque movimentacao_estoque[]
 }
 
 model servico {

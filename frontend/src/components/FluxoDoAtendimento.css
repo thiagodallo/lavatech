@@ -1,0 +1,44 @@
+.fluxo {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--espaco-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fluxo-etapa {
+  padding-top: var(--espaco-3);
+  border-top: 2px solid var(--landing-linha);
+}
+
+.fluxo-etapa:first-child {
+  border-top-color: var(--cor-marca);
+}
+
+.fluxo-numero {
+  color: var(--cor-foco-no-escuro);
+  font-family: var(--fonte-mono);
+  font-size: clamp(16px, 1.2vw, 24px);
+}
+
+.fluxo-titulo {
+  margin: var(--espaco-2) 0 var(--espaco-1);
+  font-size: clamp(28px, 2.6vw, 48px);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.fluxo-texto {
+  margin: 0;
+  max-width: 28ch;
+  color: var(--landing-suave);
+  font-size: clamp(18px, 1.3vw, 24px);
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .fluxo {
+    grid-template-columns: 1fr;
+  }
+}

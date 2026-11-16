@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react'
 
+import { listarClientes } from '../api/clientes.js'
+import { buscarExpediente } from '../api/expediente.js'
 import { listarServicosAtivos } from '../api/servicos.js'
 import { listarVagas } from '../api/vagas.js'
 import Dialogo from './Dialogo.jsx'
 import EsqueletoDeBloco from './EsqueletoDeBloco.jsx'
 import FormularioDeAgendamento from './FormularioDeAgendamento.jsx'
 
-export default function DialogoDeNovoAgendamento({ aoSalvar, aoFechar }) {
+async function clienteDoAgendamento(agendamento) {
+  if (!agendamento) return null
+  const encontrados = await listarClientes(agendamento.cliente.telefone)
+  const encontrado = encontrados.find((cliente) => cliente.id === agendamento.cliente.id)
+  return encontrado ?? { ...agendamento.cliente, veiculos: [agendamento.veiculo] }
+}
+
+export default function DialogoDeAgendamento({ agendamento, aoSalvar, aoFechar }) {
   const [opcoes, setOpcoes] = useState(null)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [tentativa, setTentativa] = useState(0)
@@ -17,8 +26,13 @@ export default function DialogoDeNovoAgendamento({ aoSalvar, aoFechar }) {
     async function carregarOpcoes() {
       setMensagemDeErro('')
       try {
-        const [servicos, vagas] = await Promise.all([listarServicosAtivos(), listarVagas()])
-        if (atual) setOpcoes({ servicos, vagas })
+        const [servicos, vagas, expediente, cliente] = await Promise.all([
+          listarServicosAtivos(),
+          listarVagas(),
+          buscarExpediente(),
+          clienteDoAgendamento(agendamento),
+        ])
+        if (atual) setOpcoes({ servicos, vagas, expediente, cliente })
       } catch (erro) {
         if (atual) setMensagemDeErro(erro.message)
       }
@@ -52,6 +66,9 @@ export default function DialogoDeNovoAgendamento({ aoSalvar, aoFechar }) {
       <FormularioDeAgendamento
         servicos={opcoes.servicos}
         vagas={opcoes.vagas}
+        expediente={opcoes.expediente}
+        agendamento={agendamento}
+        clienteDoAgendamento={opcoes.cliente}
         aoSalvar={aoSalvar}
         aoCancelar={aoFechar}
       />
@@ -59,7 +76,7 @@ export default function DialogoDeNovoAgendamento({ aoSalvar, aoFechar }) {
   }
 
   return (
-    <Dialogo titulo="Novo agendamento" aoFechar={aoFechar}>
+    <Dialogo titulo={agendamento ? 'Editar agendamento' : 'Novo agendamento'} aoFechar={aoFechar}>
       {corpoDoDialogo()}
     </Dialogo>
   )

@@ -3,9 +3,7 @@ import { useLayoutEffect, useRef } from 'react'
 import { ALTURA_DA_LOGO, LARGURA_DA_LOGO, gruposDaLogo, pecasDaLogo } from '../dominio/pecasDaLogo.js'
 import './LogoAnimada.css'
 
-const ORIGEM_DO_SIMBOLO_X = 129.5 / LARGURA_DA_LOGO
-const ORIGEM_DO_SIMBOLO_Y = 0.5
-const ALTURA_DO_SIMBOLO = 1
+const LARGURA_NO_CENTRO = 0.4
 
 function percentual(valor, total) {
   return `${(valor / total) * 100}%`
@@ -35,13 +33,14 @@ export default function LogoAnimada({ className = '' }) {
 
   useLayoutEffect(() => {
     const elemento = raiz.current
+    elemento.style.animation = 'none'
     const caixa = elemento.getBoundingClientRect()
-    const origemX = caixa.left + caixa.width * ORIGEM_DO_SIMBOLO_X
-    const origemY = caixa.top + caixa.height * ORIGEM_DO_SIMBOLO_Y
-    const alturaDoSimbolo = caixa.height * ALTURA_DO_SIMBOLO
+    elemento.style.animation = ''
+    const origemX = caixa.left + caixa.width / 2
+    const origemY = caixa.top + caixa.height / 2
     elemento.style.setProperty('--dx', `${document.documentElement.clientWidth / 2 - origemX}px`)
     elemento.style.setProperty('--dy', `${window.innerHeight / 2 - origemY}px`)
-    elemento.style.setProperty('--escala', String((window.innerHeight * 0.22) / alturaDoSimbolo))
+    elemento.style.setProperty('--escala', String((document.documentElement.clientWidth * LARGURA_NO_CENTRO) / caixa.width))
   }, [])
 
   return (

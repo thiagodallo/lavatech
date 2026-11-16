@@ -4,9 +4,10 @@ import { Link } from 'react-router'
 import logoClara from '../assets/logo-lavatech-clara.png'
 import AgendaDeDemonstracao from '../components/AgendaDeDemonstracao.jsx'
 import ArquiteturaDoSistema from '../components/ArquiteturaDoSistema.jsx'
-import FluxoDoAtendimento from '../components/FluxoDoAtendimento.jsx'
+import CenaDoFluxo from '../components/CenaDoFluxo.jsx'
 import IndicadorDeSecoes from '../components/IndicadorDeSecoes.jsx'
 import PainelDemonstrativo from '../components/PainelDemonstrativo.jsx'
+import { etapasDoFluxo } from '../dominio/etapasDoFluxo.js'
 import usarNavegacaoPorSecoes from '../hooks/usarNavegacaoPorSecoes.js'
 import usarSecaoAtual from '../hooks/usarSecaoAtual.js'
 import usarTelaCheia from '../hooks/usarTelaCheia.js'
@@ -20,12 +21,23 @@ const secoes = [
   { id: 'arquitetura', rotulo: 'Arquitetura' },
   { id: 'fim', rotulo: 'Entrar' },
 ]
-const idsDasSecoes = secoes.map((secao) => secao.id)
+const idsDasSecoes = [
+  'agenda',
+  'problema',
+  ...etapasDoFluxo.map((etapa) => etapa.id),
+  'painel',
+  'arquitetura',
+  'fim',
+]
+
+function indiceDoPonto(idAtual) {
+  return secoes.findIndex((secao) => idAtual === secao.id || idAtual.startsWith(`${secao.id}-`))
+}
 
 export default function Landing() {
   usarNavegacaoPorSecoes('[data-secao]')
   usarTelaCheia()
-  const secaoAtual = usarSecaoAtual(idsDasSecoes)
+  const secaoAtual = indiceDoPonto(idsDasSecoes[usarSecaoAtual(idsDasSecoes)])
 
   useEffect(() => {
     document.documentElement.classList.add('pagina-da-landing')
@@ -61,10 +73,7 @@ export default function Landing() {
         </ul>
       </section>
 
-      <section id="fluxo" className="landing-secao" data-secao>
-        <h2 className="landing-titulo">Do agendamento ao pagamento, o mesmo caminho todo dia.</h2>
-        <FluxoDoAtendimento />
-      </section>
+      <CenaDoFluxo />
 
       <section id="painel" className="landing-secao landing-secao-alternada" data-secao>
         <h2 className="landing-titulo">No fim do dia, quanto entrou e onde o tempo foi.</h2>

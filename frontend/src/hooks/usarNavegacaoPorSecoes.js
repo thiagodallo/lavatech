@@ -19,7 +19,7 @@ export default function usarNavegacaoPorSecoes(seletor) {
       const voltar = TECLAS_PARA_VOLTAR.includes(evento.key)
       if (!avancar && !voltar) return
 
-      const secoes = [...document.querySelectorAll(seletor)]
+      const secoes = [...document.querySelectorAll(seletor)].filter((secao) => secao.offsetParent !== null)
       const destino = secoes[indiceDaSecaoAtual(secoes) + (avancar ? 1 : -1)]
       if (!destino) return
 

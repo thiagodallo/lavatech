@@ -8,6 +8,7 @@ import Catalogo from './pages/Catalogo.jsx'
 import Clientes from './pages/Clientes.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Funcionarios from './pages/Funcionarios.jsx'
+import Landing from './pages/Landing.jsx'
 import Login from './pages/Login.jsx'
 import Qualidade from './pages/Qualidade.jsx'
 
@@ -16,6 +17,7 @@ export default function App() {
     <BrowserRouter>
       <SessaoProvider>
         <Routes>
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route element={<RotaProtegida />}>
             <Route element={<LayoutBase />}>

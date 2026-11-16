@@ -59,6 +59,10 @@ export default function Landing() {
         <Link to="/login" className="landing-entrar landing-entrar-grande">
           Entrar no sistema
         </Link>
+        <p className="landing-creditos">
+          Pensado e desenvolvido por <span>Thiago Dalló</span>, <span>Cauã de Medeiros</span>,{' '}
+          <span>Murilo Cambruzzi</span> e <span>Vinicius Fabris</span>
+        </p>
       </section>
     </main>
   )

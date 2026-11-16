@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Navigate } from 'react-router'
+import { Link, Navigate } from 'react-router'
 
-import logo from '../assets/logo-lavatech.png'
+import logoClara from '../assets/logo-lavatech-clara.png'
 import { useSessao } from '../contexts/SessaoContext.jsx'
 import './Login.css'
 
@@ -30,8 +30,15 @@ export default function Login() {
 
   return (
     <main className="login">
+      <section className="login-apresentacao">
+        <Link to="/" aria-label="LavaTech, voltar para a apresentação">
+          <img src={logoClara} alt="" className="login-logo" />
+        </Link>
+        <h1 className="login-chamada">Cada vaga, cada carro, cada atendimento num lugar só.</h1>
+      </section>
+
       <form className="login-cartao" onSubmit={enviarFormulario}>
-        <img src={logo} alt="LavaTech" className="login-logo" />
+        <h2 className="login-titulo">Entrar</h2>
 
         <label className="login-rotulo" htmlFor="login-email">
           E-mail

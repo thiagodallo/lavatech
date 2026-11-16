@@ -7,7 +7,7 @@ import { listarVagas } from '../api/vagas.js'
 import AlertaDeProximoAtendimento from '../components/AlertaDeProximoAtendimento.jsx'
 import CartaoDeAgendamento from '../components/CartaoDeAgendamento.jsx'
 import DetalhesDoAgendamento from '../components/DetalhesDoAgendamento.jsx'
-import DialogoDeNovoAgendamento from '../components/DialogoDeNovoAgendamento.jsx'
+import DialogoDeAgendamento from '../components/DialogoDeAgendamento.jsx'
 import EsqueletoDeAgenda from '../components/EsqueletoDeAgenda.jsx'
 import FaixaDeVaga from '../components/FaixaDeVaga.jsx'
 import ModalDeChecklist from '../components/ModalDeChecklist.jsx'
@@ -35,6 +35,7 @@ export default function Agenda() {
   const [versaoDosAlertas, setVersaoDosAlertas] = useState(0)
   const [idSelecionado, setIdSelecionado] = useState(null)
   const [criandoAgendamento, setCriandoAgendamento] = useState(false)
+  const [agendamentoEmEdicao, setAgendamentoEmEdicao] = useState(null)
   const [agendamentoEmConclusao, setAgendamentoEmConclusao] = useState(null)
   const agendamentosDoDia = diaCarregado === data ? agendamentos : []
   const selecionado = agendamentosDoDia.find((agendamento) => agendamento.id === idSelecionado)
@@ -109,8 +110,9 @@ export default function Agenda() {
     setErrosPorId((erros) => ({ ...erros, [id]: mensagem }))
   }
 
-  function aoSalvarNovoAgendamento(agendamento) {
+  function aoSalvarAgendamento(agendamento) {
     setCriandoAgendamento(false)
+    setAgendamentoEmEdicao(null)
     mudarDia(dataDoTexto(agendamento.data_hora_agendada))
     setTentativa((anterior) => anterior + 1)
     setVersaoDosAlertas((anterior) => anterior + 1)
@@ -140,10 +142,6 @@ export default function Agenda() {
       return (
         <div className="agenda-estado">
           <p className="texto-apoio">Nenhum agendamento neste dia</p>
-          <button type="button" className="botao-primario" onClick={() => setCriandoAgendamento(true)}>
-            <Plus size={16} aria-hidden="true" />
-            Novo agendamento
-          </button>
         </div>
       )
     }
@@ -197,15 +195,20 @@ export default function Agenda() {
 
         {selecionado && (
           <PainelLateral titulo={selecionado.cliente.nome} aoFechar={() => setIdSelecionado(null)}>
-            <DetalhesDoAgendamento agendamento={selecionado} />
+            <DetalhesDoAgendamento agendamento={selecionado} aoEditar={() => setAgendamentoEmEdicao(selecionado)} />
           </PainelLateral>
         )}
       </div>
 
       {criandoAgendamento && (
-        <DialogoDeNovoAgendamento
-          aoSalvar={aoSalvarNovoAgendamento}
-          aoFechar={() => setCriandoAgendamento(false)}
+        <DialogoDeAgendamento aoSalvar={aoSalvarAgendamento} aoFechar={() => setCriandoAgendamento(false)} />
+      )}
+
+      {agendamentoEmEdicao && (
+        <DialogoDeAgendamento
+          agendamento={agendamentoEmEdicao}
+          aoSalvar={aoSalvarAgendamento}
+          aoFechar={() => setAgendamentoEmEdicao(null)}
         />
       )}
 

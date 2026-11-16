@@ -94,5 +94,5 @@
 
 .cartao-corpo:hover,
 .cartao-corpo[aria-current='true'] {
-  background: var(--cor-superficie);
+  background: color-mix(in srgb, var(--cor-marca) 8%, var(--cor-cartao));
 }

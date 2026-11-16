@@ -1,4 +1,12 @@
 .arquitetura {
+  --tempo-do-trajeto: 2400ms;
+
+  display: grid;
+  gap: var(--espaco-3);
+}
+
+.arquitetura-camadas,
+.arquitetura-passos {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--espaco-3);
@@ -12,20 +20,6 @@
   border: 1px solid var(--landing-linha);
   border-radius: var(--raio-medio);
   background: var(--landing-cartao);
-}
-
-.arquitetura-camada:not(:last-child) {
-  position: relative;
-}
-
-.arquitetura-camada:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: calc(var(--espaco-3) * -1);
-  width: var(--espaco-3);
-  height: 2px;
-  background: var(--cor-marca);
 }
 
 .arquitetura-nome {
@@ -46,12 +40,105 @@
   list-style: none;
 }
 
+.arquitetura-trajeto {
+  position: relative;
+  height: var(--espaco-1);
+  container-type: inline-size;
+  border-radius: 999px;
+  background: var(--landing-linha);
+}
+
+.arquitetura-pulso {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: var(--espaco-2);
+  height: var(--espaco-2);
+  margin-top: calc(var(--espaco-1) * -1);
+  border-radius: 999px;
+  background: var(--cor-foco-no-escuro);
+  opacity: 0;
+  transform: translateX(calc(100cqw / 6 - var(--espaco-1)));
+}
+
+.arquitetura-ativa .arquitetura-pulso {
+  animation: arquitetura-percurso var(--tempo-do-trajeto) cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+@keyframes arquitetura-percurso {
+  0% {
+    opacity: 1;
+    transform: translateX(calc(100cqw / 6 - var(--espaco-1)));
+  }
+
+  40%,
+  60% {
+    opacity: 1;
+    transform: translateX(calc(100cqw / 2 - var(--espaco-1)));
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(calc(100cqw * 5 / 6 - var(--espaco-1)));
+  }
+}
+
+.arquitetura-passo {
+  color: var(--cor-foco-no-escuro);
+  font-family: var(--fonte-mono);
+  font-size: clamp(14px, 1vw, 18px);
+  line-height: 1.4;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.arquitetura-ativa .arquitetura-passo {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 300ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.arquitetura-ativa .arquitetura-passo:nth-child(1) {
+  transition-delay: 0ms;
+}
+
+.arquitetura-ativa .arquitetura-passo:nth-child(2) {
+  transition-delay: 960ms;
+}
+
+.arquitetura-ativa .arquitetura-passo:nth-child(3) {
+  transition-delay: 2400ms;
+}
+
 @media (max-width: 900px) {
-  .arquitetura {
+  .arquitetura-camadas,
+  .arquitetura-passos {
     grid-template-columns: 1fr;
   }
 
-  .arquitetura-camada:not(:last-child)::after {
+  .arquitetura-trajeto {
     display: none;
+  }
+
+  .arquitetura-passo {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arquitetura-pulso {
+    display: none;
+  }
+
+  .arquitetura-passo {
+    opacity: 1;
+    transform: none;
+  }
+
+  .arquitetura-ativa .arquitetura-passo {
+    transition: none;
   }
 }

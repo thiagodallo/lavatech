@@ -37,12 +37,11 @@ const REGISTRO_DUPLICADO = 'P2002'
 const TRANSICAO_NEGADA = 'Transição de status não permitida'
 const STATUS_JA_ALTERADO = 'O status do agendamento acabou de ser alterado, atualize a agenda'
 const TRANSICOES_PERMITIDAS = {
-  agendado: ['aguardando', 'em_andamento', 'cancelado', 'no_show'],
-  aguardando: ['em_andamento', 'cancelado', 'no_show'],
+  agendado: ['aguardando', 'em_andamento', 'cancelado'],
+  aguardando: ['em_andamento', 'cancelado'],
   em_andamento: ['concluido', 'cancelado'],
   concluido: [],
   cancelado: [],
-  no_show: [],
 }
 const MS_POR_MINUTO = 60 * 1000
 const MS_POR_DIA = 24 * 60 * MS_POR_MINUTO

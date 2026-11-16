@@ -37,7 +37,7 @@ export function buscarPorId(id) {
   return prisma.agendamento.findUnique({ where: { id }, include: COM_DETALHES })
 }
 
-const STATUS_QUE_LIBERAM_A_VAGA = ['cancelado', 'no_show']
+const STATUS_QUE_LIBERAM_A_VAGA = ['cancelado']
 
 export function listarNaVaga(vagaId, de, ate, idIgnorado) {
   return prisma.agendamento.findMany({

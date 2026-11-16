@@ -65,19 +65,19 @@ html.pagina-da-landing {
 
 .landing-linha {
   display: block;
-  animation: landing-entrada 700ms cubic-bezier(0.16, 1, 0.3, 1) 1800ms both;
+  animation: landing-entrada 700ms cubic-bezier(0.16, 1, 0.3, 1) 2400ms both;
 }
 
 .landing-linha:nth-child(2) {
-  animation-delay: 1900ms;
+  animation-delay: 2500ms;
 }
 
 .landing-agenda {
-  animation: landing-entrada 700ms cubic-bezier(0.16, 1, 0.3, 1) 2150ms both;
+  animation: landing-entrada 700ms cubic-bezier(0.16, 1, 0.3, 1) 2750ms both;
 }
 
 .landing-topo .landing-entrar {
-  animation: landing-aparece 500ms cubic-bezier(0.16, 1, 0.3, 1) 1800ms both;
+  animation: landing-aparece 500ms cubic-bezier(0.16, 1, 0.3, 1) 2400ms both;
 }
 
 @keyframes landing-aparece {

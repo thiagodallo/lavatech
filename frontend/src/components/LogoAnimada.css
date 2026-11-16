@@ -1,7 +1,6 @@
 .logo-anim {
   --curva-de-entrada: cubic-bezier(0.16, 1, 0.3, 1);
   --curva-de-movimento: cubic-bezier(0.77, 0, 0.175, 1);
-  --deslocamento-do-simbolo: 39.6%;
 
   position: relative;
   width: 100%;
@@ -18,7 +17,8 @@
 
 .logo-grupo-simbolo {
   z-index: 1;
-  animation: logo-simbolo-para-a-esquerda 600ms var(--curva-de-movimento) 900ms both;
+  transform-origin: 10.3% 50%;
+  animation: logo-simbolo-para-a-esquerda 700ms var(--curva-de-movimento) 1000ms both;
 }
 
 .logo-grupo-lava .logo-recorte,
@@ -60,40 +60,40 @@
 }
 
 .logo-peca-lava-l {
-  --atraso: 1450ms;
+  --atraso: 1600ms;
 }
 
 .logo-peca-lava-a1 {
-  --atraso: 1490ms;
+  --atraso: 1640ms;
 }
 
 .logo-peca-lava-v {
-  --atraso: 1530ms;
+  --atraso: 1680ms;
 }
 
 .logo-peca-lava-a2 {
-  --atraso: 1570ms;
+  --atraso: 1720ms;
 }
 
 .logo-peca-tech-t {
-  --atraso: 1750ms;
+  --atraso: 1900ms;
 }
 
 .logo-peca-tech-e {
-  --atraso: 1790ms;
+  --atraso: 1940ms;
 }
 
 .logo-peca-tech-c {
-  --atraso: 1830ms;
+  --atraso: 1980ms;
 }
 
 .logo-peca-tech-h {
-  --atraso: 1870ms;
+  --atraso: 2020ms;
 }
 
 @keyframes logo-simbolo-para-a-esquerda {
   from {
-    transform: translateX(var(--deslocamento-do-simbolo));
+    transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(var(--escala, 1));
   }
 }
 

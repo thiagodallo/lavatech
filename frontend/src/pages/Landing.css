@@ -65,15 +65,25 @@ html.pagina-da-landing {
 
 .landing-linha {
   display: block;
-  animation: landing-entrada 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: landing-entrada 700ms cubic-bezier(0.16, 1, 0.3, 1) 1800ms both;
 }
 
 .landing-linha:nth-child(2) {
-  animation-delay: 100ms;
+  animation-delay: 1900ms;
 }
 
 .landing-agenda {
-  animation: landing-entrada 700ms cubic-bezier(0.16, 1, 0.3, 1) 350ms both;
+  animation: landing-entrada 700ms cubic-bezier(0.16, 1, 0.3, 1) 2150ms both;
+}
+
+.landing-topo .landing-entrar {
+  animation: landing-aparece 500ms cubic-bezier(0.16, 1, 0.3, 1) 1800ms both;
+}
+
+@keyframes landing-aparece {
+  from {
+    opacity: 0;
+  }
 }
 
 @keyframes landing-entrada {
@@ -163,7 +173,8 @@ html.pagina-da-landing {
   }
 
   .landing-linha,
-  .landing-agenda {
+  .landing-agenda,
+  .landing-topo .landing-entrar {
     animation: none;
   }
 }

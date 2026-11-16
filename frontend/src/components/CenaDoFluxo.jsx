@@ -32,7 +32,7 @@ export default function CenaDoFluxo() {
         <FluxoDoAtendimento />
       </section>
 
-      <div className="cena-fixa">
+      <div className="cena-fixa" style={{ '--etapas': etapasDoFluxo.length }}>
         <div className="cena-palco">
           <div className="cena-texto">
             <h2 className="landing-titulo">{titulo}</h2>
@@ -60,17 +60,19 @@ export default function CenaDoFluxo() {
           </div>
         </div>
 
-        {etapasDoFluxo.map((etapa, indice) => (
-          <div
-            key={etapa.id}
-            id={etapa.id}
-            ref={(elemento) => {
-              ancoras.current[indice] = elemento
-            }}
-            className="cena-ancora"
-            data-secao
-          />
-        ))}
+        <div className="cena-ancoras">
+          {etapasDoFluxo.map((etapa, indice) => (
+            <div
+              key={etapa.id}
+              id={etapa.id}
+              ref={(elemento) => {
+                ancoras.current[indice] = elemento
+              }}
+              className="cena-ancora"
+              data-secao
+            />
+          ))}
+        </div>
       </div>
     </>
   )

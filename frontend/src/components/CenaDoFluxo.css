@@ -8,8 +8,15 @@
   }
 
   .cena-fixa {
+    position: relative;
     display: block;
+    min-height: calc(100svh * var(--etapas));
   }
+}
+
+.cena-ancoras {
+  position: absolute;
+  inset: 0;
 }
 
 .cena-palco {
@@ -20,7 +27,6 @@
   align-items: center;
   gap: clamp(var(--espaco-5), 6vw, 120px);
   height: 100svh;
-  margin-bottom: -100svh;
   padding: var(--espaco-6) clamp(var(--espaco-6), 7vw, 160px) var(--espaco-6) clamp(var(--espaco-3), 6vw, 120px);
 }
 

@@ -1,0 +1,111 @@
+.cena-fixa {
+  display: none;
+}
+
+@media (min-width: 1000px) and (min-height: 700px) {
+  .landing-secao.cena-lista {
+    display: none;
+  }
+
+  .cena-fixa {
+    display: block;
+  }
+}
+
+.cena-palco {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: clamp(var(--espaco-5), 6vw, 120px);
+  height: 100svh;
+  margin-bottom: -100svh;
+  padding: var(--espaco-6) clamp(var(--espaco-6), 7vw, 160px) var(--espaco-6) clamp(var(--espaco-3), 6vw, 120px);
+}
+
+.cena-texto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-5);
+}
+
+.cena-etapas {
+  display: grid;
+  gap: var(--espaco-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cena-etapa {
+  display: grid;
+  grid-template-columns: var(--espaco-6) 1fr;
+  column-gap: var(--espaco-2);
+  opacity: 0.38;
+  transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.cena-etapa-ativa {
+  opacity: 1;
+}
+
+.cena-etapa-numero {
+  grid-row: 1 / 3;
+  padding-top: var(--espaco-1);
+  color: var(--cor-foco-no-escuro);
+  font-family: var(--fonte-mono);
+  font-size: clamp(16px, 1.2vw, 24px);
+}
+
+.cena-texto .landing-titulo {
+  max-width: none;
+  font-size: clamp(32px, 3.4vw, 64px);
+}
+
+.cena-etapa-titulo {
+  margin: 0;
+  font-size: clamp(28px, 2.6vw, 48px);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.cena-etapa-texto {
+  margin: var(--espaco-1) 0 0;
+  max-width: 32ch;
+  color: var(--landing-suave);
+  font-size: clamp(18px, 1.3vw, 24px);
+  line-height: 1.4;
+}
+
+.cena-telas {
+  display: grid;
+}
+
+.cena-tela {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition:
+    opacity 160ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.cena-tela-ativa {
+  opacity: 1;
+  transform: none;
+  transition-duration: 200ms;
+}
+
+.cena-ancora {
+  min-height: 100svh;
+  scroll-snap-align: start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cena-etapa,
+  .cena-tela {
+    transition: none;
+  }
+}

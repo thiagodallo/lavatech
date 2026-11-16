@@ -1,8 +1,5 @@
-import { Link } from 'react-router'
-
 import { rotulosDeStatus } from '../dominio/statusDoAgendamento.js'
 import { horaDoTexto } from '../formatacao/horario.js'
-import { formatarQuantidade } from '../formatacao/quantidade.js'
 import LinhaDeServicos from './LinhaDeServicos.jsx'
 import PilulaDeStatus from './PilulaDeStatus.jsx'
 import './ResumoDeHoje.css'
@@ -24,29 +21,7 @@ function ProximoAtendimento({ atendimento }) {
   )
 }
 
-function EstoqueAbaixoDoMinimo({ itens }) {
-  if (itens.length === 0) return <p className="texto-apoio">Nenhum produto abaixo do mínimo</p>
-
-  return (
-    <>
-      <ul className="estoque-baixo">
-        {itens.slice(0, 4).map((item) => (
-          <li key={item.id}>
-            <span>{item.nome}</span>
-            <span className="estoque-baixo-saldo">
-              {formatarQuantidade(item.quantidade_atual)} / {formatarQuantidade(item.quantidade_minima)}
-            </span>
-          </li>
-        ))}
-      </ul>
-      <Link to="/estoque" className="link-estoque">
-        {itens.length > 4 ? `Ver os ${itens.length} no estoque` : 'Ver no estoque'}
-      </Link>
-    </>
-  )
-}
-
-const statusDoResumo = Object.keys(rotulosDeStatus).filter((status) => status !== 'no_show')
+const statusDoResumo = Object.keys(rotulosDeStatus)
 
 function ContagemPorStatus({ porStatus }) {
   return (
@@ -80,10 +55,6 @@ export default function ResumoDeHoje({ resumo }) {
       <div className="resumo-proximo">
         <h4 className="resumo-subtitulo">Próximo atendimento</h4>
         <ProximoAtendimento atendimento={resumo.proximo_atendimento} />
-      </div>
-      <div className="resumo-estoque">
-        <h4 className="resumo-subtitulo">Estoque abaixo do mínimo</h4>
-        <EstoqueAbaixoDoMinimo itens={resumo.estoque_abaixo_do_minimo} />
       </div>
     </div>
   )

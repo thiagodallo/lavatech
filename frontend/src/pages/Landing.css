@@ -1,0 +1,132 @@
+html.pagina-da-landing {
+  background: var(--cor-menu);
+  color-scheme: dark;
+}
+
+@media (min-width: 1000px) and (min-height: 700px) {
+  html.pagina-da-landing {
+    scroll-snap-type: y mandatory;
+  }
+}
+
+.landing {
+  --landing-texto: #eaf1f8;
+  --landing-suave: #9fb0c2;
+  --landing-linha: #1d3a58;
+  --landing-cartao: #0e2a45;
+  --landing-alternada: #0c2640;
+
+  background: var(--cor-menu);
+  color: var(--landing-texto);
+}
+
+.landing-secao {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--espaco-5);
+  min-height: 100svh;
+  padding: var(--espaco-6) clamp(var(--espaco-3), 6vw, 120px);
+  scroll-snap-align: start;
+}
+
+.landing-secao-alternada {
+  background: var(--landing-alternada);
+}
+
+.landing-abertura {
+  justify-content: flex-start;
+  gap: var(--espaco-4);
+}
+
+.landing-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.landing-logo {
+  display: block;
+  width: 168px;
+  height: auto;
+}
+
+.landing-titulo {
+  max-width: 20ch;
+  margin: 0;
+  font-size: clamp(32px, 4.2vw, 80px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.landing-abertura .landing-titulo {
+  max-width: 24ch;
+}
+
+.landing-entrar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--altura-controle);
+  padding: 0 var(--espaco-3);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-marca);
+  color: var(--cor-sobre-marca);
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color 150ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 120ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.landing-entrar:hover {
+  background: var(--cor-marca-escura);
+}
+
+.landing-entrar:active {
+  transform: scale(0.97);
+}
+
+.landing-entrar:focus-visible {
+  outline-color: var(--cor-foco-no-escuro);
+}
+
+.landing-problemas {
+  display: grid;
+  gap: var(--espaco-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: clamp(28px, 3.2vw, 64px);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.landing-problemas li {
+  max-width: 24ch;
+  color: var(--landing-suave);
+}
+
+.landing-fechamento {
+  align-items: flex-start;
+}
+
+.landing-logo-grande {
+  display: block;
+  width: clamp(240px, 24vw, 480px);
+  height: auto;
+}
+
+.landing-entrar-grande {
+  height: var(--espaco-6);
+  padding: 0 var(--espaco-4);
+  font-size: clamp(16px, 1.2vw, 22px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-entrar {
+    transition: none;
+  }
+}

@@ -37,7 +37,7 @@ function CampoDeDataDoAgendamento({ data, erro, descritoPor, aoMudar }) {
   )
 }
 
-export default function CamposDeVagaEHorario({ vagas, campos, erros, erroDeHorario, duracaoMinutos }) {
+export default function CamposDeVagaEHorario({ vagas, campos, erros, erroDeHorario, duracaoMinutos, expediente, agendamentoIgnoradoId }) {
   const descritoPor = erroDeHorario ? ID_DO_ERRO_DE_HORARIO : undefined
 
   return (
@@ -60,6 +60,8 @@ export default function CamposDeVagaEHorario({ vagas, campos, erros, erroDeHorar
         data={campos.data}
         duracaoMinutos={duracaoMinutos}
         hora={campos.hora}
+        expediente={expediente}
+        agendamentoIgnoradoId={agendamentoIgnoradoId}
         aoEscolher={campos.alterar('hora')}
       />
       {erroDeHorario && (

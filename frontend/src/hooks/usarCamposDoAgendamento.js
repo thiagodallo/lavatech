@@ -1,19 +1,28 @@
 import { useState } from 'react'
 
-import { dataDeHoje } from '../formatacao/horario.js'
+import { dataInicialDoAgendamento } from '../dominio/expediente.js'
 
 const camposDeHorario = ['vagaId', 'data', 'hora']
 
-function camposIniciais() {
-  return { cliente: null, veiculoId: '', servicoIds: [], vagaId: '', data: dataDeHoje(), hora: '', observacoes: '' }
+function camposIniciais(valoresIniciais, expediente) {
+  if (valoresIniciais) return valoresIniciais
+  return {
+    cliente: null,
+    veiculoId: '',
+    servicoIds: [],
+    vagaId: '',
+    data: dataInicialDoAgendamento(expediente),
+    hora: '',
+    observacoes: '',
+  }
 }
 
 function veiculoDoUnicoVeiculo(cliente) {
   return cliente?.veiculos.length === 1 ? String(cliente.veiculos[0].id) : ''
 }
 
-export default function usarCamposDoAgendamento(aoAlterarHorario) {
-  const [campos, setCampos] = useState(camposIniciais)
+export default function usarCamposDoAgendamento(aoAlterarHorario, valoresIniciais, expediente) {
+  const [campos, setCampos] = useState(() => camposIniciais(valoresIniciais, expediente))
 
   function alterar(campo) {
     return (valor) => {

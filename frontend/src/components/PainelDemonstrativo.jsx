@@ -1,3 +1,5 @@
+import usarContagem from '../hooks/usarContagem.js'
+import usarEntradaNaTela from '../hooks/usarEntradaNaTela.js'
 import './PainelDemonstrativo.css'
 
 const faturamentoPorDia = [
@@ -18,19 +20,28 @@ const tempoMedioPorServico = [
 
 const maiorFaturamento = Math.max(...faturamentoPorDia.map((item) => item.valor))
 const maiorTempo = Math.max(...tempoMedioPorServico.map((item) => item.minutos))
+const faturamentoTotal = faturamentoPorDia.reduce((soma, item) => soma + item.valor, 0)
 
 function formatarReais(valor) {
   return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
 }
 
 export default function PainelDemonstrativo() {
+  const [referencia, entrou] = usarEntradaNaTela()
+  const totalExibido = usarContagem(faturamentoTotal, entrou)
+
   return (
-    <div className="painel-demo" aria-label="Dashboard em demonstração">
+    <div
+      ref={referencia}
+      className={`painel-demo${entrou ? ' painel-demo-ativo' : ''}`}
+      aria-label="Dashboard em demonstração"
+    >
       <section className="painel-demo-bloco">
-        <h3 className="painel-demo-titulo">Faturamento por dia</h3>
+        <h3 className="painel-demo-titulo">Faturamento da semana</h3>
+        <p className="painel-demo-total">{formatarReais(totalExibido)}</p>
         <ul className="painel-demo-barras">
-          {faturamentoPorDia.map((item) => (
-            <li key={item.dia} className="painel-demo-barra">
+          {faturamentoPorDia.map((item, indice) => (
+            <li key={item.dia} className="painel-demo-barra" style={{ '--ordem': indice }}>
               <span className="painel-demo-valor">{formatarReais(item.valor)}</span>
               <span
                 className="painel-demo-coluna"
@@ -45,8 +56,8 @@ export default function PainelDemonstrativo() {
       <section className="painel-demo-bloco">
         <h3 className="painel-demo-titulo">Tempo médio por serviço</h3>
         <ul className="painel-demo-linhas">
-          {tempoMedioPorServico.map((item) => (
-            <li key={item.servico} className="painel-demo-linha">
+          {tempoMedioPorServico.map((item, indice) => (
+            <li key={item.servico} className="painel-demo-linha" style={{ '--ordem': indice }}>
               <span>{item.servico}</span>
               <span className="painel-demo-trilho">
                 <span

@@ -76,7 +76,7 @@ export default function Landing() {
       <CenaDoFluxo />
 
       <section id="painel" className="landing-secao landing-secao-alternada" data-secao>
-        <h2 className="landing-titulo">No fim do dia, quanto entrou e onde o tempo foi.</h2>
+        <h2 className="landing-titulo">Quanto entrou e onde o tempo foi, sem fazer conta.</h2>
         <PainelDemonstrativo />
       </section>
 

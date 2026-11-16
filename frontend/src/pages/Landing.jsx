@@ -5,12 +5,27 @@ import logoClara from '../assets/logo-lavatech-clara.png'
 import AgendaDeDemonstracao from '../components/AgendaDeDemonstracao.jsx'
 import ArquiteturaDoSistema from '../components/ArquiteturaDoSistema.jsx'
 import FluxoDoAtendimento from '../components/FluxoDoAtendimento.jsx'
+import IndicadorDeSecoes from '../components/IndicadorDeSecoes.jsx'
 import PainelDemonstrativo from '../components/PainelDemonstrativo.jsx'
 import usarNavegacaoPorSecoes from '../hooks/usarNavegacaoPorSecoes.js'
+import usarSecaoAtual from '../hooks/usarSecaoAtual.js'
+import usarTelaCheia from '../hooks/usarTelaCheia.js'
 import './Landing.css'
+
+const secoes = [
+  { id: 'agenda', rotulo: 'Agenda' },
+  { id: 'problema', rotulo: 'Problema' },
+  { id: 'fluxo', rotulo: 'Fluxo do atendimento' },
+  { id: 'painel', rotulo: 'Dashboard' },
+  { id: 'arquitetura', rotulo: 'Arquitetura' },
+  { id: 'fim', rotulo: 'Entrar' },
+]
+const idsDasSecoes = secoes.map((secao) => secao.id)
 
 export default function Landing() {
   usarNavegacaoPorSecoes('[data-secao]')
+  usarTelaCheia()
+  const secaoAtual = usarSecaoAtual(idsDasSecoes)
 
   useEffect(() => {
     document.documentElement.classList.add('pagina-da-landing')
@@ -19,18 +34,25 @@ export default function Landing() {
 
   return (
     <main className="landing">
-      <section className="landing-secao landing-abertura" data-secao>
+      <IndicadorDeSecoes secoes={secoes} atual={secaoAtual} />
+
+      <section id="agenda" className="landing-secao landing-abertura" data-secao>
         <header className="landing-topo">
           <img src={logoClara} alt="LavaTech" className="landing-logo" />
           <Link to="/login" className="landing-entrar">
             Entrar
           </Link>
         </header>
-        <h1 className="landing-titulo">Cada vaga, cada carro, cada atendimento num lugar só.</h1>
-        <AgendaDeDemonstracao />
+        <h1 className="landing-titulo">
+          <span className="landing-linha">Cada vaga, cada carro,</span>
+          <span className="landing-linha">cada atendimento num lugar só.</span>
+        </h1>
+        <div className="landing-agenda">
+          <AgendaDeDemonstracao />
+        </div>
       </section>
 
-      <section className="landing-secao landing-secao-alternada" data-secao>
+      <section id="problema" className="landing-secao landing-secao-alternada" data-secao>
         <h2 className="landing-titulo">Quando a agenda é um caderno e um grupo de WhatsApp:</h2>
         <ul className="landing-problemas">
           <li>dois carros acabam na mesma vaga.</li>
@@ -39,22 +61,22 @@ export default function Landing() {
         </ul>
       </section>
 
-      <section className="landing-secao" data-secao>
+      <section id="fluxo" className="landing-secao" data-secao>
         <h2 className="landing-titulo">Do agendamento ao pagamento, o mesmo caminho todo dia.</h2>
         <FluxoDoAtendimento />
       </section>
 
-      <section className="landing-secao landing-secao-alternada" data-secao>
+      <section id="painel" className="landing-secao landing-secao-alternada" data-secao>
         <h2 className="landing-titulo">No fim do dia, quanto entrou e onde o tempo foi.</h2>
         <PainelDemonstrativo />
       </section>
 
-      <section className="landing-secao" data-secao>
+      <section id="arquitetura" className="landing-secao" data-secao>
         <h2 className="landing-titulo">Por baixo, uma estrutura simples de manter.</h2>
         <ArquiteturaDoSistema />
       </section>
 
-      <section className="landing-secao landing-fechamento" data-secao>
+      <section id="fim" className="landing-secao landing-fechamento" data-secao>
         <img src={logoClara} alt="LavaTech" className="landing-logo-grande" />
         <Link to="/login" className="landing-entrar landing-entrar-grande">
           Entrar no sistema

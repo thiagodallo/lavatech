@@ -10,11 +10,11 @@ html.pagina-da-landing {
 }
 
 .landing {
-  --landing-texto: #eaf1f8;
-  --landing-suave: #9fb0c2;
-  --landing-linha: #1d3a58;
-  --landing-cartao: #0e2a45;
-  --landing-alternada: #0c2640;
+  --landing-texto: oklch(95% 0.012 250);
+  --landing-suave: oklch(76% 0.03 250);
+  --landing-linha: oklch(100% 0 0 / 0.1);
+  --landing-cartao: oklch(100% 0 0 / 0.045);
+  --landing-alternada: oklch(100% 0 0 / 0.03);
 
   background: var(--cor-menu);
   color: var(--landing-texto);
@@ -62,7 +62,27 @@ html.pagina-da-landing {
 }
 
 .landing-abertura .landing-titulo {
-  max-width: 24ch;
+  max-width: none;
+}
+
+.landing-linha {
+  display: block;
+  animation: landing-entrada 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.landing-linha:nth-child(2) {
+  animation-delay: 100ms;
+}
+
+.landing-agenda {
+  animation: landing-entrada 700ms cubic-bezier(0.16, 1, 0.3, 1) 350ms both;
+}
+
+@keyframes landing-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
 }
 
 .landing-entrar {
@@ -142,5 +162,10 @@ html.pagina-da-landing {
 @media (prefers-reduced-motion: reduce) {
   .landing-entrar {
     transition: none;
+  }
+
+  .landing-linha,
+  .landing-agenda {
+    animation: none;
   }
 }

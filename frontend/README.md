@@ -1,6 +1,6 @@
 # Front-end
 
-Interface web do LavaTech, seguindo o protótipo das sete telas do MVP (Login, Agenda, Novo agendamento, Dashboard, Clientes, Catálogo e Qualidade).
+Interface web do LavaTech, seguindo o protótipo das sete telas do MVP (Login, Agenda, Novo agendamento, Dashboard, Clientes, Catálogo e Qualidade), mais uma página de apresentação em `/`, pensada para ser projetada: seis seções de uma tela cada, navegáveis pelas setas do teclado, com uma agenda de demonstração animada no topo.
 
 - React 19 e Vite 8
 - React Router (navegação entre as telas)

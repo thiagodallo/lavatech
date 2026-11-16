@@ -9,14 +9,6 @@ export default function SeletorDeDia({ data, hoje, aoMudar }) {
     <div className="seletor-de-dia" role="group" aria-label="Dia da agenda">
       <button
         type="button"
-        className="botao-secundario seletor-seta"
-        aria-label="Dia anterior"
-        onClick={() => aoMudar(somarDias(data, -1))}
-      >
-        <ChevronLeft size={20} aria-hidden="true" />
-      </button>
-      <button
-        type="button"
         className="botao-secundario"
         aria-pressed={data === hoje}
         onClick={() => aoMudar(hoje)}
@@ -26,12 +18,20 @@ export default function SeletorDeDia({ data, hoje, aoMudar }) {
       <button
         type="button"
         className="botao-secundario seletor-seta"
+        aria-label="Dia anterior"
+        onClick={() => aoMudar(somarDias(data, -1))}
+      >
+        <ChevronLeft size={20} aria-hidden="true" />
+      </button>
+      <CampoDeData classe="seletor-data" rotulo="Data da agenda" valor={data} aoEscolher={aoMudar} />
+      <button
+        type="button"
+        className="botao-secundario seletor-seta"
         aria-label="Próximo dia"
         onClick={() => aoMudar(somarDias(data, 1))}
       >
         <ChevronRight size={20} aria-hidden="true" />
       </button>
-      <CampoDeData classe="seletor-data" rotulo="Data da agenda" valor={data} aoEscolher={aoMudar} />
     </div>
   )
 }

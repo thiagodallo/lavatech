@@ -38,8 +38,12 @@ export default function Estoque() {
     }
   }, [tentativa])
 
+  function aoCriarProduto() {
+    setTentativa((anterior) => anterior + 1)
+  }
+
   function aoSalvarProduto(produto) {
-    setPainel({ produto })
+    setPainel((atual) => (atual.produto ? { produto } : null))
     setTentativa((anterior) => anterior + 1)
   }
 
@@ -90,7 +94,9 @@ export default function Estoque() {
                   {produto.categoria && <span className="produto-categoria">{produto.categoria}</span>}
                 </div>
                 <span className="produto-saldo">
-                  {formatarQuantidade(produto.quantidade_atual)} / mín. {formatarQuantidade(produto.quantidade_minima)}
+                  {formatarQuantidade(produto.quantidade_atual)}
+                  {produto.unidade_medida && ` ${produto.unidade_medida}`} / mín.{' '}
+                  {formatarQuantidade(produto.quantidade_minima)}
                   {produto.unidade_medida && ` ${produto.unidade_medida}`}
                 </span>
                 {abaixoDoMinimo ? (
@@ -130,6 +136,7 @@ export default function Estoque() {
             key={painel.produto?.id ?? 'novo'}
             produto={painel.produto}
             aoSalvar={aoSalvarProduto}
+            aoCriar={aoCriarProduto}
           />
           {painel.produto && (
             <SecaoDeMovimentacao

@@ -110,7 +110,21 @@ html.pagina-da-landing {
 }
 
 .landing-fechamento {
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
+}
+
+.landing-creditos span {
+  white-space: nowrap;
+}
+
+.landing-creditos {
+  max-width: 36ch;
+  margin: 0;
+  color: var(--landing-suave);
+  font-size: clamp(16px, 1.1vw, 20px);
+  line-height: 1.5;
+  text-wrap: balance;
 }
 
 .landing-logo-grande {

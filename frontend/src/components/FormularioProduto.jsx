@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { registrarMovimentacao } from '../api/movimentacoes.js'
 import { cadastrarProduto, editarProduto } from '../api/produtos.js'
 import { unidadesComAtual } from '../dominio/unidadesDeMedida.js'
 import { lerNumero } from '../formatacao/numero.js'
@@ -7,11 +8,13 @@ import { formatarQuantidade } from '../formatacao/quantidade.js'
 import CampoDeSelecao from './CampoDeSelecao.jsx'
 import CampoDeTexto from './CampoDeTexto.jsx'
 
-export default function FormularioProduto({ produto, aoSalvar }) {
+export default function FormularioProduto({ produto, aoSalvar, aoCriar }) {
   const [nome, setNome] = useState(produto?.nome ?? '')
   const [categoria, setCategoria] = useState(produto?.categoria ?? '')
   const [unidade, setUnidade] = useState(produto?.unidade_medida ?? '')
   const [minimo, setMinimo] = useState(produto ? String(produto.quantidade_minima).replace('.', ',') : '')
+  const [quantidadeInicial, setQuantidadeInicial] = useState('')
+  const [produtoCriado, setProdutoCriado] = useState(null)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [errosDosCampos, setErrosDosCampos] = useState({})
   const [salvo, setSalvo] = useState(false)
@@ -22,6 +25,26 @@ export default function FormularioProduto({ produto, aoSalvar }) {
       definirCampo(evento.target.value)
       setSalvo(false)
     }
+  }
+
+  async function salvarProduto(dados) {
+    if (produto) return editarProduto(produto.id, dados)
+    if (produtoCriado) return produtoCriado
+    const criado = await cadastrarProduto(dados)
+    setProdutoCriado(criado)
+    aoCriar?.(criado)
+    return criado
+  }
+
+  async function registrarEstoqueInicial(produtoSalvo) {
+    const quantidade = lerNumero(quantidadeInicial)
+    if (produto || !(quantidade > 0)) return
+    await registrarMovimentacao({
+      produto_id: produtoSalvo.id,
+      tipo: 'entrada',
+      quantidade,
+      observacao: 'Estoque inicial',
+    })
   }
 
   async function enviarFormulario(evento) {
@@ -38,9 +61,8 @@ export default function FormularioProduto({ produto, aoSalvar }) {
       quantidade_minima: lerNumero(minimo),
     }
     try {
-      const produtoSalvo = produto
-        ? await editarProduto(produto.id, dados)
-        : await cadastrarProduto(dados)
+      const produtoSalvo = await salvarProduto(dados)
+      await registrarEstoqueInicial(produtoSalvo)
       setSalvo(true)
       aoSalvar(produtoSalvo)
     } catch (erro) {
@@ -96,6 +118,17 @@ export default function FormularioProduto({ produto, aoSalvar }) {
         erro={errosDosCampos.quantidade_minima?.[0]}
         onChange={alterarCampo(setMinimo)}
       />
+      {!produto && (
+        <CampoDeTexto
+          id="produto-quantidade-inicial"
+          rotulo="Quantidade inicial"
+          inputMode="decimal"
+          autoComplete="off"
+          value={quantidadeInicial}
+          erro={errosDosCampos.quantidade?.[0]}
+          onChange={alterarCampo(setQuantidadeInicial)}
+        />
+      )}
 
       {produto && (
         <div className="formulario-leitura">

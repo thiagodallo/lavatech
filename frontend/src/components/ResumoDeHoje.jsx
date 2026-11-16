@@ -25,7 +25,7 @@ function ProximoAtendimento({ atendimento }) {
 }
 
 function EstoqueAbaixoDoMinimo({ itens }) {
-  if (itens.length === 0) return <p className="texto-apoio">Estoque em dia</p>
+  if (itens.length === 0) return <p className="texto-apoio">Nenhum produto abaixo do mínimo</p>
 
   return (
     <>

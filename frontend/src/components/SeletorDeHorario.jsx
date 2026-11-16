@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { listarAgendamentosDoDia } from '../api/agendamentos.js'
+import { diaEstaAberto } from '../dominio/expediente.js'
 import { horariosDaVaga } from '../dominio/horariosDisponiveis.js'
 import { dataDeHoje } from '../formatacao/horario.js'
 import EsqueletoDeBloco from './EsqueletoDeBloco.jsx'
@@ -23,7 +24,8 @@ function BotaoDeHorario({ horario, escolhido, aoEscolher }) {
   )
 }
 
-function CorpoDoSeletor({ vagaId, estado, horarios, hora, aoEscolher, aoTentarDeNovo }) {
+function CorpoDoSeletor({ vagaId, diaFechado, semHorarios, estado, horarios, hora, aoEscolher, aoTentarDeNovo }) {
+  if (diaFechado) return <p className="horario-aviso">Fechado neste dia</p>
   if (!vagaId) return <p className="horario-aviso">Escolha a vaga para ver os horários</p>
   if (estado === 'carregando') return <EsqueletoDeBloco linhas={2} rotulo="Carregando horários" />
   if (estado === 'erro') {
@@ -36,6 +38,7 @@ function CorpoDoSeletor({ vagaId, estado, horarios, hora, aoEscolher, aoTentarDe
       </div>
     )
   }
+  if (semHorarios) return <p className="horario-aviso">Sem horários livres neste dia</p>
   return (
     <div className="horario-grade">
       {horarios.map((horario) => (
@@ -45,7 +48,7 @@ function CorpoDoSeletor({ vagaId, estado, horarios, hora, aoEscolher, aoTentarDe
   )
 }
 
-export default function SeletorDeHorario({ vagaId, data, duracaoMinutos, hora, aoEscolher }) {
+export default function SeletorDeHorario({ vagaId, data, duracaoMinutos, hora, expediente, agendamentoIgnoradoId, aoEscolher }) {
   const [agendamentos, setAgendamentos] = useState([])
   const [estado, setEstado] = useState('carregando')
   const [tentativa, setTentativa] = useState(0)
@@ -68,16 +71,22 @@ export default function SeletorDeHorario({ vagaId, data, duracaoMinutos, hora, a
   }, [data, tentativa])
 
   const horarios = horariosDaVaga({
-    agendamentosDaVaga: agendamentos.filter((agendamento) => String(agendamento.vaga.id) === String(vagaId)),
+    agendamentosDaVaga: agendamentos.filter(
+      (agendamento) => String(agendamento.vaga.id) === String(vagaId) && agendamento.id !== agendamentoIgnoradoId,
+    ),
     duracaoMinutos,
     diaDeHoje: data === dataDeHoje(),
+    expediente,
   })
+  const semHorarios = estado === 'pronto' && duracaoMinutos > 0 && horarios.every((horario) => !horario.livre)
 
   return (
     <fieldset className="horario-campo">
       <legend className="campo-rotulo">Horário</legend>
       <CorpoDoSeletor
         vagaId={vagaId}
+        diaFechado={!diaEstaAberto(data, expediente)}
+        semHorarios={semHorarios}
         estado={estado}
         horarios={horarios}
         hora={hora}

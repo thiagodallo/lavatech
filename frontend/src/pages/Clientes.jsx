@@ -9,6 +9,7 @@ import EsqueletoDeLista from '../components/EsqueletoDeLista.jsx'
 import './Clientes.css'
 
 const ESPERA_DA_BUSCA_EM_MS = 300
+const MAXIMO_DE_VEICULOS_NA_LINHA = 2
 
 export default function Clientes() {
   const [busca, setBusca] = useState('')
@@ -43,6 +44,10 @@ export default function Clientes() {
 
   function aoSalvarCliente(cliente) {
     setPainel((atual) => (atual.cliente ? { cliente } : null))
+    setTentativa((anterior) => anterior + 1)
+  }
+
+  function aoCriarCliente() {
     setTentativa((anterior) => anterior + 1)
   }
 
@@ -103,11 +108,17 @@ export default function Clientes() {
             >
               <span className="cliente-nome">{cliente.nome}</span>
               <span className="cliente-placas">
-                {cliente.veiculos.map((veiculo) => (
-                  <span key={veiculo.id} className="placa">
-                    {veiculo.placa}
+                {cliente.veiculos.slice(0, MAXIMO_DE_VEICULOS_NA_LINHA).map((veiculo) => (
+                  <span key={veiculo.id} className="cliente-veiculo">
+                    <span className="placa">{veiculo.placa}</span>
+                    {veiculo.modelo}
                   </span>
                 ))}
+                {cliente.veiculos.length > MAXIMO_DE_VEICULOS_NA_LINHA && (
+                  <span className="cliente-veiculos-extra">
+                    +{cliente.veiculos.length - MAXIMO_DE_VEICULOS_NA_LINHA}
+                  </span>
+                )}
               </span>
               <span className="cliente-telefone">{cliente.telefone}</span>
             </button>
@@ -150,6 +161,7 @@ export default function Clientes() {
             key={`formulario-${painel.cliente?.id ?? 'novo'}`}
             cliente={painel.cliente}
             aoSalvar={aoSalvarCliente}
+            aoCriar={aoCriarCliente}
           />
           {painel.cliente && (
             <VeiculosDoCliente

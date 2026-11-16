@@ -5,7 +5,7 @@ import { camposIniciaisDoVeiculo, dadosDoVeiculo, veiculoPreenchido } from '../d
 import CampoDeTexto from './CampoDeTexto.jsx'
 import CamposDoVeiculo from './CamposDoVeiculo.jsx'
 
-export default function FormularioCliente({ cliente, aoSalvar }) {
+export default function FormularioCliente({ cliente, aoSalvar, aoCriar }) {
   const [nome, setNome] = useState(cliente?.nome ?? '')
   const [telefone, setTelefone] = useState(cliente?.telefone ?? '')
   const [veiculo, setVeiculo] = useState(() => camposIniciaisDoVeiculo(null))
@@ -25,7 +25,11 @@ export default function FormularioCliente({ cliente, aoSalvar }) {
 
   async function salvarCliente() {
     if (cliente) return editarCliente(cliente.id, { nome, telefone })
-    return clienteCriado ?? cadastrarCliente({ nome, telefone })
+    if (clienteCriado) return clienteCriado
+    const criado = await cadastrarCliente({ nome, telefone })
+    setClienteCriado(criado)
+    aoCriar?.(criado)
+    return criado
   }
 
   async function enviarFormulario(evento) {
@@ -37,7 +41,6 @@ export default function FormularioCliente({ cliente, aoSalvar }) {
 
     try {
       const clienteSalvo = await salvarCliente()
-      if (novoCliente) setClienteCriado(clienteSalvo)
       if (novoCliente && veiculoPreenchido(veiculo)) {
         await cadastrarVeiculo(clienteSalvo.id, dadosDoVeiculo(veiculo))
       }

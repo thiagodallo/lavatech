@@ -1,6 +1,6 @@
 import { acoesDoStatus } from '../dominio/statusDoAgendamento.js'
 import { textoDeDuracao } from '../formatacao/duracao.js'
-import { horaDoTexto } from '../formatacao/horario.js'
+import { dataDeHoje, dataDoTexto, horaDoTexto } from '../formatacao/horario.js'
 import { minutosDeAtraso, minutosEmAtendimento } from '../formatacao/situacaoNoTempo.js'
 import BotoesDeStatus from './BotoesDeStatus.jsx'
 import LinhaDeServicos from './LinhaDeServicos.jsx'
@@ -74,6 +74,7 @@ export default function CartaoDeAgendamento({
   aoMudarStatus,
 }) {
   const acoes = acoesDoStatus(agendamento.status)
+  const diaFuturo = dataDoTexto(agendamento.data_hora_agendada) > dataDeHoje()
 
   return (
     <li className="cartao-agendamento">
@@ -86,7 +87,7 @@ export default function CartaoDeAgendamento({
         <RodapeDoCartao
           acoes={acoes}
           ocupado={ocupado}
-          bloqueadas={vagaEmUso ? ['em_andamento'] : []}
+          bloqueadas={vagaEmUso || diaFuturo ? ['em_andamento'] : []}
           mensagemDeErro={mensagemDeErro}
           aoMudarStatus={aoMudarStatus}
         />

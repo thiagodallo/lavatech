@@ -72,3 +72,7 @@
   color: var(--cor-texto-suave);
   font-size: 12px;
 }
+
+.detalhes-editar {
+  align-self: flex-start;
+}

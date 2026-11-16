@@ -20,3 +20,7 @@ export function listarHistoricoDoAgendamento(id) {
 export function cadastrarAgendamento(dados) {
   return requisitar('/agendamentos', { metodo: 'POST', corpo: dados })
 }
+
+export function editarAgendamento(id, dados) {
+  return requisitar(`/agendamentos/${id}`, { metodo: 'PUT', corpo: dados })
+}

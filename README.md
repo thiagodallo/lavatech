@@ -1,6 +1,6 @@
 # LavaTech
 
-Sistema web de uso interno para gestão de agendamentos, pagamentos, estoque e qualidade da Eco Planet, estética automotiva em Criciúma, SC.
+Sistema web de uso interno para gestão de agendamentos, pagamentos e qualidade da Eco Planet, estética automotiva em Criciúma, SC.
 
 - **EQUIPE:** Thiago Dallo, Vinicius Fabris, Cauã Rodrigues e Murilo Cambruzzi.
 - **DISCIPLINA:** Projeto Integrador: Sistema Web
@@ -26,25 +26,23 @@ A Eco Planet controla os agendamentos manualmente, por WhatsApp e caderno físic
 
 ## Funcionalidades
 
-**Cadastros:** funcionários, clientes com seus veículos, e catálogo de serviços e produtos, todos com criação, edição e consulta.
+**Cadastros:** funcionários, clientes com seus veículos, e catálogo de serviços, todos com criação, edição e consulta.
 
-**Agendamento:** cada agendamento é vinculado a cliente, veículo, serviços e uma vaga de lavagem. O conflito é resolvido com lock otimista: o sistema tenta gravar na confirmação e o banco recusa se já existir um agendamento ativo na mesma vaga e horário, por meio do índice único parcial `uq_agendamento_vaga_horario` em `(vaga_id, data_hora_agendada)`, que ignora agendamentos cancelados e no-show. O índice barra o mesmo horário exato, e a sobreposição pela duração do serviço é checada no back-end.
+**Agendamento:** cada agendamento é vinculado a cliente, veículo, serviços e uma vaga de lavagem. O conflito é resolvido com lock otimista: o sistema tenta gravar na confirmação e o banco recusa se já existir um agendamento ativo na mesma vaga e horário, por meio do índice único parcial `uq_agendamento_vaga_horario` em `(vaga_id, data_hora_agendada)`, que ignora agendamentos cancelados. O índice barra o mesmo horário exato, e a sobreposição pela duração do serviço é checada no back-end.
 
-**Pagamento e histórico:** o pagamento aceita cartão de crédito, cartão de débito, PIX e dinheiro. Toda mudança de status do agendamento (agendado, aguardando, em andamento, concluído, cancelado e no-show) fica registrada em `historico_status`, com o funcionário que fez a alteração.
+**Pagamento e histórico:** o pagamento aceita cartão de crédito, cartão de débito, PIX e dinheiro. Toda mudança de status do agendamento (agendado, aguardando, em andamento, concluído e cancelado) fica registrada em `historico_status`, com o funcionário que fez a alteração.
 
 **Alerta de horário:** o atendente recebe um aviso em tela quando o horário de um agendamento está próximo, e o agendamento passa para o status `aguardando`.
 
-**Estoque:** cada movimentação em `movimentacao_estoque` guarda o funcionário responsável, e o sistema sinaliza os itens com nível baixo.
-
 **Controle de qualidade:** quando o status da lavagem muda para concluído, o sistema abre o checklist (lavagem externa sem resíduo de espuma, rodas limpas, vidros sem manchas, interior aspirado, entre outros). O funcionário pontua cada item e marca o resultado como aprovado, aprovado com ressalva ou reprovado, e o checklist preenchido vai para a tela de Qualidade. O horário da conferência é registrado automaticamente.
 
-**Dashboard:** três seções. Operacional traz agendamentos do dia, ocupação das vagas, tempo médio por tipo de serviço, horários de pico e cancelamentos. Financeiro traz faturamento por período, ticket médio e valores a receber. Administrativo traz o ranking de serviços, clientes novos e recorrentes e os itens de estoque com nível baixo.
+**Dashboard:** três seções. Operacional traz agendamentos do dia, ocupação das vagas, tempo médio por tipo de serviço, horários de pico e cancelamentos. Financeiro traz faturamento por período, ticket médio e valores a receber. Administrativo traz o ranking de serviços, clientes novos e recorrentes.
 
 **Acesso:** perfil único de administrador, com login por e-mail e senha e sessão guardada no banco. O sistema não tem acesso para o cliente final.
 
 ## Modelo de dados
 
-O banco tem onze entidades: `funcionario`, `cliente`, `veiculo`, `servico`, `produto`, `movimentacao_estoque`, `vaga_lavagem`, `agendamento`, `pagamento`, `checklist_qualidade` e `historico_status`, além da tabela `sessao`, usada só pelo login. A entidade central é `agendamento`, que liga cliente, veículo, vaga e funcionário, e a partir dela saem o pagamento, o checklist e o histórico de status. `funcionario` tem um registro especial, `Sistema (Chatbot)`, com id `-1`, usado por padrão em `agendamento.funcionario_id` e `historico_status.alterado_por`. Ele permite no futuro agendamentos criados ou alterados por um chatbot de WhatsApp sem atendente no meio, e nunca autentica.
+O banco tem nove entidades: `funcionario`, `cliente`, `veiculo`, `servico`, `vaga_lavagem`, `agendamento`, `pagamento`, `checklist_qualidade` e `historico_status`, além da tabela `sessao`, usada só pelo login. A entidade central é `agendamento`, que liga cliente, veículo, vaga e funcionário, e a partir dela saem o pagamento, o checklist e o histórico de status. `funcionario` tem um registro especial, `Sistema (Chatbot)`, com id `-1`, usado por padrão em `agendamento.funcionario_id` e `historico_status.alterado_por`. Ele permite no futuro agendamentos criados ou alterados por um chatbot de WhatsApp sem atendente no meio, e nunca autentica.
 
 Os detalhes de cada tabela estão em [`dicionario_dados.md`](dicionario_dados.md).
 
@@ -53,7 +51,7 @@ Os detalhes de cada tabela estão em [`dicionario_dados.md`](dicionario_dados.md
 Pré-requisitos: Node.js 22.12 ou mais novo e PostgreSQL.
 
 1. Crie o banco e a role de acesso rodando `00_setup_role_grants.sql`.
-2. Aplique as migrations de `db/migration` em ordem, de V1 a V4.
+2. Aplique as migrations de `db/migration` em ordem, de V1 a V7.
 3. Siga o passo a passo do [`backend/README.md`](backend/README.md) para configurar o `.env` e subir a API.
 
 Com a API no ar, `http://localhost:3000/api/health` responde `{"api":"ok","banco":"ok"}` se a conexão com o banco estiver funcionando.
@@ -69,6 +67,9 @@ Com a API no ar, `http://localhost:3000/api/health` responde `{"api":"ok","banco
 | `db/migration/V2__unique_vaga_horario.sql` | Índice único parcial que impede dois agendamentos ativos na mesma vaga e horário |
 | `db/migration/V3__checklist_itens_rf10.sql` | Colunas dos itens do checklist de qualidade e do resultado final |
 | `db/migration/V4__sessao.sql` | Tabela de sessão usada no login |
+| `db/migration/V5__agendamento_servico.sql` | Tabela de serviços do agendamento (N:N) |
+| `db/migration/V6__remover_estoque.sql` | Remove as tabelas `movimentacao_estoque` e `produto` |
+| `db/migration/V7__remover_no_show.sql` | Remove o status `no_show` e recria o índice único de vaga e horário |
 | `00_setup_role_grants.sql` | Criação da role de acesso e permissões no PostgreSQL |
 | `dicionario_dados.md` | Dicionário de dados de todas as tabelas |
 

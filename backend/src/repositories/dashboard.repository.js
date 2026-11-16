@@ -30,14 +30,6 @@ export function buscarProximoAtendimento(agora) {
   })
 }
 
-export function listarProdutosAbaixoDoMinimo() {
-  return prisma.$queryRaw`
-    SELECT id, nome, quantidade_atual, quantidade_minima, unidade_medida
-    FROM produto
-    WHERE quantidade_atual < quantidade_minima
-    ORDER BY nome, id`
-}
-
 export async function contarVagasEmUso() {
   const [{ em_uso, total }] = await prisma.$queryRaw`
     SELECT
@@ -105,8 +97,7 @@ export async function contarCancelamentos(de, ate) {
   const [contagem] = await prisma.$queryRaw`
     SELECT
       COUNT(*)::int AS total,
-      COUNT(*) FILTER (WHERE status = 'cancelado')::int AS cancelados,
-      COUNT(*) FILTER (WHERE status = 'no_show')::int AS no_shows
+      COUNT(*) FILTER (WHERE status = 'cancelado')::int AS cancelados
     FROM agendamento
     WHERE data_hora_agendada >= ${de}::date AND data_hora_agendada < ${ate}::date + 1`
   return contagem

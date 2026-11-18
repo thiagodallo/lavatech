@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 
+import RotaDeAdmin from './components/RotaDeAdmin.jsx'
 import RotaProtegida from './components/RotaProtegida.jsx'
 import { SessaoProvider } from './contexts/SessaoContext.jsx'
 import LayoutBase from './layouts/LayoutBase.jsx'
@@ -26,7 +27,9 @@ export default function App() {
               <Route path="/clientes" element={<Clientes />} />
               <Route path="/catalogo" element={<Catalogo />} />
               <Route path="/qualidade" element={<Qualidade />} />
-              <Route path="/funcionarios" element={<Funcionarios />} />
+              <Route element={<RotaDeAdmin />}>
+                <Route path="/funcionarios" element={<Funcionarios />} />
+              </Route>
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/agenda" replace />} />

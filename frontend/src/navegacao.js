@@ -6,5 +6,5 @@ export const itensDoMenu = [
   { caminho: '/clientes', rotulo: 'Clientes', Icone: Users },
   { caminho: '/catalogo', rotulo: 'Serviços', Icone: Droplets },
   { caminho: '/qualidade', rotulo: 'Qualidade', Icone: ClipboardCheck },
-  { caminho: '/funcionarios', rotulo: 'Funcionários', Icone: UserCog },
+  { caminho: '/funcionarios', rotulo: 'Funcionários', Icone: UserCog, somenteAdmin: true },
 ]

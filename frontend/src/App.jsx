@@ -5,6 +5,7 @@ import RotaProtegida from './components/RotaProtegida.jsx'
 import { SessaoProvider } from './contexts/SessaoContext.jsx'
 import LayoutBase from './layouts/LayoutBase.jsx'
 import Agenda from './pages/Agenda.jsx'
+import Cadastro from './pages/Cadastro.jsx'
 import Catalogo from './pages/Catalogo.jsx'
 import Clientes from './pages/Clientes.jsx'
 import Dashboard from './pages/Dashboard.jsx'
@@ -20,6 +21,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<Cadastro />} />
           <Route element={<RotaProtegida />}>
             <Route element={<LayoutBase />}>
               <Route path="/agenda" element={<Agenda />} />

@@ -75,6 +75,10 @@ export default function Login() {
         <button type="submit" className="login-entrar" disabled={enviando}>
           {enviando ? 'Entrando' : 'Entrar'}
         </button>
+
+        <p className="login-troca">
+          Não tem uma conta? <Link to="/cadastro">Cadastre-se!</Link>
+        </p>
       </form>
     </main>
   )

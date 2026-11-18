@@ -29,7 +29,8 @@ export async function autenticar(email, senha) {
 }
 
 export async function cadastrar(dados) {
-  return dadosPublicos(await cadastrarAtendente(dados))
+  const criado = await cadastrarAtendente(dados)
+  return { ...dadosPublicos(criado), ativo: criado.ativo }
 }
 
 export async function buscarFuncionarioLogado(id) {

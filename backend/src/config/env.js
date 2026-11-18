@@ -5,6 +5,7 @@ const formatoDoEnv = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   SESSION_SECRET: z.string().min(32),
   LIMITE_DE_CADASTROS_POR_HORA: z.coerce.number().int().positive().default(5),
+  CADASTRO_APROVACAO_AUTOMATICA: z.enum(['true', 'false']).default('false').transform((valor) => valor === 'true'),
   NODE_ENV: z.enum(['development', 'production']).default('development'),
 })
 

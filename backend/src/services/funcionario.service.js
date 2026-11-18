@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 
+import env from '../config/env.js'
 import ErroDeAplicacao from '../errors/ErroDeAplicacao.js'
 import * as funcionarios from '../repositories/funcionario.repository.js'
 import * as sessoes from '../repositories/sessao.repository.js'
@@ -33,7 +34,7 @@ export function cadastrarFuncionario(dados) {
 }
 
 export function cadastrarAtendente(dados) {
-  return criarComPapel(dados, { papel: PAPEL_DO_CADASTRO_PUBLICO, ativo: false })
+  return criarComPapel(dados, { papel: PAPEL_DO_CADASTRO_PUBLICO, ativo: env.CADASTRO_APROVACAO_AUTOMATICA })
 }
 
 export async function editarFuncionario(id, { nome, email, ativo, senha }, idDoLogado) {

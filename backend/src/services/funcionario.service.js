@@ -6,6 +6,7 @@ import * as sessoes from '../repositories/sessao.repository.js'
 
 const CUSTO_DO_HASH = 12
 const PAPEL_UNICO_DO_MVP = 'admin'
+const PAPEL_DO_CADASTRO_PUBLICO = 'atendente'
 const EMAIL_JA_CADASTRADO = 'E-mail já cadastrado'
 const FUNCIONARIO_NAO_ENCONTRADO = 'Funcionário não encontrado'
 const NAO_DESATIVAR_A_PROPRIA_CONTA = 'Você não pode desativar a própria conta'
@@ -21,10 +22,18 @@ export function listarFuncionarios() {
   return funcionarios.listar()
 }
 
-export async function cadastrarFuncionario({ nome, email, senha }) {
+async function criarComPapel({ nome, email, senha }, { papel, ativo }) {
   await exigirEmailLivre(email)
   const senhaHash = await bcrypt.hash(senha, CUSTO_DO_HASH)
-  return funcionarios.criar({ nome, email, senhaHash, papel: PAPEL_UNICO_DO_MVP })
+  return funcionarios.criar({ nome, email, senhaHash, papel, ativo })
+}
+
+export function cadastrarFuncionario(dados) {
+  return criarComPapel(dados, { papel: PAPEL_UNICO_DO_MVP, ativo: true })
+}
+
+export function cadastrarAtendente(dados) {
+  return criarComPapel(dados, { papel: PAPEL_DO_CADASTRO_PUBLICO, ativo: false })
 }
 
 export async function editarFuncionario(id, { nome, email, ativo, senha }, idDoLogado) {

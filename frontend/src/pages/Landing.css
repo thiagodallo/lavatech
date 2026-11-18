@@ -135,6 +135,43 @@ html.pagina-da-landing {
 .landing-problemas li {
   max-width: 24ch;
   color: var(--landing-suave);
+  text-wrap: balance;
+}
+
+.landing-problemas .landing-problema-final {
+  color: var(--landing-texto);
+  font-weight: 600;
+}
+
+.landing-problema-alerta {
+  color: var(--cor-alerta);
+}
+
+.landing-problema {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: var(--espaco-5);
+}
+
+.landing-problema-texto {
+  display: grid;
+  gap: var(--espaco-4);
+}
+
+.landing-problema-texto .landing-titulo {
+  max-width: 14ch;
+}
+
+@media (min-width: 1000px) {
+  .landing-problema {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--espaco-6);
+  }
+
+  .landing-problema .caos {
+    justify-self: end;
+  }
 }
 
 .landing-fechamento {

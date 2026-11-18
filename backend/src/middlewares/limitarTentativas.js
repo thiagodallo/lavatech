@@ -1,5 +1,6 @@
 import { rateLimit } from 'express-rate-limit'
 
+import env from '../config/env.js'
 import ArmazemDeLimites from '../database/armazemDeLimites.js'
 
 const QUINZE_MINUTOS = 15 * 60 * 1000
@@ -29,6 +30,6 @@ export const limitarLogin = criarLimitador({
 export const limitarCadastro = criarLimitador({
   prefixo: 'cadastro:',
   janelaEmMs: UMA_HORA,
-  maximo: 5,
+  maximo: env.LIMITE_DE_CADASTROS_POR_HORA,
   mensagem: 'Muitos cadastros deste endereço. Tente de novo mais tarde.',
 })

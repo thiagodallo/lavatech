@@ -7,7 +7,7 @@ import { useSessao } from '../contexts/SessaoContext.jsx'
 import './Login.css'
 
 export default function Cadastro() {
-  const { funcionario } = useSessao()
+  const { funcionario, entrar } = useSessao()
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
@@ -20,7 +20,11 @@ export default function Cadastro() {
     setMensagemDeErro('')
     setEnviando(true)
     try {
-      await cadastrar(nome, email, senha)
+      const criado = await cadastrar(nome, email, senha)
+      if (criado.ativo) {
+        await entrar(email, senha)
+        return
+      }
       setEnviado(true)
     } catch (erro) {
       setMensagemDeErro(erro.campos?.senha?.[0] ?? erro.message)

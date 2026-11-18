@@ -2,8 +2,8 @@ import { Router } from 'express'
 
 import exigirSessao from '../middlewares/exigirSessao.js'
 import validarCorpo from '../middlewares/validarCorpo.js'
-import { formatoDoLogin } from '../schemas/auth.schema.js'
-import { autenticar, buscarFuncionarioLogado } from '../services/auth.service.js'
+import { formatoDoCadastro, formatoDoLogin } from '../schemas/auth.schema.js'
+import { autenticar, buscarFuncionarioLogado, cadastrar } from '../services/auth.service.js'
 
 const NOME_DO_COOKIE = 'connect.sid'
 
@@ -26,6 +26,10 @@ authRoutes.post('/login', validarCorpo(formatoDoLogin), async (req, res) => {
   await renovarSessao(req)
   req.session.funcionarioId = funcionario.id
   res.json(funcionario)
+})
+
+authRoutes.post('/cadastro', validarCorpo(formatoDoCadastro), async (req, res) => {
+  res.status(201).json(await cadastrar(req.body))
 })
 
 authRoutes.post('/logout', async (req, res) => {

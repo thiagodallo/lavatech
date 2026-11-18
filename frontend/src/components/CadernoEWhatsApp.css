@@ -1,0 +1,71 @@
+.caos {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  padding-bottom: var(--espaco-4);
+}
+
+.caos-caderno {
+  width: 78%;
+  padding: var(--espaco-3);
+  border-radius: var(--raio-pequeno);
+  background: #f3eee0;
+  color: #2b2a26;
+  font-family: 'Caveat Variable', cursive;
+  font-size: clamp(20px, 1.7vw, 30px);
+  line-height: 1.7;
+  transform: rotate(-2.5deg);
+  box-shadow: 0 16px 40px oklch(0% 0 0 / 0.35);
+}
+
+.caos-caderno p {
+  margin: 0;
+}
+
+.caos-risco {
+  color: var(--cor-alerta-escura);
+}
+
+.caos-duvida {
+  color: var(--cor-alerta-escura);
+  font-weight: 700;
+}
+
+.caos-caderno .caos-fim {
+  margin-top: var(--espaco-1);
+  padding-top: var(--espaco-meio);
+  border-top: 1px solid oklch(0% 0 0 / 0.18);
+}
+
+.caos-conversa {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  gap: var(--espaco-1);
+  width: 58%;
+}
+
+.caos-balao {
+  margin: 0;
+  padding: var(--espaco-1) var(--espaco-2);
+  border-radius: var(--raio-medio) var(--raio-medio) var(--raio-medio) var(--espaco-meio);
+  background: oklch(32% 0.05 250);
+  color: oklch(94% 0.012 250);
+  font-size: clamp(13px, 1vw, 17px);
+  line-height: 1.3;
+  box-shadow: 0 8px 20px oklch(0% 0 0 / 0.35);
+}
+
+.caos-balao-resposta {
+  margin-left: auto;
+  border-radius: var(--raio-medio) var(--raio-medio) var(--espaco-meio) var(--raio-medio);
+  background: var(--cor-marca);
+  color: #fff;
+}
+
+.caos-autor {
+  display: block;
+  color: var(--landing-suave);
+  font-size: 0.82em;
+}

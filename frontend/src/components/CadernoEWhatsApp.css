@@ -2,12 +2,11 @@
   position: relative;
   width: 100%;
   max-width: 560px;
-  padding-bottom: var(--espaco-4);
 }
 
 .caos-caderno {
   width: 78%;
-  padding: var(--espaco-3);
+  padding: var(--espaco-3) var(--espaco-3) var(--espaco-5);
   border-radius: var(--raio-pequeno);
   background: #f3eee0;
   color: #2b2a26;
@@ -27,6 +26,7 @@
 }
 
 .caos-duvida {
+  white-space: nowrap;
   color: var(--cor-alerta-escura);
   font-weight: 700;
 }
@@ -38,12 +38,11 @@
 }
 
 .caos-conversa {
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  position: relative;
   display: grid;
   gap: var(--espaco-1);
   width: 58%;
+  margin: calc(var(--espaco-3) * -1) 0 0 auto;
 }
 
 .caos-balao {

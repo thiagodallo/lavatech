@@ -17,12 +17,14 @@ export default function LayoutBase() {
         </div>
 
         <nav className="menu-itens" aria-label="Menu principal">
-          {itensDoMenu.map(({ caminho, rotulo, Icone }) => (
-            <NavLink key={caminho} to={caminho} className="menu-item">
-              <Icone size={16} aria-hidden="true" />
-              {rotulo}
-            </NavLink>
-          ))}
+          {itensDoMenu
+            .filter(({ somenteAdmin }) => !somenteAdmin || funcionario?.papel === 'admin')
+            .map(({ caminho, rotulo, Icone }) => (
+              <NavLink key={caminho} to={caminho} className="menu-item">
+                <Icone size={16} aria-hidden="true" />
+                {rotulo}
+              </NavLink>
+            ))}
         </nav>
 
         <button type="button" className="menu-item menu-sair" onClick={sair}>

@@ -1,5 +1,6 @@
 import { Router } from 'express'
 
+import exigirAdmin from '../middlewares/exigirAdmin.js'
 import exigirSessao from '../middlewares/exigirSessao.js'
 import agendamentoRoutes from './agendamento.routes.js'
 import authRoutes from './auth.routes.js'
@@ -21,7 +22,7 @@ rotas.use(exigirSessao)
 rotas.use('/expediente', expedienteRoutes)
 rotas.use('/clientes', clienteRoutes)
 rotas.use('/servicos', servicoRoutes)
-rotas.use('/funcionarios', funcionarioRoutes)
+rotas.use('/funcionarios', exigirAdmin, funcionarioRoutes)
 rotas.use('/vagas', vagaRoutes)
 rotas.use('/agendamentos', agendamentoRoutes)
 rotas.use(pagamentoRoutes)

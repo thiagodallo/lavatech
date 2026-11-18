@@ -11,3 +11,7 @@ export function sair() {
 export function buscarFuncionarioLogado() {
   return requisitar('/auth/me')
 }
+
+export function cadastrar(nome, email, senha) {
+  return requisitar('/auth/cadastro', { metodo: 'POST', corpo: { nome, email, senha } })
+}

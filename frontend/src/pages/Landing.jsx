@@ -9,6 +9,7 @@ import CenaDoFluxo from '../components/CenaDoFluxo.jsx'
 import IndicadorDeSecoes from '../components/IndicadorDeSecoes.jsx'
 import LogoAnimada from '../components/LogoAnimada.jsx'
 import PainelDemonstrativo from '../components/PainelDemonstrativo.jsx'
+import QrCodeDoCadastro from '../components/QrCodeDoCadastro.jsx'
 import { etapasDoFluxo } from '../dominio/etapasDoFluxo.js'
 import usarNavegacaoPorSecoes from '../hooks/usarNavegacaoPorSecoes.js'
 import usarSecaoAtual from '../hooks/usarSecaoAtual.js'
@@ -96,6 +97,7 @@ export default function Landing() {
 
       <section id="fim" className="landing-secao landing-fechamento" data-secao>
         <img src={logoClara} alt="LavaTech" className="landing-logo-grande" />
+        <QrCodeDoCadastro />
         <Link to="/login" className="landing-entrar landing-entrar-grande">
           Entrar no sistema
         </Link>

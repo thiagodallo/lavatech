@@ -4,3 +4,5 @@ export const formatoDoLogin = z.object({
   email: z.email().toLowerCase(),
   senha: z.string().min(1),
 })
+
+export { formatoDoNovoFuncionario as formatoDoCadastro } from './funcionario.schema.js'

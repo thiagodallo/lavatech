@@ -19,9 +19,9 @@ export function listar() {
   })
 }
 
-export function criar({ nome, email, senhaHash, papel }) {
+export function criar({ nome, email, senhaHash, papel, ativo }) {
   return prisma.funcionario.create({
-    data: { nome, email, senha_hash: senhaHash, papel },
+    data: { nome, email, senha_hash: senhaHash, papel, ativo },
     select: CAMPOS_PUBLICOS,
   })
 }

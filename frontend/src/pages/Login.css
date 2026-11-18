@@ -85,6 +85,35 @@
   transition: background-color 150ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+.login-entrar-link {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.login-confirmacao {
+  margin: 0 0 var(--espaco-3);
+  color: var(--cor-texto-suave);
+  line-height: 1.4;
+}
+
+.login-troca {
+  margin: var(--espaco-3) 0 0;
+  color: var(--cor-texto-suave);
+  font-size: 14px;
+  text-align: center;
+}
+
+.login-troca a {
+  color: var(--cor-marca);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-troca a:hover {
+  text-decoration: underline;
+}
+
 .login-entrar:hover:not(:disabled) {
   background: var(--cor-marca-escura);
 }

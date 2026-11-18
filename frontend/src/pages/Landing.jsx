@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import logoClara from '../assets/logo-lavatech-clara.png'
 import AgendaDeDemonstracao from '../components/AgendaDeDemonstracao.jsx'
 import ArquiteturaDoSistema from '../components/ArquiteturaDoSistema.jsx'
+import CadernoEWhatsApp from '../components/CadernoEWhatsApp.jsx'
 import CenaDoFluxo from '../components/CenaDoFluxo.jsx'
 import IndicadorDeSecoes from '../components/IndicadorDeSecoes.jsx'
 import LogoAnimada from '../components/LogoAnimada.jsx'
@@ -66,12 +67,19 @@ export default function Landing() {
       </section>
 
       <section id="problema" className="landing-secao landing-secao-alternada" data-secao>
-        <h2 className="landing-titulo">Quando a agenda é um caderno e um grupo de WhatsApp:</h2>
-        <ul className="landing-problemas">
-          <li>dois carros acabam na mesma vaga.</li>
-          <li>ninguém prova o que foi feito no carro.</li>
-          <li>o fim do mês vira adivinhação.</li>
-        </ul>
+        <div className="landing-problema">
+          <div className="landing-problema-texto">
+            <h2 className="landing-titulo">Quando a agenda é um caderno e um grupo de WhatsApp,</h2>
+            <ul className="landing-problemas">
+              <li>dois carros acabam na mesma vaga,</li>
+              <li>ninguém prova o&nbsp;que foi feito no carro</li>
+              <li className="landing-problema-final">
+                e o fim do mês vira <span className="landing-problema-alerta">adivinhação.</span>
+              </li>
+            </ul>
+          </div>
+          <CadernoEWhatsApp />
+        </div>
       </section>
 
       <CenaDoFluxo />

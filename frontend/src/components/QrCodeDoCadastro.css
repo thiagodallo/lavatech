@@ -1,0 +1,33 @@
+.qr-cadastro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-2);
+  color: inherit;
+  text-decoration: none;
+}
+
+.qr-cadastro-codigo {
+  display: block;
+  width: clamp(160px, 28vh, 272px);
+  height: auto;
+  border-radius: var(--raio-medio);
+}
+
+.qr-cadastro-rotulo {
+  color: var(--landing-suave);
+  font-size: clamp(14px, 1vw, 18px);
+  font-weight: 600;
+}
+
+.qr-cadastro:focus-visible {
+  outline: 2px solid var(--cor-foco-no-escuro);
+  outline-offset: var(--espaco-1);
+  border-radius: var(--raio-medio);
+}
+
+@media (max-width: 700px) {
+  .qr-cadastro {
+    display: none;
+  }
+}

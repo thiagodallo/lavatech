@@ -180,7 +180,7 @@ export default function Agenda() {
       <header className="agenda-cabecalho">
         <h1 className="titulo-tela">Agenda</h1>
         <div className="agenda-acoes">
-          <SeletorDeDia data={data} hoje={hoje} aoMudar={mudarDia} />
+          <SeletorDeDia data={data} aoMudar={mudarDia} />
           <button type="button" className="botao-primario" onClick={() => setCriandoAgendamento(true)}>
             <Plus size={16} aria-hidden="true" />
             Novo agendamento

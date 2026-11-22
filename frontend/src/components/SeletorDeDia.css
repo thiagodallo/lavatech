@@ -11,10 +11,6 @@
   padding: 0;
 }
 
-.seletor-de-dia [aria-pressed='true'] {
-  background: var(--cor-superficie);
-}
-
 .seletor-data {
   min-width: 160px;
 }

@@ -51,13 +51,13 @@ function CorpoDaLista({ rota, doDia, filtrados, idSelecionado, aoAbrir }) {
 }
 
 function CabecalhoDaQualidade({ filtros }) {
-  const { hoje, data, resultado, atualizar } = filtros
+  const { data, resultado, atualizar } = filtros
 
   return (
     <header className="qualidade-cabecalho">
       <h1 className="titulo-tela">Qualidade</h1>
       <div className="qualidade-acoes">
-        <SeletorDeDia data={data} hoje={hoje} aoMudar={(novaData) => atualizar(novaData, resultado)} />
+        <SeletorDeDia data={data} aoMudar={(novaData) => atualizar(novaData, resultado)} />
         <FiltroDeResultado valor={resultado} aoMudar={(novoResultado) => atualizar(data, novoResultado)} />
       </div>
     </header>

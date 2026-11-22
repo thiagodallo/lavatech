@@ -58,7 +58,7 @@ export default function CampoDeData({ id, valor, aoEscolher, rotulo, classe = ''
         aria-describedby={descritoPor}
         onClick={alternar}
       >
-        <span>{nomeDoDia(valor, hoje)}</span>
+        <span>{nomeDoDia(valor)}</span>
         <ChevronDown size={16} aria-hidden="true" />
       </button>
       <div

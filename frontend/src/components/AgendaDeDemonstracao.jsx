@@ -31,7 +31,7 @@ function BlocoDeAgendamento({ agendamento, minuto }) {
     >
       <span className="agenda-demo-placa">{agendamento.placa}</span>
       <span className="agenda-demo-servico">
-        {agendamento.veiculo}, {agendamento.servico}
+        {agendamento.veiculo} | {agendamento.servico}
       </span>
       <PilulaDeStatus status={status} />
     </article>

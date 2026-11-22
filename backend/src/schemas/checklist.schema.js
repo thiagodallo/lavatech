@@ -30,6 +30,9 @@ function conferirResultado(checklist, contexto) {
   if (checklist.resultado === RESULTADO_APROVADO && !todosConformes) {
     adicionarProblema(contexto, 'resultado', 'Resultado aprovado exige todos os itens conformes')
   }
+  if (checklist.resultado === RESULTADO_REPROVADO && todosConformes) {
+    adicionarProblema(contexto, 'resultado', 'Resultado reprovado exige ao menos um item não conforme')
+  }
   if (checklist.resultado !== RESULTADO_APROVADO && !checklist.descricao_problema) {
     adicionarProblema(
       contexto,

@@ -1,7 +1,7 @@
 import { resultadosDoChecklist } from '../dominio/checklistDeQualidade.js'
 import './SeletorDeResultado.css'
 
-export default function SeletorDeResultado({ valor, erro, aoEscolher }) {
+export default function SeletorDeResultado({ valor, erro, bloqueados = [], aoEscolher }) {
   return (
     <fieldset className="seletor-de-resultado" aria-describedby={erro ? 'checklist-resultado-erro' : undefined}>
       <legend className="campo-rotulo">Resultado</legend>
@@ -13,6 +13,7 @@ export default function SeletorDeResultado({ valor, erro, aoEscolher }) {
               name="resultado"
               value={resultado.valor}
               checked={valor === resultado.valor}
+              disabled={bloqueados.includes(resultado.valor)}
               onChange={() => aoEscolher(resultado.valor)}
             />
             {resultado.rotulo}

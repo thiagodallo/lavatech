@@ -97,6 +97,9 @@ export function validarChecklist({ itens, resultado, descricao }) {
   if (resultado === 'aprovado' && todosRespondidos(itens) && !todosConformes) {
     erros.resultado = 'Resultado aprovado exige todos os itens conformes'
   }
+  if (resultado === 'reprovado' && todosRespondidos(itens) && todosConformes) {
+    erros.resultado = 'Resultado reprovado exige ao menos um item não conforme'
+  }
   if (resultado && resultado !== 'aprovado' && !descricao.trim()) {
     erros.descricao_problema = 'Descreva o problema quando o resultado não for aprovado'
   }

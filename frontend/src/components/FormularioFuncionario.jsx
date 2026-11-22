@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { cadastrarFuncionario, editarFuncionario } from '../api/funcionarios.js'
+import CampoDeSenha from './CampoDeSenha.jsx'
 import CampoDeTexto from './CampoDeTexto.jsx'
 
 export default function FormularioFuncionario({ funcionario, contaPropria, aoSalvar }) {
@@ -69,10 +70,9 @@ export default function FormularioFuncionario({ funcionario, contaPropria, aoSal
         erro={errosDosCampos.email?.[0]}
         onChange={alterarCampo(setEmail)}
       />
-      <CampoDeTexto
+      <CampoDeSenha
         id="funcionario-senha"
         rotulo={funcionario ? 'Nova senha' : 'Senha'}
-        type="password"
         required={!funcionario}
         autoComplete="new-password"
         value={senha}

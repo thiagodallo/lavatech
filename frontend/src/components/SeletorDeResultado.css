@@ -39,6 +39,11 @@
   color: var(--status-aguardando-texto);
 }
 
+.seletor-de-resultado-opcao:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .seletor-de-resultado-opcao:has(input:focus-visible) {
   outline: 2px solid var(--cor-marca);
   outline-offset: 2px;

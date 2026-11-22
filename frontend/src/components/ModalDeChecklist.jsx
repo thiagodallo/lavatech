@@ -28,6 +28,7 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
   const origem = useRef(document.activeElement)
 
   const resultado = resultadoEscolhido ?? resultadoSugerido(itens)
+  const todosConformes = itensDoChecklist.every((item) => itens[item.campo])
   const reprovado = resultado === 'reprovado'
   const comProblema = Boolean(resultado) && resultado !== 'aprovado'
   const erros = validarChecklist({ itens, resultado, descricao })
@@ -123,6 +124,7 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
           <SeletorDeResultado
             valor={resultado}
             erro={erros.resultado}
+            bloqueados={todosConformes ? ['reprovado'] : []}
             aoEscolher={setResultadoEscolhido}
           />
 

@@ -6,9 +6,8 @@ import * as pagamentos from '../repositories/pagamento.repository.js'
 const AGENDAMENTO_NAO_ENCONTRADO = 'Agendamento não encontrado'
 const PAGAMENTO_JA_REGISTRADO = 'Pagamento já registrado para este agendamento'
 const PAGAMENTO_NAO_ENCONTRADO = 'Pagamento não encontrado'
-const AGENDAMENTO_SEM_PAGAMENTO =
-  'Não é possível registrar pagamento de agendamento cancelado ou não compareceu'
-const STATUS_SEM_PAGAMENTO = ['cancelado']
+const AGENDAMENTO_SEM_PAGAMENTO = 'Só é possível registrar pagamento de atendimento em andamento ou concluído'
+const STATUS_QUE_ACEITAM_PAGAMENTO = ['em_andamento', 'concluido']
 const PAGAMENTO_NAO_ESTORNAVEL = 'Somente pagamento pago pode ser estornado'
 const STATUS_PAGO = 'pago'
 const REGISTRO_DUPLICADO = 'P2002'
@@ -74,7 +73,7 @@ export async function registrarPagamento(agendamentoId, { valor, forma_pagamento
   if (await pagamentos.buscarPorAgendamento(agendamentoId)) {
     throw new ErroDeAplicacao(409, PAGAMENTO_JA_REGISTRADO)
   }
-  if (STATUS_SEM_PAGAMENTO.includes(agendamento.status)) {
+  if (!STATUS_QUE_ACEITAM_PAGAMENTO.includes(agendamento.status)) {
     throw new ErroDeAplicacao(409, AGENDAMENTO_SEM_PAGAMENTO)
   }
   const criado = await gravarPagamento({

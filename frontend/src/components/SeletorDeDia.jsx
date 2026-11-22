@@ -4,17 +4,9 @@ import { somarDias } from '../formatacao/horario.js'
 import CampoDeData from './CampoDeData.jsx'
 import './SeletorDeDia.css'
 
-export default function SeletorDeDia({ data, hoje, aoMudar }) {
+export default function SeletorDeDia({ data, aoMudar }) {
   return (
     <div className="seletor-de-dia" role="group" aria-label="Dia da agenda">
-      <button
-        type="button"
-        className="botao-secundario"
-        aria-pressed={data === hoje}
-        onClick={() => aoMudar(hoje)}
-      >
-        Hoje
-      </button>
       <button
         type="button"
         className="botao-secundario seletor-seta"

@@ -43,10 +43,12 @@ export default function ModalDeChecklist({ agendamento, aoConcluir, aoFechar }) 
 
   function escolherItem(campo, conforme) {
     setItens((atuais) => ({ ...atuais, [campo]: conforme }))
+    setResultadoEscolhido(null)
   }
 
   function marcarTudoComoConforme() {
     setItens(Object.fromEntries(itensDoChecklist.map((item) => [item.campo, true])))
+    setResultadoEscolhido(null)
   }
 
   function impedirFechamentoEnviando(evento) {

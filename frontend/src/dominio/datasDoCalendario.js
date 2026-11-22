@@ -65,14 +65,10 @@ export function dividirEmSemanas(grade) {
   return semanas
 }
 
-export function nomeDoDia(data, hoje) {
+export function nomeDoDia(data) {
   const { mes, dia } = separarData(data)
-  const dataPorExtenso = `${dia} de ${nomesDosMeses[mes - 1]}`
-  if (data === hoje) return `Hoje | ${dataPorExtenso}`
-  if (data === somarDias(hoje, -1)) return `Ontem | ${dataPorExtenso}`
-  if (data === somarDias(hoje, 1)) return `Amanhã | ${dataPorExtenso}`
   const semana = nomesDosDias[diaDaSemana(data)]
-  return `${semana[0].toUpperCase()}${semana.slice(1)} | ${dataPorExtenso}`
+  return `${semana[0].toUpperCase()}${semana.slice(1)}, ${dia} de ${nomesDosMeses[mes - 1]}`
 }
 
 export function dataPorExtensoCompleta(data) {

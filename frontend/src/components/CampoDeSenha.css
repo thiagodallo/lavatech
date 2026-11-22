@@ -1,0 +1,29 @@
+.campo-senha {
+  position: relative;
+  display: flex;
+}
+
+.campo-senha .campo-entrada {
+  width: 100%;
+  padding-right: var(--espaco-6);
+}
+
+.campo-senha-botao {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: var(--altura-controle);
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--raio-pequeno);
+  background: transparent;
+  color: var(--cor-texto-suave);
+  transition: color var(--tempo-rapido) var(--curva-suave);
+}
+
+.campo-senha-botao:hover {
+  color: var(--cor-texto);
+}

@@ -27,3 +27,15 @@
 .campo-senha-botao:hover {
   color: var(--cor-texto);
 }
+
+.campo-senha-login {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--espaco-2);
+}
+
+.campo-senha-login .login-campo {
+  width: 100%;
+  margin-bottom: 0;
+  padding-right: var(--espaco-6);
+}

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, Navigate } from 'react-router'
 
 import logoClara from '../assets/logo-lavatech-clara.png'
+import CampoDeSenha from '../components/CampoDeSenha.jsx'
 import { useSessao } from '../contexts/SessaoContext.jsx'
 import './Login.css'
 
@@ -53,13 +54,10 @@ export default function Login() {
           onChange={(evento) => setEmail(evento.target.value)}
         />
 
-        <label className="login-rotulo" htmlFor="login-senha">
-          Senha
-        </label>
-        <input
+        <CampoDeSenha
           id="login-senha"
-          className="login-campo"
-          type="password"
+          rotulo="Senha"
+          variante="login"
           autoComplete="current-password"
           required
           value={senha}

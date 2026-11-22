@@ -3,6 +3,7 @@ import { Link, Navigate } from 'react-router'
 
 import { cadastrar } from '../api/auth.js'
 import logoClara from '../assets/logo-lavatech-clara.png'
+import CampoDeSenha from '../components/CampoDeSenha.jsx'
 import { useSessao } from '../contexts/SessaoContext.jsx'
 import './Login.css'
 
@@ -86,13 +87,10 @@ export default function Cadastro() {
             onChange={(evento) => setEmail(evento.target.value)}
           />
 
-          <label className="login-rotulo" htmlFor="cadastro-senha">
-            Senha
-          </label>
-          <input
+          <CampoDeSenha
             id="cadastro-senha"
-            className="login-campo"
-            type="password"
+            rotulo="Senha"
+            variante="login"
             autoComplete="new-password"
             required
             minLength={8}

@@ -3,19 +3,25 @@ import { useState } from 'react'
 
 import './CampoDeSenha.css'
 
-export default function CampoDeSenha({ id, rotulo, erro, ...propriedades }) {
+const classesPorVariante = {
+  formulario: { grupo: 'campo', rotulo: 'campo-rotulo', entrada: 'campo-entrada' },
+  login: { grupo: 'campo-senha-login', rotulo: 'login-rotulo', entrada: 'login-campo' },
+}
+
+export default function CampoDeSenha({ id, rotulo, erro, variante = 'formulario', ...propriedades }) {
   const [visivel, setVisivel] = useState(false)
   const Icone = visivel ? EyeOff : Eye
+  const classes = classesPorVariante[variante]
 
   return (
-    <div className="campo">
-      <label className="campo-rotulo" htmlFor={id}>
+    <div className={classes.grupo}>
+      <label className={classes.rotulo} htmlFor={id}>
         {rotulo}
       </label>
       <div className="campo-senha">
         <input
           id={id}
-          className="campo-entrada"
+          className={classes.entrada}
           type={visivel ? 'text' : 'password'}
           aria-invalid={erro ? true : undefined}
           aria-describedby={erro ? `${id}-erro` : undefined}

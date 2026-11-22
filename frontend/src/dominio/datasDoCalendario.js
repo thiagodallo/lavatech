@@ -13,7 +13,15 @@ export const nomesDosMeses = [
   'dezembro',
 ]
 
-const nomesDosDias = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado']
+const nomesDosDias = [
+  'domingo',
+  'segunda-feira',
+  'terça-feira',
+  'quarta-feira',
+  'quinta-feira',
+  'sexta-feira',
+  'sábado',
+]
 
 function doisDigitos(numero) {
   return String(numero).padStart(2, '0')
@@ -60,11 +68,11 @@ export function dividirEmSemanas(grade) {
 export function nomeDoDia(data, hoje) {
   const { mes, dia } = separarData(data)
   const dataPorExtenso = `${dia} de ${nomesDosMeses[mes - 1]}`
-  if (data === hoje) return `Hoje, ${dataPorExtenso}`
-  if (data === somarDias(hoje, -1)) return `Ontem, ${dataPorExtenso}`
-  if (data === somarDias(hoje, 1)) return `Amanhã, ${dataPorExtenso}`
+  if (data === hoje) return `Hoje | ${dataPorExtenso}`
+  if (data === somarDias(hoje, -1)) return `Ontem | ${dataPorExtenso}`
+  if (data === somarDias(hoje, 1)) return `Amanhã | ${dataPorExtenso}`
   const semana = nomesDosDias[diaDaSemana(data)]
-  return `${semana[0].toUpperCase()}${semana.slice(1)}, ${dataPorExtenso}`
+  return `${semana[0].toUpperCase()}${semana.slice(1)} | ${dataPorExtenso}`
 }
 
 export function dataPorExtensoCompleta(data) {

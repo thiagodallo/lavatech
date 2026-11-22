@@ -1,17 +1,13 @@
 import { Navigate, Outlet } from 'react-router'
 
 import { useSessao } from '../contexts/SessaoContext.jsx'
-import './RotaProtegida.css'
+import TelaDeCarregamento from './TelaDeCarregamento.jsx'
 
 export default function RotaProtegida() {
   const { funcionario, carregando } = useSessao()
 
   if (carregando) {
-    return (
-      <p className="texto-apoio carregando-sessao" role="status">
-        Carregando
-      </p>
-    )
+    return <TelaDeCarregamento />
   }
 
   if (!funcionario) {

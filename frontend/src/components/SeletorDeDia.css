@@ -14,3 +14,17 @@
 .seletor-data {
   min-width: 160px;
 }
+
+@media (max-width: 380px) {
+  .seletor-data {
+    min-width: 0;
+  }
+
+  .seletor-data .campo-de-data-nome-longo {
+    display: none;
+  }
+
+  .seletor-data .campo-de-data-nome-curto {
+    display: inline;
+  }
+}

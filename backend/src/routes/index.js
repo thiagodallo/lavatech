@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import exigirAdmin from '../middlewares/exigirAdmin.js'
+import exigirAdmin, { exigirAdminParaRemover } from '../middlewares/exigirAdmin.js'
 import exigirSessao from '../middlewares/exigirSessao.js'
 import agendamentoRoutes from './agendamento.routes.js'
 import authRoutes from './auth.routes.js'
@@ -19,6 +19,9 @@ const rotas = Router()
 rotas.use('/health', healthRoutes)
 rotas.use('/auth', authRoutes)
 rotas.use(exigirSessao)
+rotas.use(exigirAdminParaRemover)
+rotas.patch('/pagamentos/:id/estorno', exigirAdmin)
+rotas.get('/dashboard/periodo', exigirAdmin)
 rotas.use('/expediente', expedienteRoutes)
 rotas.use('/clientes', clienteRoutes)
 rotas.use('/servicos', servicoRoutes)

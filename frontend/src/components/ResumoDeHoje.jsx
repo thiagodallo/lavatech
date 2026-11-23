@@ -1,5 +1,5 @@
 import { rotulosDeStatus } from '../dominio/statusDoAgendamento.js'
-import { horaDoTexto } from '../formatacao/horario.js'
+import { horaDoTexto, rotuloDoDiaDoAtendimento } from '../formatacao/horario.js'
 import LinhaDeServicos from './LinhaDeServicos.jsx'
 import PilulaDeStatus from './PilulaDeStatus.jsx'
 import './ResumoDeHoje.css'
@@ -7,9 +7,12 @@ import './ResumoDeHoje.css'
 function ProximoAtendimento({ atendimento }) {
   if (!atendimento) return <p className="texto-apoio">Nenhum atendimento pela frente</p>
 
+  const dia = rotuloDoDiaDoAtendimento(atendimento.data_hora_agendada)
+  const hora = horaDoTexto(atendimento.data_hora_agendada)
+
   return (
     <p className="proximo-atendimento">
-      <span className="proximo-hora">{horaDoTexto(atendimento.data_hora_agendada)}</span>
+      <span className="proximo-hora">{dia ? `${dia}, ${hora}` : hora}</span>
       <span>{atendimento.cliente.nome}</span>
       <LinhaDeServicos
         servicos={atendimento.servicos}

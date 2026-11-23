@@ -24,6 +24,14 @@ export function dataEHoraDoTexto(texto) {
   return `${dia}/${mes}/${ano} ${horaDoTexto(texto)}`
 }
 
+export function rotuloDoDiaDoAtendimento(texto) {
+  const dia = texto.slice(0, 10)
+  const hoje = dataDeHoje()
+  if (dia === hoje) return null
+  if (dia === somarDias(hoje, 1)) return 'Amanhã'
+  return formatarDiaEMes(dia)
+}
+
 export function dataDoTexto(texto) {
   return texto.slice(0, 10)
 }

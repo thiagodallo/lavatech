@@ -91,8 +91,19 @@ function BarraDoGrafico({ item, maiorValor, ativa, aoEntrar }) {
   )
 }
 
+function indiceDoToque(evento, quantidade) {
+  const caixa = evento.currentTarget.getBoundingClientRect()
+  const posicao = (evento.clientX - caixa.left) / caixa.width
+  return Math.min(Math.max(Math.floor(posicao * quantidade), 0), quantidade - 1)
+}
+
 function BarrasDoGrafico({ itens, indiceAtivo, aoEscolher, nomeAcessivel }) {
   const maiorValor = itens[indiceDoMaiorValor(itens)].valor
+
+  function escolherPeloToque(evento) {
+    if (evento.pointerType === 'mouse') return
+    aoEscolher(indiceDoToque(evento, itens.length))
+  }
 
   return (
     <div
@@ -103,6 +114,8 @@ function BarrasDoGrafico({ itens, indiceAtivo, aoEscolher, nomeAcessivel }) {
       style={{ gap: `${folgaEntreBarras(itens.length)}px` }}
       onKeyDown={(evento) => navegarPorTeclado(evento, indiceAtivo, itens.length - 1, aoEscolher)}
       onBlur={() => aoEscolher(null)}
+      onPointerDown={escolherPeloToque}
+      onPointerMove={escolherPeloToque}
       onMouseLeave={() => aoEscolher(null)}
     >
       {itens.map((item, indice) => (

@@ -1,5 +1,6 @@
 export function textoDeDuracao(minutos) {
   const total = Math.round(minutos)
+  if (minutos > 0 && total === 0) return 'menos de 1 min'
   if (total < 60) return `${total} min`
   const horas = Math.floor(total / 60)
   const resto = total % 60

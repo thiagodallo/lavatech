@@ -96,3 +96,24 @@
 .cartao-corpo[aria-current='true'] {
   background: color-mix(in srgb, var(--cor-marca) 8%, var(--cor-cartao));
 }
+
+.cartao-corpo {
+  transition:
+    background-color 150ms var(--curva-suave),
+    transform var(--tempo-rapido) var(--curva-suave);
+}
+
+.cartao-corpo:active {
+  background: color-mix(in srgb, var(--cor-marca) 14%, var(--cor-cartao));
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cartao-corpo {
+    transition: none;
+  }
+
+  .cartao-corpo:active {
+    transform: none;
+  }
+}

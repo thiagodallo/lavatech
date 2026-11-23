@@ -47,6 +47,16 @@
   line-height: 1.1;
 }
 
+.login-aviso {
+  margin: 0 0 var(--espaco-2);
+  padding: var(--espaco-1) var(--espaco-2);
+  border-radius: var(--raio-pequeno);
+  background: var(--status-em-andamento-fundo);
+  color: var(--status-em-andamento-texto);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .login-rotulo {
   margin-bottom: var(--espaco-1);
   color: var(--cor-texto-suave);

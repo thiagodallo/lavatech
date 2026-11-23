@@ -29,7 +29,7 @@ body:has(dialog[open]) {
   overflow: hidden;
 }
 
-@media (pointer: coarse) {
+@media (pointer: coarse), (max-width: 760px) {
   input:not([type='checkbox'], [type='radio']),
   select,
   textarea {

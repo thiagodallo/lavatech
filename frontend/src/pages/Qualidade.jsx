@@ -76,7 +76,7 @@ export default function Qualidade() {
   return (
     <section>
       <CabecalhoDaQualidade filtros={filtros} />
-      <ResumoDeResultados contagens={contarPorResultado(doDia)} />
+      <ResumoDeResultados contagens={rota.carregando && doDia.length === 0 ? null : contarPorResultado(doDia)} />
       <div className="qualidade-lista">
         <CorpoDaLista rota={rota} doDia={doDia} filtrados={filtrados} idSelecionado={selecionado?.agendamento.id} aoAbrir={setIdSelecionado} />
       </div>

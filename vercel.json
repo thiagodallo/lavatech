@@ -2,7 +2,7 @@
   "services": {
     "frontend": {
       "root": "frontend",
-      "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+      "rewrites": [{ "source": "/((?!assets/).*)", "destination": "/index.html" }]
     },
     "backend": {
       "root": "backend",

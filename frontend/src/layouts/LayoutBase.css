@@ -160,6 +160,18 @@
     padding: var(--espaco-2);
   }
 
+  .cabecalho-empresa {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cabecalho-usuario {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
   .conteudo {
     padding: var(--espaco-2);
     padding-bottom: calc(56px + env(safe-area-inset-bottom) + var(--espaco-3));

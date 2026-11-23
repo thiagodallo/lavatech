@@ -151,20 +151,17 @@
     width: 128px;
   }
 
-  .menu-itens {
-    flex: 1 1 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
-    order: 3;
+  .menu-itens,
+  .menu-sair {
+    display: none;
   }
 
-  .menu-item {
-    padding: var(--espaco-1) var(--espaco-1);
-    white-space: nowrap;
+  .cabecalho {
+    padding: var(--espaco-2);
   }
 
-  .cabecalho,
   .conteudo {
     padding: var(--espaco-2);
+    padding-bottom: calc(56px + env(safe-area-inset-bottom) + var(--espaco-3));
   }
 }

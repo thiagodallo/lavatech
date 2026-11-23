@@ -9,6 +9,17 @@
   color: var(--cor-texto);
 }
 
+@media (max-width: 760px) {
+  .agenda-demo {
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+  }
+
+  .agenda-demo::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .agenda-demo-topo {
   display: flex;
   align-items: center;
@@ -88,6 +99,7 @@
   overflow: hidden;
   padding: var(--espaco-1);
   border-radius: calc(var(--raio-pequeno) - var(--espaco-meio));
+  container-type: inline-size;
   line-height: 1.25;
   transition: background-color 200ms cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -110,6 +122,12 @@
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@container (max-width: 96px) {
+  .agenda-demo-bloco .pilula {
+    display: none;
+  }
 }
 
 .agenda-demo-placa {

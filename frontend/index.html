@@ -16,6 +16,22 @@
     />
     <meta property="og:image" content="/og.png" />
     <title>LavaTech | Gestão para estéticas automotivas</title>
+    <script>
+      window.addEventListener(
+        'error',
+        function (evento) {
+          var alvo = evento.target
+          if (!alvo || (alvo.tagName !== 'LINK' && alvo.tagName !== 'SCRIPT')) return
+          var endereco = alvo.href || alvo.src || ''
+          if (endereco.indexOf('/assets/') === -1) return
+          var ultimaRecarga = Number(sessionStorage.getItem('lavatech-recarregou-em') || 0)
+          if (Date.now() - ultimaRecarga < 60000) return
+          sessionStorage.setItem('lavatech-recarregou-em', String(Date.now()))
+          location.reload()
+        },
+        true,
+      )
+    </script>
   </head>
   <body>
     <div id="root"></div>

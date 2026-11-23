@@ -34,6 +34,7 @@ export default function App() {
               </Route>
             </Route>
           </Route>
+          <Route path="/servicos" element={<Navigate to="/catalogo" replace />} />
           <Route path="*" element={<Navigate to="/agenda" replace />} />
         </Routes>
       </SessaoProvider>

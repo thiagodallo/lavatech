@@ -10,7 +10,7 @@ import BotoesDeStatus from './BotoesDeStatus.jsx'
 import FormularioDePagamento from './FormularioDePagamento.jsx'
 import './BlocoDePagamento.css'
 
-const acaoDeEstorno = { status: 'estornado', rotulo: 'Estornar', confirmacao: 'Confirmar estorno' }
+const acaoDeEstorno = { status: 'estornado', rotulo: 'Estornar', confirmacao: 'Confirmar estorno', perigosa: true }
 const rotulosDaSituacao = { pago: 'Pago', estornado: 'Estornado' }
 
 export default function BlocoDePagamento({ agendamento }) {

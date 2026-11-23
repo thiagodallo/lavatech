@@ -30,10 +30,23 @@
   height: var(--altura-controle);
 }
 
-.botao-perigo {
+.botao-perigo,
+.botao-perigo-contorno {
   border: 1px solid var(--status-cancelado-texto);
-  background: var(--status-cancelado-fundo);
+}
+
+.botao-perigo {
+  background: var(--status-cancelado-texto);
+  color: var(--cor-sobre-marca);
+}
+
+.botao-perigo-contorno {
+  background: var(--cor-cartao);
   color: var(--status-cancelado-texto);
+}
+
+.botao-perigo-contorno:hover:not(:disabled) {
+  background: var(--status-cancelado-fundo);
 }
 
 .botao-perigo:disabled {

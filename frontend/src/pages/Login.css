@@ -145,6 +145,14 @@
   text-decoration: none;
 }
 
+@media (pointer: coarse) {
+  .login-troca a {
+    display: inline-block;
+    padding: 13px var(--espaco-meio);
+    margin: -13px 0;
+  }
+}
+
 .login-troca a:hover {
   text-decoration: underline;
 }

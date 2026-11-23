@@ -1,3 +1,4 @@
+import { motivoDoBloqueioDeIniciar } from '../dominio/motivoDoBloqueio.js'
 import { acoesDoStatus } from '../dominio/statusDoAgendamento.js'
 import { textoDeDuracao } from '../formatacao/duracao.js'
 import { dataDeHoje, dataDoTexto, horaDoTexto } from '../formatacao/horario.js'
@@ -49,7 +50,9 @@ function DadosDoCartao({ agendamento, mostrarVaga }) {
   )
 }
 
-function RodapeDoCartao({ acoes, ocupado, bloqueadas, mensagemDeErro, aoMudarStatus }) {
+function RodapeDoCartao({ acoes, ocupado, bloqueadas, motivoDoBloqueio, idDoMotivo, mensagemDeErro, aoMudarStatus }) {
+  const temAcaoBloqueada = acoes.some((acao) => bloqueadas.includes(acao.status))
+
   return (
     <div className="cartao-rodape">
       {mensagemDeErro && (
@@ -57,7 +60,20 @@ function RodapeDoCartao({ acoes, ocupado, bloqueadas, mensagemDeErro, aoMudarSta
           {mensagemDeErro}
         </p>
       )}
-      {acoes.length > 0 && <BotoesDeStatus acoes={acoes} desabilitado={ocupado} bloqueadas={bloqueadas} aoEscolher={aoMudarStatus} />}
+      {acoes.length > 0 && (
+        <BotoesDeStatus
+          acoes={acoes}
+          desabilitado={ocupado}
+          bloqueadas={bloqueadas}
+          idDoMotivo={idDoMotivo}
+          aoEscolher={aoMudarStatus}
+        />
+      )}
+      {temAcaoBloqueada && motivoDoBloqueio && (
+        <p className="cartao-motivo" id={idDoMotivo}>
+          {motivoDoBloqueio}
+        </p>
+      )}
     </div>
   )
 }
@@ -68,13 +84,17 @@ export default function CartaoDeAgendamento({
   mostrarVaga = true,
   selecionado,
   ocupado,
-  vagaEmUso = false,
+  ocupadaAte = null,
   mensagemDeErro,
   aoAbrir,
   aoMudarStatus,
 }) {
   const acoes = acoesDoStatus(agendamento.status)
-  const diaFuturo = dataDoTexto(agendamento.data_hora_agendada) > dataDeHoje()
+  const motivoDoBloqueio = motivoDoBloqueioDeIniciar({
+    diaDoAgendamento: dataDoTexto(agendamento.data_hora_agendada),
+    hoje: dataDeHoje(),
+    ocupadaAte,
+  })
 
   return (
     <li className="cartao-agendamento" id={`agendamento-${agendamento.id}`}>
@@ -87,7 +107,9 @@ export default function CartaoDeAgendamento({
         <RodapeDoCartao
           acoes={acoes}
           ocupado={ocupado}
-          bloqueadas={vagaEmUso || diaFuturo ? ['em_andamento'] : []}
+          bloqueadas={motivoDoBloqueio ? ['em_andamento'] : []}
+          motivoDoBloqueio={motivoDoBloqueio}
+          idDoMotivo={`motivo-${agendamento.id}`}
           mensagemDeErro={mensagemDeErro}
           aoMudarStatus={aoMudarStatus}
         />

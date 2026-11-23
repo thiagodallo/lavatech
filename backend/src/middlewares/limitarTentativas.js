@@ -22,7 +22,7 @@ function criarLimitador({ prefixo, janelaEmMs, maximo, mensagem, ignorarSucessos
 export const limitarLogin = criarLimitador({
   prefixo: 'login:',
   janelaEmMs: QUINZE_MINUTOS,
-  maximo: 10,
+  maximo: env.LIMITE_DE_FALHAS_DE_LOGIN_POR_15_MIN,
   mensagem: 'Muitas tentativas de login. Tente de novo em alguns minutos.',
   ignorarSucessos: true,
 })

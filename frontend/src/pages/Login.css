@@ -47,6 +47,16 @@
   line-height: 1.1;
 }
 
+.login-aviso {
+  margin: 0 0 var(--espaco-2);
+  padding: var(--espaco-1) var(--espaco-2);
+  border-radius: var(--raio-pequeno);
+  background: var(--status-em-andamento-fundo);
+  color: var(--status-em-andamento-texto);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .login-rotulo {
   margin-bottom: var(--espaco-1);
   color: var(--cor-texto-suave);
@@ -138,6 +148,45 @@
   .login-chamada {
     max-width: 20ch;
     font-size: 32px;
+  }
+}
+
+@media (max-height: 500px) and (min-width: 600px) {
+  .login {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+    align-content: center;
+    gap: var(--espaco-4);
+    min-height: 100dvh;
+    padding: var(--espaco-1) var(--espaco-3);
+  }
+
+  .login-apresentacao {
+    gap: var(--espaco-2);
+  }
+
+  .login-logo {
+    width: 128px;
+  }
+
+  .login-chamada {
+    max-width: 18ch;
+    font-size: 24px;
+  }
+
+  .login-cartao {
+    padding: var(--espaco-3);
+  }
+
+  .login-titulo {
+    margin-bottom: var(--espaco-2);
+  }
+
+  .login-campo {
+    margin-bottom: var(--espaco-1);
+  }
+
+  .login-troca {
+    margin-top: var(--espaco-2);
   }
 }
 

@@ -83,3 +83,24 @@
     width: 100%;
   }
 }
+
+.cartao-checklist-corpo {
+  transition:
+    background-color 150ms var(--curva-suave),
+    transform var(--tempo-rapido) var(--curva-suave);
+}
+
+.cartao-checklist-corpo:active {
+  background: color-mix(in srgb, var(--cor-marca) 14%, var(--cor-cartao));
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cartao-checklist-corpo {
+    transition: none;
+  }
+
+  .cartao-checklist-corpo:active {
+    transform: none;
+  }
+}

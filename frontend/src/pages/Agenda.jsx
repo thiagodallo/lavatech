@@ -147,6 +147,10 @@ export default function Agenda() {
       return (
         <div className="agenda-estado">
           <p className="texto-apoio">Nenhum agendamento neste dia</p>
+          <button type="button" className="botao-primario" onClick={() => setCriandoAgendamento(true)}>
+            <Plus size={16} aria-hidden="true" />
+            Novo agendamento
+          </button>
         </div>
       )
     }

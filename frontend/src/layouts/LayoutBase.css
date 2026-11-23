@@ -95,6 +95,40 @@
   padding: var(--espaco-4);
 }
 
+@media (min-width: 761px) {
+  .menu-lateral {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 761px) and (max-height: 500px) {
+  .menu-lateral {
+    width: 184px;
+    padding: var(--espaco-2) var(--espaco-1);
+  }
+
+  .marca {
+    margin-bottom: var(--espaco-2);
+  }
+
+  .marca-logo {
+    width: 120px;
+  }
+
+  .menu-itens {
+    gap: 0;
+  }
+
+  .menu-item {
+    min-height: 34px;
+  }
+}
+
 @media (max-width: 760px) {
   .layout {
     flex-direction: column;
@@ -119,18 +153,12 @@
 
   .menu-itens {
     flex: 1 1 100%;
-    flex-flow: row nowrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
     order: 3;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .menu-itens::-webkit-scrollbar {
-    display: none;
   }
 
   .menu-item {
-    flex-shrink: 0;
     padding: var(--espaco-1) var(--espaco-1);
     white-space: nowrap;
   }

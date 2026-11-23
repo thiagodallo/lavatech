@@ -41,6 +41,7 @@ export default function BotoesDeStatus({ acoes, desabilitado, bloqueadas = [], a
 
   function classeDoBotao(acao, posicao) {
     if (statusEmConfirmacao === acao.status) return 'botao-pequeno botao-perigo'
+    if (acao.perigosa) return 'botao-pequeno botao-perigo-contorno'
     if (posicao !== 0) return 'botao-secundario botao-pequeno'
     if (acao.status === 'concluido') return 'botao-primario botao-pequeno botao-concluir'
     return 'botao-primario botao-pequeno'

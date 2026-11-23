@@ -59,6 +59,8 @@ export default function Cadastro() {
         <form className="login-cartao" onSubmit={enviarFormulario}>
           <h2 className="login-titulo">Cadastrar</h2>
 
+          <p className="login-aviso">Use dados fictícios. Os dados desta demonstração serão apagados após o evento.</p>
+
           <label className="login-rotulo" htmlFor="cadastro-nome">
             Nome
           </label>
@@ -81,7 +83,10 @@ export default function Cadastro() {
             id="cadastro-email"
             className="login-campo"
             type="email"
-            autoComplete="username"
+            inputMode="email"
+            autoComplete="email"
+            autoCapitalize="none"
+            spellCheck={false}
             required
             value={email}
             onChange={(evento) => setEmail(evento.target.value)}

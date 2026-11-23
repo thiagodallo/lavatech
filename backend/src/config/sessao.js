@@ -1,13 +1,14 @@
 import connectPgSimple from 'connect-pg-simple'
 import session from 'express-session'
 
+import conexao from '../database/conexao.js'
 import env from './env.js'
 
 const OITO_HORAS = 8 * 60 * 60 * 1000
 const ArmazemPostgres = connectPgSimple(session)
 
 const sessao = session({
-  store: new ArmazemPostgres({ conString: env.DATABASE_URL, tableName: 'sessao' }),
+  store: new ArmazemPostgres({ pool: conexao, tableName: 'sessao' }),
   secret: env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,

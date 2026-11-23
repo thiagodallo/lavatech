@@ -64,15 +64,40 @@
   font-weight: 600;
 }
 
+.campo-login {
+  display: flex;
+  flex-direction: column;
+}
+
 .login-campo {
   height: var(--altura-controle);
-  margin-bottom: var(--espaco-2);
+  margin-bottom: 0;
   padding: 0 var(--espaco-2);
   border: 1px solid var(--cor-linha);
   border-radius: var(--raio-pequeno);
   background: var(--cor-superficie);
   color: var(--cor-texto);
   font: inherit;
+}
+
+.login-campo[aria-invalid='true'] {
+  border-color: var(--status-cancelado-texto);
+}
+
+.login-campo-erro {
+  min-height: 24px;
+  margin: var(--espaco-meio) 0 0;
+  color: var(--status-cancelado-texto);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.login-erro-geral {
+  min-height: 20px;
+  margin: 0;
+  color: var(--status-cancelado-texto);
+  font-size: 13px;
+  line-height: 20px;
 }
 
 .login-erro {
@@ -181,8 +206,9 @@
     margin-bottom: var(--espaco-2);
   }
 
-  .login-campo {
-    margin-bottom: var(--espaco-1);
+  .login-campo-erro {
+    min-height: 20px;
+    margin-top: 2px;
   }
 
   .login-troca {

@@ -24,7 +24,7 @@ export default function CampoDeSenha({ id, rotulo, erro, variante = 'formulario'
           className={classes.entrada}
           type={visivel ? 'text' : 'password'}
           aria-invalid={erro ? true : undefined}
-          aria-describedby={erro ? `${id}-erro` : undefined}
+          aria-describedby={erro || variante === 'login' ? `${id}-erro` : undefined}
           {...propriedades}
         />
         <button
@@ -37,10 +37,16 @@ export default function CampoDeSenha({ id, rotulo, erro, variante = 'formulario'
           <Icone size={20} aria-hidden="true" />
         </button>
       </div>
-      {erro && (
-        <p className="campo-erro" id={`${id}-erro`}>
+      {variante === 'login' ? (
+        <p className="login-campo-erro" id={`${id}-erro`} aria-live="polite">
           {erro}
         </p>
+      ) : (
+        erro && (
+          <p className="campo-erro" id={`${id}-erro`}>
+            {erro}
+          </p>
+        )
       )}
     </div>
   )

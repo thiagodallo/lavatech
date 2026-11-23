@@ -108,7 +108,9 @@ export default function SeletorDeCliente({ cliente, erro, aoSelecionar }) {
       <CampoDeTexto
         id="agendamento-cliente"
         rotulo="Cliente"
-        type="search"
+        type="text"
+        inputMode="search"
+        enterKeyHint="search"
         placeholder="Nome ou telefone"
         autoComplete="off"
         value={busca}

@@ -3,6 +3,8 @@ import { NavLink, Outlet, useLocation } from 'react-router'
 
 import logoClara from '../assets/logo-lavatech-clara.png'
 import { useSessao } from '../contexts/SessaoContext.jsx'
+import BarraDeAbas from '../components/BarraDeAbas.jsx'
+import { ehAdmin } from '../dominio/permissoes.js'
 import { itensDoMenu } from '../navegacao.js'
 import './LayoutBase.css'
 
@@ -18,7 +20,7 @@ export default function LayoutBase() {
 
         <nav className="menu-itens" aria-label="Menu principal">
           {itensDoMenu
-            .filter(({ somenteAdmin }) => !somenteAdmin || funcionario?.papel === 'admin')
+            .filter(({ somenteAdmin }) => !somenteAdmin || ehAdmin(funcionario))
             .map(({ caminho, rotulo, Icone }) => (
               <NavLink key={caminho} to={caminho} className="menu-item">
                 <Icone size={16} aria-hidden="true" />
@@ -44,6 +46,7 @@ export default function LayoutBase() {
           </div>
         </main>
       </div>
+      <BarraDeAbas />
     </div>
   )
 }

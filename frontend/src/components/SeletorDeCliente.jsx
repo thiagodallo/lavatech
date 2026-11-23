@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 import { listarClientes } from '../api/clientes.js'
 import CampoDeTexto from './CampoDeTexto.jsx'
+import DialogoDeNovoCliente from './DialogoDeNovoCliente.jsx'
 import './SeletorDeCliente.css'
 
 const ESPERA_DA_BUSCA_EM_MS = 300
@@ -12,7 +14,9 @@ export default function SeletorDeCliente({ cliente, erro, aoSelecionar }) {
   const [carregando, setCarregando] = useState(false)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
   const [tentativa, setTentativa] = useState(0)
+  const [cadastrando, setCadastrando] = useState(false)
   const termo = busca.trim()
+  const termoEhTelefone = /^[\d\s()+-]+$/.test(termo)
 
   useEffect(() => {
     if (!termo) {
@@ -71,7 +75,14 @@ export default function SeletorDeCliente({ cliente, erro, aoSelecionar }) {
     }
 
     if (resultados.length === 0) {
-      return <p className="cliente-resultado-estado texto-apoio">Nenhum cliente encontrado</p>
+      return (
+        <div className="cliente-resultado-estado">
+          <p className="texto-apoio">Nenhum cliente encontrado</p>
+          <button type="button" className="botao-secundario" onClick={() => setCadastrando(true)}>
+            Cadastrar cliente
+          </button>
+        </div>
+      )
     }
 
     return (
@@ -118,6 +129,19 @@ export default function SeletorDeCliente({ cliente, erro, aoSelecionar }) {
         onChange={(evento) => setBusca(evento.target.value)}
       />
       {resultadosDaBusca()}
+      {cadastrando &&
+        createPortal(
+          <DialogoDeNovoCliente
+            nomeInicial={termoEhTelefone ? '' : termo}
+            telefoneInicial={termoEhTelefone ? termo : ''}
+            aoCadastrar={(cadastrado) => {
+              setCadastrando(false)
+              escolherCliente(cadastrado)
+            }}
+            aoFechar={() => setCadastrando(false)}
+          />,
+          document.body,
+        )}
     </div>
   )
 }

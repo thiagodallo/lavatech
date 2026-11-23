@@ -5,9 +5,9 @@ import { camposIniciaisDoVeiculo, dadosDoVeiculo, veiculoPreenchido } from '../d
 import CampoDeTexto from './CampoDeTexto.jsx'
 import CamposDoVeiculo from './CamposDoVeiculo.jsx'
 
-export default function FormularioCliente({ cliente, aoSalvar, aoCriar }) {
-  const [nome, setNome] = useState(cliente?.nome ?? '')
-  const [telefone, setTelefone] = useState(cliente?.telefone ?? '')
+export default function FormularioCliente({ cliente, nomeInicial = '', telefoneInicial = '', exigirVeiculo = false, aoSalvar, aoCriar }) {
+  const [nome, setNome] = useState(cliente?.nome ?? nomeInicial)
+  const [telefone, setTelefone] = useState(cliente?.telefone ?? telefoneInicial)
   const [veiculo, setVeiculo] = useState(() => camposIniciaisDoVeiculo(null))
   const [clienteCriado, setClienteCriado] = useState(null)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
@@ -34,6 +34,7 @@ export default function FormularioCliente({ cliente, aoSalvar, aoCriar }) {
 
   async function enviarFormulario(evento) {
     evento.preventDefault()
+    evento.stopPropagation()
     setMensagemDeErro('')
     setErrosDosCampos({})
     setSalvo(false)
@@ -87,7 +88,7 @@ export default function FormularioCliente({ cliente, aoSalvar, aoCriar }) {
             campos={veiculo}
             aoMudar={(novos) => setVeiculo((atuais) => ({ ...atuais, ...novos }))}
             erros={errosDosCampos}
-            placaObrigatoria={false}
+            placaObrigatoria={exigirVeiculo}
           />
         </>
       )}

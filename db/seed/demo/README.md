@@ -1,25 +1,23 @@
-# Banco da demo
+# Snapshot e restore da demo
 
-Dados só fictícios para a apresentação. Nenhum nome, telefone ou placa pertence a uma pessoa real.
+A demo roda no banco atual. Antes da palestra tiramos um snapshot dos dados fictícios que já estão lá e, depois, restauramos esse estado. O restore desfaz tudo o que o público fizer: contas novas, clientes, veículos, agendamentos, pagamentos, estornos e edições em registros que já existiam.
 
-## Reset
+Rodar a partir de `backend`, com `DIRECT_URL` (ou `DATABASE_URL`) no `.env`.
 
-O script `backend/scripts/resetarBancoDaDemo.js` apaga tudo o que o público criou e recria o estado inicial em uma única transação:
-
-- esvazia agendamentos, pagamentos, checklists, histórico, clientes, veículos, serviços, vagas, `sessao` e `limite_requisicao`;
-- apaga todos os funcionários com papel `atendente`, mantém o `sistema` (id -1) e os admins;
-- cria ou atualiza o admin da demo com a senha vinda do ambiente;
-- roda `seed_demo.sql`, com a agenda montada para o dia em que o reset roda.
-
-Rodar a partir de `backend`, depois das migrations:
+## Antes da palestra
 
 ```bash
-CONFIRMAR_RESET_DA_DEMO=sim \
-DEMO_ADMIN_EMAIL=admin@exemplo.local \
-DEMO_ADMIN_SENHA='senha forte com 12 ou mais caracteres' \
-node --env-file=.env scripts/resetarBancoDaDemo.js
+node --env-file=.env scripts/snapshotDaDemo.js snapshot
 ```
 
-Usa `DIRECT_URL` quando existir e cai para `DATABASE_URL`. Se a senha estiver em arquivo `.env`, coloque entre aspas: sem aspas, tudo depois de `#` vira comentário.
+Grava `backend/snapshots-da-demo/snapshot.json`, que fica fora do git porque contém os hashes de senha dos funcionários. Para outro caminho, use `SNAPSHOT_DA_DEMO`.
 
-A senha do admin nunca vai para o repositório nem para o log.
+## Depois da palestra
+
+```bash
+CONFIRMAR_RESTORE_DA_DEMO=sim node --env-file=.env scripts/snapshotDaDemo.js restaurar
+```
+
+Em uma transação: esvazia as tabelas da aplicação, `sessao` e `limite_requisicao`, recoloca as linhas do snapshot com os mesmos ids e ajusta as sequences. Se algo falhar, nada muda. Todos os usuários logados são desconectados.
+
+O admin e o funcionário `sistema` voltam como estavam no snapshot, com a mesma senha.

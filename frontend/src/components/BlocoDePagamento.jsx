@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 
 import { buscarPagamentoDoAgendamento, estornarPagamento } from '../api/pagamentos.js'
+import { useSessao } from '../contexts/SessaoContext.jsx'
+import { ehAdmin } from '../dominio/permissoes.js'
 import { aceitaPagamento } from '../dominio/statusDoAgendamento.js'
 import { rotuloDaForma } from '../dominio/formasDePagamento.js'
 import { dataEHoraDoTexto } from '../formatacao/horario.js'
@@ -14,6 +16,7 @@ const acaoDeEstorno = { status: 'estornado', rotulo: 'Estornar', confirmacao: 'C
 const rotulosDaSituacao = { pago: 'Pago', estornado: 'Estornado' }
 
 export default function BlocoDePagamento({ agendamento }) {
+  const { funcionario } = useSessao()
   const [pagamento, setPagamento] = useState(null)
   const [carregando, setCarregando] = useState(true)
   const [mensagemDeErro, setMensagemDeErro] = useState('')
@@ -126,7 +129,7 @@ export default function BlocoDePagamento({ agendamento }) {
             <dd>{dataEHoraDoTexto(pagamento.pago_em)}</dd>
           </div>
         </dl>
-        {pagamento.status === 'pago' && (
+        {pagamento.status === 'pago' && ehAdmin(funcionario) && (
           <BotoesDeStatus acoes={[acaoDeEstorno]} desabilitado={estornando} aoEscolher={estornar} />
         )}
       </div>

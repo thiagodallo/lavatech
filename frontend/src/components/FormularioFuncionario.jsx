@@ -64,8 +64,11 @@ export default function FormularioFuncionario({ funcionario, contaPropria, aoSal
         id="funcionario-email"
         rotulo="E-mail"
         type="email"
+        inputMode="email"
         required
         autoComplete="off"
+        autoCapitalize="none"
+        spellCheck={false}
         value={email}
         erro={errosDosCampos.email?.[0]}
         onChange={alterarCampo(setEmail)}

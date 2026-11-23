@@ -90,6 +90,7 @@ export default function FormularioServico({ servico, aoSalvar }) {
           id="servico-duracao"
           rotulo="Duração (min)"
           type="number"
+          inputMode="numeric"
           min="1"
           required
           autoComplete="off"

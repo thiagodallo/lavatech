@@ -71,6 +71,7 @@ export default function FormularioCliente({ cliente, aoSalvar, aoCriar }) {
         id="cliente-telefone"
         rotulo="Telefone"
         type="tel"
+        inputMode="tel"
         required
         autoComplete="off"
         value={telefone}

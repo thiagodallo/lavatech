@@ -48,7 +48,10 @@ export default function Login() {
           id="login-email"
           className="login-campo"
           type="email"
+          inputMode="email"
           autoComplete="username"
+          autoCapitalize="none"
+          spellCheck={false}
           required
           value={email}
           onChange={(evento) => setEmail(evento.target.value)}

@@ -25,6 +25,14 @@ button {
   outline-offset: 2px;
 }
 
+@media (pointer: coarse) {
+  input:not([type='checkbox'], [type='radio']),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
 .titulo-tela {
   margin: 0 0 var(--espaco-meio);
   font-family: var(--fonte-texto);

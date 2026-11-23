@@ -137,6 +137,9 @@ export default function Clientes() {
             <Search size={14} aria-hidden="true" />
             <input
               type="search"
+              inputMode="search"
+              enterKeyHint="search"
+              autoComplete="off"
               placeholder="Buscar cliente"
               aria-label="Buscar cliente"
               value={busca}

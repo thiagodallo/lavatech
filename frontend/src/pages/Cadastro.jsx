@@ -81,7 +81,10 @@ export default function Cadastro() {
             id="cadastro-email"
             className="login-campo"
             type="email"
-            autoComplete="username"
+            inputMode="email"
+            autoComplete="email"
+            autoCapitalize="none"
+            spellCheck={false}
             required
             value={email}
             onChange={(evento) => setEmail(evento.target.value)}

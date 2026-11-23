@@ -2,6 +2,8 @@ import { Pencil, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
 import { removerVeiculo } from '../api/clientes.js'
+import { useSessao } from '../contexts/SessaoContext.jsx'
+import { ehAdmin } from '../dominio/permissoes.js'
 import FormularioDeVeiculo from './FormularioDeVeiculo.jsx'
 import './BotoesDeStatus.css'
 import './VeiculosDoCliente.css'
@@ -11,7 +13,7 @@ function descreverVeiculo({ marca, modelo, cor }) {
   return [nomeDoCarro, cor].filter(Boolean).join(' | ')
 }
 
-function AcoesDoVeiculo({ veiculo, confirmando, ocupado, aoEditar, aoPedirRemocao, aoConfirmar, aoCancelar }) {
+function AcoesDoVeiculo({ veiculo, confirmando, ocupado, podeRemover, aoEditar, aoPedirRemocao, aoConfirmar, aoCancelar }) {
   if (confirmando) {
     return (
       <span className="veiculo-acoes">
@@ -29,14 +31,17 @@ function AcoesDoVeiculo({ veiculo, confirmando, ocupado, aoEditar, aoPedirRemoca
       <button type="button" className="veiculo-acao" aria-label={`Editar ${veiculo.placa}`} onClick={aoEditar}>
         <Pencil size={16} aria-hidden="true" />
       </button>
-      <button type="button" className="veiculo-acao" aria-label={`Remover ${veiculo.placa}`} onClick={aoPedirRemocao}>
-        <Trash2 size={16} aria-hidden="true" />
-      </button>
+      {podeRemover && (
+        <button type="button" className="veiculo-acao" aria-label={`Remover ${veiculo.placa}`} onClick={aoPedirRemocao}>
+          <Trash2 size={16} aria-hidden="true" />
+        </button>
+      )}
     </span>
   )
 }
 
 export default function VeiculosDoCliente({ clienteId, veiculos, aoCadastrar, aoEditar, aoRemover }) {
+  const { funcionario } = useSessao()
   const [editandoId, setEditandoId] = useState(null)
   const [confirmandoId, setConfirmandoId] = useState(null)
   const [removendo, setRemovendo] = useState(false)
@@ -93,6 +98,7 @@ export default function VeiculosDoCliente({ clienteId, veiculos, aoCadastrar, ao
                 veiculo={veiculo}
                 confirmando={confirmandoId === veiculo.id}
                 ocupado={removendo}
+                podeRemover={ehAdmin(funcionario)}
                 aoEditar={() => comecarEdicao(veiculo)}
                 aoPedirRemocao={() => pedirRemocao(veiculo)}
                 aoConfirmar={() => confirmarRemocao(veiculo)}

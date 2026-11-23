@@ -71,6 +71,12 @@ export function nomeDoDia(data) {
   return `${semana[0].toUpperCase()}${semana.slice(1)}, ${dia} de ${nomesDosMeses[mes - 1]}`
 }
 
+export function nomeCurtoDoDia(data) {
+  const { mes, dia } = separarData(data)
+  const semana = nomesDosDias[diaDaSemana(data)].slice(0, 3)
+  return `${semana[0].toUpperCase()}${semana.slice(1)}, ${dia} de ${nomesDosMeses[mes - 1].slice(0, 3)}`
+}
+
 export function dataPorExtensoCompleta(data) {
   const { ano, mes, dia } = separarData(data)
   return `${nomesDosDias[diaDaSemana(data)]}, ${dia} de ${nomesDosMeses[mes - 1]} de ${ano}`

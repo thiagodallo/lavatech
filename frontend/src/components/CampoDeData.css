@@ -15,6 +15,25 @@
   transition: background-color var(--tempo-rapido) var(--curva-suave);
 }
 
+.campo-de-data-nome-curto {
+  display: none;
+}
+
+.campo-de-data-nome-longo,
+.campo-de-data-nome-curto {
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  dialog .campo-de-data-nome-longo {
+    display: none;
+  }
+
+  dialog .campo-de-data-nome-curto {
+    display: inline;
+  }
+}
+
 .campo-de-data[aria-expanded='true'] {
   border-color: var(--cor-marca);
 }

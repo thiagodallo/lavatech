@@ -1,7 +1,7 @@
 import { ChevronDown } from 'lucide-react'
 import { useId, useRef, useState } from 'react'
 
-import { nomeDoDia } from '../dominio/datasDoCalendario.js'
+import { nomeCurtoDoDia, nomeDoDia } from '../dominio/datasDoCalendario.js'
 import { dataDeHoje } from '../formatacao/horario.js'
 import Calendario from './Calendario.jsx'
 import './CampoDeData.css'
@@ -58,7 +58,8 @@ export default function CampoDeData({ id, valor, aoEscolher, rotulo, classe = ''
         aria-describedby={descritoPor}
         onClick={alternar}
       >
-        <span>{nomeDoDia(valor)}</span>
+        <span className="campo-de-data-nome-longo">{nomeDoDia(valor)}</span>
+        <span className="campo-de-data-nome-curto">{nomeCurtoDoDia(valor)}</span>
         <ChevronDown size={16} aria-hidden="true" />
       </button>
       <div

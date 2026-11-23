@@ -2,25 +2,44 @@ import { useState } from 'react'
 import { Link, Navigate } from 'react-router'
 
 import logoClara from '../assets/logo-lavatech-clara.png'
+import CampoDeLogin from '../components/CampoDeLogin.jsx'
 import CampoDeSenha from '../components/CampoDeSenha.jsx'
 import { useSessao } from '../contexts/SessaoContext.jsx'
+import { validarLogin } from '../dominio/validacaoDeAcesso.js'
 import './Login.css'
 
 export default function Login() {
   const { funcionario, entrar } = useSessao()
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
-  const [mensagemDeErro, setMensagemDeErro] = useState('')
+  const [erros, setErros] = useState({})
+  const [mensagemGeral, setMensagemGeral] = useState('')
   const [enviando, setEnviando] = useState(false)
+
+  function alterarCampo(campo, definirValor) {
+    return (evento) => {
+      definirValor(evento.target.value)
+      setErros((atuais) => ({ ...atuais, [campo]: undefined }))
+    }
+  }
 
   async function enviarFormulario(evento) {
     evento.preventDefault()
-    setMensagemDeErro('')
+    setMensagemGeral('')
+    const encontrados = validarLogin({ email, senha })
+    setErros(encontrados)
+    const primeiroComErro = Object.keys(encontrados)[0]
+    if (primeiroComErro) {
+      document.getElementById(`login-${primeiroComErro}`).focus()
+      return
+    }
+
     setEnviando(true)
     try {
       await entrar(email, senha)
     } catch (erro) {
-      setMensagemDeErro(erro.message)
+      if (erro.status === 401) setErros({ senha: erro.message })
+      else setMensagemGeral(erro.message)
       setEnviando(false)
     }
   }
@@ -38,23 +57,20 @@ export default function Login() {
         <h1 className="login-chamada">Cada vaga, cada carro, cada atendimento num lugar só.</h1>
       </section>
 
-      <form className="login-cartao" onSubmit={enviarFormulario}>
+      <form className="login-cartao" onSubmit={enviarFormulario} noValidate>
         <h2 className="login-titulo">Entrar</h2>
 
-        <label className="login-rotulo" htmlFor="login-email">
-          E-mail
-        </label>
-        <input
+        <CampoDeLogin
           id="login-email"
-          className="login-campo"
+          rotulo="E-mail"
           type="email"
           inputMode="email"
           autoComplete="username"
           autoCapitalize="none"
           spellCheck={false}
-          required
+          erro={erros.email}
           value={email}
-          onChange={(evento) => setEmail(evento.target.value)}
+          onChange={alterarCampo('email', setEmail)}
         />
 
         <CampoDeSenha
@@ -62,16 +78,14 @@ export default function Login() {
           rotulo="Senha"
           variante="login"
           autoComplete="current-password"
-          required
+          erro={erros.senha}
           value={senha}
-          onChange={(evento) => setSenha(evento.target.value)}
+          onChange={alterarCampo('senha', setSenha)}
         />
 
-        {mensagemDeErro && (
-          <p className="login-erro" role="alert">
-            {mensagemDeErro}
-          </p>
-        )}
+        <p className="login-erro-geral" role="alert">
+          {mensagemGeral}
+        </p>
 
         <button type="submit" className="login-entrar" disabled={enviando}>
           {enviando ? 'Entrando' : 'Entrar'}

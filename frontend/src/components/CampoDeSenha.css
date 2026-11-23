@@ -31,7 +31,6 @@
 .campo-senha-login {
   display: flex;
   flex-direction: column;
-  margin-bottom: var(--espaco-2);
 }
 
 .campo-senha-login .login-campo {

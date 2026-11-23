@@ -3,22 +3,44 @@ import { Link, Navigate } from 'react-router'
 
 import { cadastrar } from '../api/auth.js'
 import logoClara from '../assets/logo-lavatech-clara.png'
+import CampoDeLogin from '../components/CampoDeLogin.jsx'
 import CampoDeSenha from '../components/CampoDeSenha.jsx'
 import { useSessao } from '../contexts/SessaoContext.jsx'
+import { validarCadastro } from '../dominio/validacaoDeAcesso.js'
 import './Login.css'
+
+function errosDoServidor(erro) {
+  return Object.fromEntries(Object.entries(erro.campos ?? {}).map(([campo, mensagens]) => [campo, mensagens[0]]))
+}
 
 export default function Cadastro() {
   const { funcionario, entrar } = useSessao()
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
-  const [mensagemDeErro, setMensagemDeErro] = useState('')
+  const [erros, setErros] = useState({})
+  const [mensagemGeral, setMensagemGeral] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [enviado, setEnviado] = useState(false)
 
+  function alterarCampo(campo, definirValor) {
+    return (evento) => {
+      definirValor(evento.target.value)
+      setErros((atuais) => ({ ...atuais, [campo]: undefined }))
+    }
+  }
+
   async function enviarFormulario(evento) {
     evento.preventDefault()
-    setMensagemDeErro('')
+    setMensagemGeral('')
+    const encontrados = validarCadastro({ nome, email, senha })
+    setErros(encontrados)
+    const primeiroComErro = Object.keys(encontrados)[0]
+    if (primeiroComErro) {
+      document.getElementById(`cadastro-${primeiroComErro}`).focus()
+      return
+    }
+
     setEnviando(true)
     try {
       const criado = await cadastrar(nome, email, senha)
@@ -28,7 +50,9 @@ export default function Cadastro() {
       }
       setEnviado(true)
     } catch (erro) {
-      setMensagemDeErro(erro.campos?.senha?.[0] ?? erro.message)
+      const doServidor = errosDoServidor(erro)
+      setErros(doServidor)
+      setMensagemGeral(Object.keys(doServidor).length > 0 ? '' : erro.message)
     } finally {
       setEnviando(false)
     }
@@ -56,40 +80,33 @@ export default function Cadastro() {
           </Link>
         </section>
       ) : (
-        <form className="login-cartao" onSubmit={enviarFormulario}>
+        <form className="login-cartao" onSubmit={enviarFormulario} noValidate>
           <h2 className="login-titulo">Cadastrar</h2>
 
           <p className="login-aviso">Use dados fictícios. Os dados desta demonstração serão apagados após o evento.</p>
 
-          <label className="login-rotulo" htmlFor="cadastro-nome">
-            Nome
-          </label>
-          <input
+          <CampoDeLogin
             id="cadastro-nome"
-            className="login-campo"
+            rotulo="Nome"
             type="text"
             autoComplete="name"
-            required
-            minLength={2}
             maxLength={150}
+            erro={erros.nome}
             value={nome}
-            onChange={(evento) => setNome(evento.target.value)}
+            onChange={alterarCampo('nome', setNome)}
           />
 
-          <label className="login-rotulo" htmlFor="cadastro-email">
-            E-mail
-          </label>
-          <input
+          <CampoDeLogin
             id="cadastro-email"
-            className="login-campo"
+            rotulo="E-mail"
             type="email"
             inputMode="email"
             autoComplete="email"
             autoCapitalize="none"
             spellCheck={false}
-            required
+            erro={erros.email}
             value={email}
-            onChange={(evento) => setEmail(evento.target.value)}
+            onChange={alterarCampo('email', setEmail)}
           />
 
           <CampoDeSenha
@@ -97,17 +114,14 @@ export default function Cadastro() {
             rotulo="Senha"
             variante="login"
             autoComplete="new-password"
-            required
-            minLength={8}
+            erro={erros.senha}
             value={senha}
-            onChange={(evento) => setSenha(evento.target.value)}
+            onChange={alterarCampo('senha', setSenha)}
           />
 
-          {mensagemDeErro && (
-            <p className="login-erro" role="alert">
-              {mensagemDeErro}
-            </p>
-          )}
+          <p className="login-erro-geral" role="alert">
+            {mensagemGeral}
+          </p>
 
           <button type="submit" className="login-entrar" disabled={enviando}>
             {enviando ? 'Enviando' : 'Cadastrar'}

@@ -1,5 +1,3 @@
-import { useEffect, useRef } from 'react'
-
 import BlocoDePagamento from './BlocoDePagamento.jsx'
 import BlocoDeQualidade from './BlocoDeQualidade.jsx'
 import DadosDoAgendamento from './DadosDoAgendamento.jsx'
@@ -9,14 +7,8 @@ import './DetalhesDoAgendamento.css'
 const statusEditaveis = ['agendado', 'aguardando']
 
 export default function DetalhesDoAgendamento({ agendamento, aoEditar }) {
-  const raiz = useRef(null)
-
-  useEffect(() => {
-    raiz.current.scrollIntoView({ block: 'nearest' })
-  }, [agendamento.id])
-
   return (
-    <div className="detalhes" ref={raiz}>
+    <div className="detalhes">
       {statusEditaveis.includes(agendamento.status) && (
         <button type="button" className="botao-secundario botao-pequeno detalhes-editar" onClick={aoEditar}>
           Editar

@@ -1,11 +1,11 @@
 import { nomesDosServicos } from '../dominio/servicosDoAgendamento.js'
 import DetalhesDoChecklist from './DetalhesDoChecklist.jsx'
-import PainelLateral from './PainelLateral.jsx'
+import Dialogo from './Dialogo.jsx'
 import './DetalhesDoAgendamento.css'
 
-export default function PainelDoChecklist({ agendamento, aoFechar }) {
+export default function DialogoDoChecklist({ agendamento, aoFechar }) {
   return (
-    <PainelLateral titulo={agendamento.cliente.nome} aoFechar={aoFechar}>
+    <Dialogo titulo={agendamento.cliente.nome} aoFechar={aoFechar}>
       <div className="detalhes">
         <dl className="detalhes-dados">
           <div className="detalhes-dado">
@@ -15,6 +15,6 @@ export default function PainelDoChecklist({ agendamento, aoFechar }) {
         </dl>
         <DetalhesDoChecklist agendamentoId={agendamento.id} />
       </div>
-    </PainelLateral>
+    </Dialogo>
   )
 }

@@ -11,7 +11,7 @@ import DialogoDeAgendamento from '../components/DialogoDeAgendamento.jsx'
 import EsqueletoDeAgenda from '../components/EsqueletoDeAgenda.jsx'
 import FaixaDeVaga from '../components/FaixaDeVaga.jsx'
 import ModalDeChecklist from '../components/ModalDeChecklist.jsx'
-import PainelLateral from '../components/PainelLateral.jsx'
+import Dialogo from '../components/Dialogo.jsx'
 import SeletorDeDia from '../components/SeletorDeDia.jsx'
 import { agruparPorVaga, horaDeLiberacaoDaVaga } from '../dominio/agendaPorVaga.js'
 import { dataDeHoje, dataDoTexto, ehDataValida } from '../formatacao/horario.js'
@@ -118,6 +118,11 @@ export default function Agenda() {
     setVersaoDosAlertas((anterior) => anterior + 1)
   }
 
+  function editarAgendamento(agendamento) {
+    setIdSelecionado(null)
+    setAgendamentoEmEdicao(agendamento)
+  }
+
   function mudarDia(novaData) {
     definirParametros(novaData === hoje ? {} : { data: novaData })
   }
@@ -190,15 +195,13 @@ export default function Agenda() {
 
       <AlertaDeProximoAtendimento versao={versaoDosAlertas} />
 
-      <div className={selecionado ? 'area-com-painel painel-aberto' : 'area-com-painel'}>
-        <div className="agenda-lista">{corpoDaLista()}</div>
+      <div className="agenda-lista">{corpoDaLista()}</div>
 
-        {selecionado && (
-          <PainelLateral titulo={selecionado.cliente.nome} aoFechar={() => setIdSelecionado(null)}>
-            <DetalhesDoAgendamento agendamento={selecionado} aoEditar={() => setAgendamentoEmEdicao(selecionado)} />
-          </PainelLateral>
-        )}
-      </div>
+      {selecionado && (
+        <Dialogo titulo={selecionado.cliente.nome} aoFechar={() => setIdSelecionado(null)}>
+          <DetalhesDoAgendamento agendamento={selecionado} aoEditar={() => editarAgendamento(selecionado)} />
+        </Dialogo>
+      )}
 
       {criandoAgendamento && (
         <DialogoDeAgendamento aoSalvar={aoSalvarAgendamento} aoFechar={() => setCriandoAgendamento(false)} />

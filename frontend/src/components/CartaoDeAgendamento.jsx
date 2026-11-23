@@ -77,7 +77,7 @@ export default function CartaoDeAgendamento({
   const diaFuturo = dataDoTexto(agendamento.data_hora_agendada) > dataDeHoje()
 
   return (
-    <li className="cartao-agendamento">
+    <li className="cartao-agendamento" id={`agendamento-${agendamento.id}`}>
       <button type="button" className="cartao-corpo" aria-current={selecionado ? 'true' : undefined} onClick={aoAbrir}>
         <HorarioDoCartao agendamento={agendamento} agora={agora} />
         <PilulaDeStatus status={agendamento.status} />

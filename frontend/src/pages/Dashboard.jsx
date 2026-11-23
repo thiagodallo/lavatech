@@ -3,10 +3,13 @@ import { useState } from 'react'
 import SecaoFinanceira from '../components/SecaoFinanceira.jsx'
 import SecaoOperacional from '../components/SecaoOperacional.jsx'
 import SeletorDePeriodo from '../components/SeletorDePeriodo.jsx'
+import { useSessao } from '../contexts/SessaoContext.jsx'
+import { ehAdmin } from '../dominio/permissoes.js'
 import { dataDeHoje, somarDias } from '../formatacao/horario.js'
 import './Dashboard.css'
 
 export default function Dashboard() {
+  const { funcionario } = useSessao()
   const hoje = dataDeHoje()
   const [periodo, setPeriodo] = useState({ de: somarDias(hoje, -29), ate: hoje })
 
@@ -17,7 +20,7 @@ export default function Dashboard() {
         <SeletorDePeriodo periodo={periodo} hoje={hoje} aoMudar={setPeriodo} />
       </header>
       <SecaoOperacional hoje={hoje} periodo={periodo} />
-      <SecaoFinanceira periodo={periodo} />
+      {ehAdmin(funcionario) && <SecaoFinanceira periodo={periodo} />}
     </section>
   )
 }

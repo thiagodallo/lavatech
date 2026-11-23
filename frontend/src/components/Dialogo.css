@@ -81,6 +81,10 @@
     animation: dialogo-subir 260ms var(--curva-suave);
   }
 
+  .dialogo-cabecalho {
+    touch-action: none;
+  }
+
   .dialogo-cabecalho::before {
     content: '';
     position: absolute;

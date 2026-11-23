@@ -61,13 +61,25 @@
 }
 
 .opcao-de-servico-nome {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .opcao-de-servico-dados {
   font-family: var(--fonte-mono);
   font-size: 12px;
   white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .opcao-de-servico {
+    grid-template-columns: 16px minmax(0, 1fr);
+    row-gap: 0;
+    padding-block: var(--espaco-1);
+  }
+
+  .opcao-de-servico-dados {
+    grid-column: 2;
+  }
 }
 
 .campo-de-servicos-limite {

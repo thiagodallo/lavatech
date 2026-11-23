@@ -176,6 +176,16 @@
   }
 }
 
+@media (max-width: 480px) {
+  .login-chamada {
+    font-size: 26px;
+  }
+
+  .login-apresentacao {
+    gap: var(--espaco-2);
+  }
+}
+
 @media (max-height: 500px) and (min-width: 600px) {
   .login {
     grid-template-columns: minmax(0, 1fr) minmax(0, 360px);

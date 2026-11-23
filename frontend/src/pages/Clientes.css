@@ -91,6 +91,30 @@
   background: var(--cor-superficie);
 }
 
+@media (max-width: 760px) {
+  .cliente-linha {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'nome telefone'
+      'placas placas';
+    align-items: baseline;
+  }
+
+  .cliente-nome {
+    grid-area: nome;
+  }
+
+  .cliente-telefone {
+    grid-area: telefone;
+    min-width: 0;
+  }
+
+  .cliente-placas {
+    grid-area: placas;
+  }
+}
+
 .cliente-nome {
   flex: 1 1 160px;
   min-width: 0;

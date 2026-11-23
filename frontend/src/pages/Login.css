@@ -85,15 +85,14 @@
 }
 
 .login-campo-erro {
-  min-height: 24px;
-  margin: var(--espaco-meio) 0 0;
+  min-height: 20px;
+  margin: 2px 0 0;
   color: var(--status-cancelado-texto);
   font-size: 12px;
   line-height: 16px;
 }
 
 .login-erro-geral {
-  min-height: 20px;
   margin: 0;
   color: var(--status-cancelado-texto);
   font-size: 13px;
@@ -217,7 +216,7 @@
   }
 
   .login-cartao {
-    padding: var(--espaco-3);
+    padding: var(--espaco-2) var(--espaco-3);
   }
 
   .login-titulo {

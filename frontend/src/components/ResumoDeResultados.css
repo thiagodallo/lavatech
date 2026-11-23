@@ -27,6 +27,11 @@
   font-weight: 600;
 }
 
+.resumo-de-resultados-esqueleto {
+  width: 32px;
+  height: 28px;
+}
+
 @media (max-width: 600px) {
   .resumo-de-resultados {
     gap: var(--espaco-1);

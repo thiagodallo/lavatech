@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { listarChecklists } from '../api/checklists.js'
 import CartaoDeChecklist from '../components/CartaoDeChecklist.jsx'
 import FiltroDeResultado from '../components/FiltroDeResultado.jsx'
-import PainelDoChecklist from '../components/PainelDoChecklist.jsx'
+import DialogoDoChecklist from '../components/DialogoDoChecklist.jsx'
 import ResumoDeResultados from '../components/ResumoDeResultados.jsx'
 import SeletorDeDia from '../components/SeletorDeDia.jsx'
 import EsqueletoDeLista from '../components/EsqueletoDeLista.jsx'
@@ -77,12 +77,10 @@ export default function Qualidade() {
     <section>
       <CabecalhoDaQualidade filtros={filtros} />
       <ResumoDeResultados contagens={contarPorResultado(doDia)} />
-      <div className={selecionado ? 'area-com-painel painel-aberto' : 'area-com-painel'}>
-        <div className="qualidade-lista">
-          <CorpoDaLista rota={rota} doDia={doDia} filtrados={filtrados} idSelecionado={selecionado?.agendamento.id} aoAbrir={setIdSelecionado} />
-        </div>
-        {selecionado && <PainelDoChecklist agendamento={selecionado.agendamento} aoFechar={() => setIdSelecionado(null)} />}
+      <div className="qualidade-lista">
+        <CorpoDaLista rota={rota} doDia={doDia} filtrados={filtrados} idSelecionado={selecionado?.agendamento.id} aoAbrir={setIdSelecionado} />
       </div>
+      {selecionado && <DialogoDoChecklist agendamento={selecionado.agendamento} aoFechar={() => setIdSelecionado(null)} />}
     </section>
   )
 }

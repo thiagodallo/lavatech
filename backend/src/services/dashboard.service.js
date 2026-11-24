@@ -75,6 +75,18 @@ function montarFaturamentoPorForma(linhas) {
   })
 }
 
+function montarEstornos(linhas) {
+  const porForma = FORMAS_DE_PAGAMENTO.map((forma) => {
+    const linha = linhas.find((item) => item.forma_pagamento === forma)
+    return { forma_pagamento: forma, valor: arredondar(linha?.valor ?? 0, 2), pagamentos: linha?.pagamentos ?? 0 }
+  })
+  return {
+    valor: arredondar(porForma.reduce((soma, forma) => soma + forma.valor, 0), 2),
+    pagamentos: porForma.reduce((soma, forma) => soma + forma.pagamentos, 0),
+    por_forma: porForma,
+  }
+}
+
 function montarFaturamentoPorDia(linhas, de, ate) {
   return diasEntre(de, ate).map((dia) => {
     const linha = linhas.find((item) => item.dia === dia)
@@ -108,9 +120,10 @@ function formatarCancelamentos({ total, cancelados }) {
 }
 
 export async function resumirPeriodo({ de, ate }) {
-  const [resumo, formas, dias, servicos, clientes, cancelamentos] = await Promise.all([
+  const [resumo, formas, estornos, dias, servicos, clientes, cancelamentos] = await Promise.all([
     dashboard.somarFaturamento(de, ate),
     dashboard.listarFaturamentoPorForma(de, ate),
+    dashboard.listarEstornosPorForma(de, ate),
     dashboard.listarFaturamentoPorDia(de, ate),
     dashboard.listarServicosMaisVendidos(de, ate, TAMANHO_DO_RANKING),
     dashboard.contarClientesNovosERecorrentes(de, ate),
@@ -123,6 +136,7 @@ export async function resumirPeriodo({ de, ate }) {
     pagamentos: resumo.pagamentos,
     ticket_medio: resumo.pagamentos ? arredondar(faturamento / resumo.pagamentos, 2) : 0,
     faturamento_por_forma: montarFaturamentoPorForma(formas),
+    estornos: montarEstornos(estornos),
     faturamento_por_dia: montarFaturamentoPorDia(dias, de, ate),
     servicos_mais_vendidos: servicos.map(formatarServicoVendido),
     clientes,

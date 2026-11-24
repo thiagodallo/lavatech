@@ -533,6 +533,16 @@ Todas as rotas desta seção exigem sessão e só leem dados: nada é gravado. O
     { "forma_pagamento": "cartao_debito", "faturamento": 150, "pagamentos": 2 },
     { "forma_pagamento": "cartao_credito", "faturamento": 100, "pagamentos": 2 }
   ],
+  "estornos": {
+    "valor": 50,
+    "pagamentos": 1,
+    "por_forma": [
+      { "forma_pagamento": "dinheiro", "valor": 0, "pagamentos": 0 },
+      { "forma_pagamento": "pix", "valor": 50, "pagamentos": 1 },
+      { "forma_pagamento": "cartao_debito", "valor": 0, "pagamentos": 0 },
+      { "forma_pagamento": "cartao_credito", "valor": 0, "pagamentos": 0 }
+    ]
+  },
   "faturamento_por_dia": [{ "data": "2026-11-01", "faturamento": 0, "pagamentos": 0 }],
   "servicos_mais_vendidos": [{ "servico_id": 2, "nome": "Lavagem Completa", "quantidade": 9, "receita": 540 }],
   "clientes": { "novos": 4, "recorrentes": 11 },
@@ -545,6 +555,7 @@ Todas as rotas desta seção exigem sessão e só leem dados: nada é gravado. O
 ```
 
 - **Faturamento**: soma dos pagamentos com status `pago`, pela data de `pago_em`. Pagamento `estornado` e `pendente` não entram. `ticket_medio` é o faturamento dividido pela quantidade de pagamentos pagos, ou 0 se não houve nenhum.
+- **Estornos**: pagamentos `estornado` com `pago_em` dentro do período, somados à parte e por forma, sempre com as quatro formas. Eles não entram em `faturamento`, `pagamentos` nem `ticket_medio`. Como o estorno não guarda a data em que foi feito, ele aparece no dia em que o pagamento original foi registrado.
 - **Por forma de pagamento**: sempre as quatro formas, com zero quando não houve. **Por dia**: um item para cada dia do período, com zero nos dias sem pagamento. Um pagamento feito depois da meia-noite conta no dia seguinte ao do atendimento.
 - **Serviços mais vendidos**: agendamentos `concluido` com horário agendado dentro do período, agrupados por serviço, os 5 primeiros por quantidade (empate vai para a maior receita). Um agendamento com vários serviços conta uma vez em cada um deles, e a `quantidade` é o número de agendamentos em que o serviço aparece. A `receita` soma o preço do serviço gravado no agendamento (valor de tabela), não o que foi pago. Por isso ela pode diferir do `faturamento`, que continua somando só os pagamentos `pago`.
 - **Clientes**: considera quem tem agendamento não cancelado no período. É novo quem tem o primeiro agendamento não cancelado dentro do período, e recorrente quem já tinha algum antes do início. Agendamento `cancelado` não conta.

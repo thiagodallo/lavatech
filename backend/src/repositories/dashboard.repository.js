@@ -56,6 +56,15 @@ export function listarFaturamentoPorForma(de, ate) {
     GROUP BY forma_pagamento`
 }
 
+export function listarEstornosPorForma(de, ate) {
+  return prisma.$queryRaw`
+    SELECT forma_pagamento, SUM(valor) AS valor, COUNT(*)::int AS pagamentos
+    FROM pagamento
+    WHERE status = 'estornado'
+      AND pago_em >= ${de}::date AND pago_em < ${ate}::date + 1
+    GROUP BY forma_pagamento`
+}
+
 export function listarFaturamentoPorDia(de, ate) {
   return prisma.$queryRaw`
     SELECT to_char(pago_em, 'YYYY-MM-DD') AS dia, SUM(valor) AS faturamento, COUNT(*)::int AS pagamentos

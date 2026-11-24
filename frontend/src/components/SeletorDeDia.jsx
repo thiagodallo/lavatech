@@ -4,9 +4,9 @@ import { somarDias } from '../formatacao/horario.js'
 import CampoDeData from './CampoDeData.jsx'
 import './SeletorDeDia.css'
 
-export default function SeletorDeDia({ data, aoMudar }) {
+export default function SeletorDeDia({ data, aoMudar, rotulo = 'Dia da agenda', rotuloDaData = 'Data da agenda' }) {
   return (
-    <div className="seletor-de-dia" role="group" aria-label="Dia da agenda">
+    <div className="seletor-de-dia" role="group" aria-label={rotulo}>
       <button
         type="button"
         className="botao-secundario seletor-seta"
@@ -15,7 +15,7 @@ export default function SeletorDeDia({ data, aoMudar }) {
       >
         <ChevronLeft size={20} aria-hidden="true" />
       </button>
-      <CampoDeData classe="seletor-data" rotulo="Data da agenda" valor={data} aoEscolher={aoMudar} />
+      <CampoDeData classe="seletor-data" rotulo={rotuloDaData} valor={data} aoEscolher={aoMudar} />
       <button
         type="button"
         className="botao-secundario seletor-seta"
